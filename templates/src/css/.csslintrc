@@ -1,0 +1,14 @@
+{
+  "ignore": [
+    "order-alphabetical",
+    "ids",
+    "universal-selector",
+    "box-sizing",
+    "empty-rules",
+    "fallback-colors"
+  ],
+  "warnings": [
+  ],
+  "errors": [
+  ]
+}
