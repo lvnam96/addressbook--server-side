@@ -1,30 +1,56 @@
-var gulp = require('gulp');
-// var uglify = require('gulp-uglify');
+var gulp = require('gulp'),
+    pump = require('pump'),
+    rename = require('gulp-rename'),
+    srcPath = './templates/src/',
+    distPath = './templates/dist/',
+    // Files/Paths that need to be watched by gulp
+    watchPaths    = {
+        css: [srcPath + 'css/style.css'],
+        sass: [srcPath + 'scss/*.scss'],
+        js:   [srcPath + 'js/app.js']
+    };
 
-gulp.task('default', function() {
-    // place code for your default task here
+
+gulp.task('sass', function (cb) {
+    var sass = require('gulp-sass');
+    pump([
+        gulp.src(srcPath + 'scss/*.scss'),
+        sass().on('error', sass.logError),
+        gulp.dest(srcPath + 'css')
+    ], cb);
 });
 
-gulp.task('uglifyjs', function (cb) {
-    var uglifyjs = require('uglify-es');
-    var composer = require('gulp-uglify/composer');
-    var minify = composer(uglifyjs, console);
-	var pump = require('pump');
-    var options = {};
+gulp.task('js', function (cb) {
+    var uglifyjs = require('uglify-es'),
+        composer = require('gulp-uglify/composer'),
+        minify = composer(uglifyjs, console),
+        options = {};
 
     pump([
-        gulp.src('./templates/src/js/app.js'),
+        gulp.src(srcPath + 'js/app.js'),
         minify(options),
-        gulp.dest('./templates/dist/js')
-    ],
-    cb
-  );
+        rename({ suffix: '.min' }),
+        gulp.dest(distPath + 'js')
+    ], cb);
 });
 
-gulp.task('postcss', function () {
+gulp.task('css', function (cb) {
     var postcss = require('gulp-postcss');
 
-    return gulp.src('./templates/src/css/*.css')
-        .pipe(postcss())
-        .pipe(gulp.dest('./templates/dist/css'));
+    pump([
+        gulp.src(srcPath + 'css/style.css'),
+        postcss(),
+        rename({ suffix: '.min' }),
+        gulp.dest(distPath + 'css')
+    ], cb);
 });
+
+// The watch task will be executed upon each file change
+gulp.task('watch', function() {
+    gulp.watch(watchPaths.js, ['js']);
+    gulp.watch(watchPaths.css, ['css']);
+    gulp.watch(watchPaths.sass, ['sass']);
+});
+
+// Default task is executed upon execution of gulp
+gulp.task('default', ['css', 'js', 'watch']);

@@ -1,0 +1,93 @@
+.main-nav {
+    display: flex;
+    flex-flow: row wrap;
+    padding: .7rem;
+    background-color: #40223c;
+    position: relative;// just for making z-index:2 work (overfloat on sort-sub-nav)
+    z-index: 2;
+
+    &__item {
+        flex: 1;
+        justify-content: space-between;
+        padding: .3em;
+        margin: 0 .3em;
+        text-align: center;
+        font-size: 2em;
+        color: rgba(255,255,255,.7);
+        cursor: pointer;
+
+        &:hover,
+        &:active {
+            color: #fff;
+        }
+
+        &:nth-child(1) {
+            position: relative;
+        }
+
+        &:nth-child(2) {
+            color: rgba(253,33,73,.3);
+
+            &:active {
+                cursor: wait;
+            }
+        }
+        // &:nth-child(3) {}
+        // &:nth-child(4) {}
+        &__ico--rotate {
+            transform: rotate(45deg);
+        }
+    }
+}
+
+.sort-sub-nav {
+    @extend %sub-nav;
+
+    li {
+        @extend %sub-nav-li;
+
+        &:hover {
+            color: #c1c1c1;
+        }
+    }
+
+    &__item--present-state {
+        color: #fff !important;
+        font-weight: bold;
+    }
+}
+
+.backup-restore-sub-nav {
+    @extend %sub-nav;
+
+    li {
+        @extend %sub-nav-li;
+
+        &:hover {
+            color: #c1c1c1;
+        }
+    }
+}
+
+.sort-sub-nav,
+.translatedDown100 {
+    transform: translateY(100%);
+}
+
+.translatedDown200 {
+    transform: translateY(200%);
+}
+
+.lighterTrash {
+    color: rgba(253,33,73,.7) !important;
+
+    &:hover,
+    &:active {
+        color: rgb(253,33,73) !important;
+    }
+}
+
+.fa {
+    pointer-events: none;
+    transition: ease .3s;
+}

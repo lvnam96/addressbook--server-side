@@ -1,0 +1,56 @@
+// birthday bar section ---------------------
+.form-container {
+    padding: 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: block;
+    width: 100%;
+    background-color: #40223c;
+    transition: ease .5s;
+    box-shadow: 0 1px 6px 1px #555;
+    z-index: 2;
+    color: #fff;
+
+    &--hidden {
+        transform: translateY(-100%);
+        box-shadow: none;
+    }
+}
+
+.birth-reg-form {
+    padding: .625rem 0 .3rem;
+    margin: 0 auto;
+    width: 80%;
+    color: #fff;
+
+    input {
+        color: inherit;
+        padding: .625rem 0 .3rem;
+        margin: 15px auto;
+        width: 100%;
+        background-color: transparent;
+        border: 0;
+        border-bottom: 1px solid $accent-color;
+        transition: ease .3s;
+
+        &:focus {
+            border-bottom: 3px solid #fff;
+            margin-bottom: 12px;
+            outline: none;
+        }
+    }
+
+    &__submitBtn {
+        color: inherit;
+        width: 100%;
+        padding: .625rem;
+        background-color: $accent-color;
+        border: 0;
+        border-radius: 5px;
+
+        &:focus {
+            outline: none;
+        }
+    }
+}

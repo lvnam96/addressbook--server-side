@@ -5,7 +5,6 @@ const BIRTH_STORE = (function() {
         isModified = false,
         isStorageAvailable,
         time,
-        getRandomCode,
         methods = {};
 
     time = (function() {
@@ -19,11 +18,11 @@ const BIRTH_STORE = (function() {
             };
 
         // this is a local method of a local obj (newDateObj)
-        newDateObj.myGetDay = function() {// getDay() method -> myGetDay(): bắt đầu với thứ 2, vẫn 0-based
-          let day = this.getDay();//getDay() trả về thứ trong tuần, bắt đầu từ chủ nhật, 0-based
+        newDateObj.myGetDay = function() {//  myGetDay(): trả về thứ trong tuần, ngày đầu trong tuần là thứ 2, 0-based
+          let day = this.getDay();// getDay() trả về thứ trong tuần, ngày đầu trong tuần là chủ nhật, 0-based
           return day === 0 ? 6 : day - 1;
         };
-    
+
         return {
           curDay: newDateObj.getDate(),
           curDate: newDateObj.myGetDay(), 
@@ -35,24 +34,24 @@ const BIRTH_STORE = (function() {
 
     isStorageAvailable = (function storageAvailable(type) {
         try {
-          let storage = window[type],
-              x = '__storage_test__';
-          storage.setItem(x, x);
-          storage.removeItem(x);
-          return true;
+            let storage = window[type],
+                x = '__storage_test__';
+            storage.setItem(x, x);
+            storage.removeItem(x);
+            return true;
         } catch(e) {
-          return e instanceof DOMException && (
-          // everything except Firefox
-          e.code === 22 ||
-          // Firefox
-          e.code === 1014 ||
-          // test name field too, because code might not be present
-          // everything except Firefox
-          e.name === 'QuotaExceededError' ||
-          // Firefox
-          e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
-          // acknowledge QuotaExceededError only if there's something already stored
-          storage.length !== 0;
+            return e instanceof DOMException && (
+            // everything except Firefox
+            e.code === 22 ||
+            // Firefox
+            e.code === 1014 ||
+            // test name field too, because code might not be present
+            // everything except Firefox
+            e.name === 'QuotaExceededError' ||
+            // Firefox
+            e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+            // acknowledge QuotaExceededError only if there's something already stored
+            storage.length !== 0;
         }
     }('localStorage'));
 
@@ -63,8 +62,7 @@ const BIRTH_STORE = (function() {
         isModified = false;
     };
     methods.getBirthList = function() {
-        const birthList = birthdayList;
-        return birthList;
+        return birthdayList;
     };
     methods.listLength = function() {
         return birthdayList.length;
@@ -86,8 +84,8 @@ const BIRTH_STORE = (function() {
         isModified = true;
     };
     methods.find = function(IDList, callbackFunc, callbackObj) {
-        let updatedData, returnedIndex,
-            len = birthdayList.length;
+        let len = birthdayList.length;
+
         if (Array.isArray(IDList)) {
             IDList.forEach(function(IDStr) {
                 birthdayList.forEach(function(birthElement, index) {
@@ -102,7 +100,7 @@ const BIRTH_STORE = (function() {
                     }
                 });
             });
-        } else if (typeof IDList === 'string') {// pass ID string when edit or just need to find index of the person who has that ID in birthdayList
+        } else if (typeof IDList === 'string') {// pass ID string when edit or just need to find index of the only person who has that ID in birthdayList
             for (let i = 0; i < len; i += 1) {
                 if (birthdayList[i].ID === IDList) {
                     if (callbackFunc && typeof callbackFunc === 'function') {
@@ -118,7 +116,7 @@ const BIRTH_STORE = (function() {
         }
 
         if (isModified) {
-            updatedData = birthdayList.filter(function(element, index) {
+            let updatedData = birthdayList.filter(function(element, index) {
                 return element;
             });
             this.replaceData(updatedData);
@@ -268,32 +266,28 @@ if (BIRTH_STORE.isStorageAvailable) {
 document.addEventListener('DOMContentLoaded', function() {
     // get DOMs
     const overlay = document.getElementsByClassName('overlay')[0],
-        birthBar = document.getElementsByClassName('birthBar')[0],
+        birthBar = document.getElementsByClassName('form-container')[0],
         form = birthBar.children[0],
-        delBtn = document.getElementById('delAllBtn'),
         rstrDataBtn = document.getElementById('rstrDataBtn'),
         inptFileBtn = document.getElementById('inptFileBtn'),
         bckpDataBtn = document.getElementById('bckpDataBtn'),
-        navItem = document.getElementsByClassName('navItem'),
+        navItem = document.getElementsByClassName('main-nav__item'),
         sortBtn = navItem[0],
         delAllBtn = navItem[1],
         backupBtn = navItem[2],
         addBirthBtn = navItem[3],
         plusIco = addBirthBtn.children[0],
-        sortBtnGroup = document.getElementsByClassName('sortBtnGroup')[0],
+        sortBtnGroup = document.getElementsByClassName('sort-sub-nav')[0],
         sortBtnList = sortBtnGroup.children,
         curWeekBtn = sortBtnList[0],
         curMnthBtn = sortBtnList[1],
         dispAllBtn = sortBtnList[2],
-        backupBtnGroup = document.getElementsByClassName('backupBtnGroup')[0],
-        ul = document.getElementsByClassName('birthList')[0],
+        backupBtnGroup = document.getElementsByClassName('backup-restore-sub-nav')[0],
+        ul = document.getElementsByClassName('birth-list')[0],
         liList = ul.children;
     let checkedList = [],
         longPressedBefore = false;
 
-    function destroyClickedElement(e) {
-        document.body.removeChild(e.target);
-    }
     function METHOD_A() {// change UI
     // checkedList.length sẽ luôn tăng hoặc giảm theo từng nấc một (vì 1 lần click chỉ thay đổi trạng thái checked của 1 item)
         switch (checkedList.length) {
@@ -385,7 +379,11 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         bckpData: function() {
             if ('Blob' in window) {
+                function destroyClickedElement(e) {
+                    document.body.removeChild(e.target);
+                }
                 let fileName = prompt('Hãy đặt tên tập tin dùng để sao lưu dữ liệu', 'birthdays_backupFile.txt');
+                fileName = (fileName === '' ? 'birthdays_backupFile.txt' : fileName); 
                 if (fileName) {
                     let textToWrite = JSON.stringify(BIRTH_STORE.getBirthList()).replace(/\n/g, '\r\n');
                     let textFileAsBlob = new Blob([textToWrite], { type: 'text/plain' });
@@ -431,18 +429,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('Hãy lưu lại item bạn đang chỉnh sửa.');
             } else {
                 let birthInCurWeekList;
-
-            // BIRTH_STORE.saveDataToLocalStorage();
-
                 ul.innerHTML = '';
                 birthInCurWeekList = BIRTH_STORE.filterBirthInWeek(BIRTH_STORE.rangeOfWeek());
                 BIRTH_STORE.HANDLERS.displayItems(birthInCurWeekList);
         
-                ul.classList.add('hideAllCheckboxInList');
+                ul.classList.add('birth-list--checkbox-hidden');
                 checkedList = [];
                 METHOD_A();
 
-                if (!birthBar.classList.contains('hiddingBar')) {
+                if (!birthBar.classList.contains('form-container--hidden')) {
                     addBirthBtn.click();
                 }
                 BIRTH_STORE.HANDLERS.changeState(0);
@@ -454,17 +449,15 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 let birthInCurMonthList;
 
-                // BIRTH_STORE.saveDataToLocalStorage();
-
                 ul.innerHTML = '';
                 birthInCurMonthList = BIRTH_STORE.filterBirthInMonth(BIRTH_STORE.getBirthList(), BIRTH_STORE.getTime.curMonth);
                 BIRTH_STORE.HANDLERS.displayItems(birthInCurMonthList);
         
-                ul.classList.add('hideAllCheckboxInList');
+                ul.classList.add('birth-list--checkbox-hidden');
                 checkedList = [];
                 METHOD_A();
 
-                if (!birthBar.classList.contains('hiddingBar')) {
+                if (!birthBar.classList.contains('form-container--hidden')) {
                     addBirthBtn.click();
                 }
                 BIRTH_STORE.HANDLERS.changeState(1);
@@ -474,16 +467,14 @@ document.addEventListener('DOMContentLoaded', function() {
             if (BIRTH_STORE.HANDLERS.isEditing) {
                 alert('Hãy lưu lại item bạn đang chỉnh sửa.');
             } else {
-                // BIRTH_STORE.saveDataToLocalStorage();
-
                 ul.innerHTML = '';
                 BIRTH_STORE.HANDLERS.displayItems(BIRTH_STORE.getBirthList());
         
-                ul.classList.add('hideAllCheckboxInList');
+                ul.classList.add('birth-list--checkbox-hidden');
                 checkedList = [];
                 METHOD_A();
 
-                if (!birthBar.classList.contains('hiddingBar')) {
+                if (!birthBar.classList.contains('form-container--hidden')) {
                     addBirthBtn.click();
                 }
                 BIRTH_STORE.HANDLERS.changeState(2);
@@ -521,7 +512,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 checkedList = [];
                 METHOD_A();
 
-                if (!birthBar.classList.contains('hiddingBar')) {
+                if (!birthBar.classList.contains('form-container--hidden')) {
                     addBirthBtn.click();
                 }
             }
@@ -536,11 +527,11 @@ document.addEventListener('DOMContentLoaded', function() {
             if (plusIco.classList.contains('fa-pencil')) {
                 BIRTH_STORE.HANDLERS.editItem();
             } else {
-                birthBar.classList.toggle('hiddingBar');
-                plusIco.classList.toggle('rotate-plus');
-                overlay.classList.toggle('hide');
+                birthBar.classList.toggle('form-container--hidden');
+                plusIco.classList.toggle('main-nav__item__ico--rotate');
+                overlay.classList.toggle('overlay--hidden');
 
-                if (!birthBar.classList.contains('hiddingBar')) {
+                if (!birthBar.classList.contains('form-container--hidden')) {
                     form.children[0].focus();
                 }
             }
@@ -564,10 +555,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     oldIdINPUT = form.children[3],
                     sbmtBTN = form.children[4];
 
-                if (birthBar.classList.contains('hiddingBar')) {// show the birthday bar
-                    birthBar.classList.remove('hiddingBar');
-                    plusIco.classList.add('rotate-plus');
-                    overlay.classList.remove('hide');
+                if (birthBar.classList.contains('form-container--hidden')) {// show the birthday bar
+                    birthBar.classList.remove('form-container--hidden');
+                    plusIco.classList.add('main-nav__item__ico--rotate');
+                    overlay.classList.remove('overlay--hidden');
                 }
 
                 // get old data for input elements
@@ -614,9 +605,9 @@ document.addEventListener('DOMContentLoaded', function() {
             form.reset();
 
             // hide birthdayBar
-            birthBar.classList.add('hiddingBar');
-            plusIco.classList.remove('rotate-plus');
-            overlay.classList.add('hide');
+            birthBar.classList.add('form-container--hidden');
+            plusIco.classList.remove('main-nav__item__ico--rotate');
+            overlay.classList.add('overlay--hidden');
 
             BIRTH_STORE.HANDLERS.isEditing = false;
         },
@@ -670,7 +661,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // - hiển thị checkbox cho tất cả item
             // - chưa có việc nào khác nữa
             if (checkedList.length === 0) {
-                ul.classList.remove('hideAllCheckboxInList');
+                ul.classList.remove('birth-list--checkbox-hidden');
                 if (longPressedDOM.tagName === 'LI') {
                     longPressedDOM.children[0].checked = true;
                     checkedList.push(itemID.textContent);
@@ -683,7 +674,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 itemCheckbox = clickedDOM.children[0],
                 itemID = clickedDOM.children[2];
             // nếu đang ở trạng thái bình thường (checkedList.length=0, checkbox không hiển thị) thì click event không làm gì
-            if (!ul.classList.contains('hideAllCheckboxInList') && clickedDOM.tagName === 'LI') {
+            if (!ul.classList.contains('birth-list--checkbox-hidden') && clickedDOM.tagName === 'LI') {
                 itemCheckbox.click();
                 if (itemCheckbox.checked) {
                     if (checkedList.indexOf(itemID.textContent) === -1) {
@@ -691,7 +682,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 } else {
                     if (checkedList.indexOf(itemID.textContent) > -1) {
-                        checkedList.splice(checkedList.indexOf(itemID.textContent), 1);
+                        let indexOfId = checkedList.indexOf(itemID.textContent);
+                        checkedList.splice(indexOfId, 1);
                     }
                 }
                 METHOD_A();
@@ -707,8 +699,8 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         changeState: function(newStateIdx) {
             let oldStateIdx = BIRTH_STORE.HANDLERS.dispState;
-            sortBtnList[oldStateIdx].classList.remove('presentState');
-            sortBtnList[newStateIdx].classList.add('presentState');
+            sortBtnList[oldStateIdx].classList.remove('sort-sub-nav__item--present-state');
+            sortBtnList[newStateIdx].classList.add('sort-sub-nav__item--present-state');
             BIRTH_STORE.HANDLERS.dispState = newStateIdx;
         },
         refreshDisplay: function() {
