@@ -1,0 +1,25 @@
+@import 'variables';
+@import 'mixins';
+
+@import 'base/index';
+@import 'layout/index';
+@import 'components/manifest';
+
+// Small devices (tablets, 768px and up)
+@media (min-width: 768px) {
+    .sticky-nav {
+        font-size: 1.5rem;
+    }
+}
+
+// Medium devices (desktops, 992px and up)
+@media (min-width: 992px) {
+    .birth-reg-form input {
+        width: 200px;
+        margin: 15px 30px;
+
+        &__submitBtn {
+            width: initial;
+        }
+    }
+}

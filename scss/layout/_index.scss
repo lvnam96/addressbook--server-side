@@ -1,0 +1,20 @@
+// main section ---------------------
+.main {
+    min-height: calc(100vh - 140px);
+    margin-bottom: 140px;
+    padding: .5rem 0;
+}
+
+// sticky navbar --------------------
+.sticky-nav {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    font-size: 1rem;
+    z-index: 2;
+    pointer-events: none;
+
+    * {
+        pointer-events: auto;
+    }
+}

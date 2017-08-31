@@ -1,0 +1,200 @@
+.page-title h1 {
+    text-transform: uppercase;
+    font-size: 3em;
+    text-align: center;
+    padding: .625rem 0;
+    margin-bottom: 20px;
+    color: rgba(255,255,255,.1);
+    font-family: 'SVN-Smirk', sans-serif;
+    text-shadow: 2px 2px 3px rgba(255,255,255,.3);
+    // Get gradient from here: http://www.colorzilla.com/gradient-editor/#40223c+0,42988f+43,b1c592+60,f1ddba+69,fb718a+100
+    background: rgb(64,34,60);
+    background: -webkit-gradient(
+        linear, left top, right top,
+        from(rgba(64,34,60,1)),
+        color-stop(30%, rgba(66,152,143,1)),
+        color-stop(45%, rgba(177,197,146,1)),
+        color-stop(60%, rgba(241,221,186,1)),
+        to(rgba(251,113,138,1))
+    );
+    background: linear-gradient(
+        to right,
+        rgba(64,34,60,1) 0%,
+        rgba(66,152,143,1) 30%,
+        rgba(177,197,146,1) 45%,
+        rgba(241,221,186,1) 60%,
+        rgba(251,113,138,1) 100%
+    );
+    // filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#40223c', endColorstr='$accent-color',GradientType=1 );
+    -webkit-background-clip: text;
+    background-clip: text;
+    background-size: 100%;
+    background-position: center left, top left;
+}
+
+.contact-list {
+    font-size: 1rem;
+    width: 100%;
+    margin: 1em auto;
+    list-style-type: none;
+    padding: 0;
+
+    &__item {
+        display: flex;
+        padding: .5em;
+
+        &:hover {
+            background-color: #e0e0e0;
+
+            .contact-item__buttons>div {
+                visibility: visible;
+            }
+
+            .contact-item__checkbox-label {
+                display: block;
+            }
+
+            .contact-item__avt__first-letter,
+            .contact-item__avt__img {
+                display: none;
+            }
+        }
+    }
+}
+
+.contact-item {
+    &__avt {
+        flex: 0 1 3em;
+        max-width: 3em;
+        width: 3em;
+        height: 3em;
+        margin-right: 1.5em;
+        border-radius: 50%;
+        overflow: hidden;
+        position: relative;
+
+        &__first-letter {
+            display: block;
+            color: #fff;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            // font-size: 1.2em;
+            line-height: 3em;
+            white-space: nowrap;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+        }
+
+        &:__img {
+            max-width: 100%;
+            // border-radius: 50%;
+            position: absolute;
+            z-index: 2;
+        }
+    }
+
+    &__name {
+        margin-right: auto;
+        line-height: 3em;
+    }
+
+    &__birth {
+        display: none;
+        line-height: 3em;
+    }
+
+    &__phone {
+        display: none;
+        line-height: 3em;
+    }
+
+    &__buttons {
+        > div {
+            display: inline-block;
+            line-height: 3em;
+            text-align: center;
+            width: 3em;
+            visibility: hidden;
+            border-radius: 50%;
+
+            &:hover {
+                cursor: pointer;
+                background-color: #ccc;
+            }
+        }
+    }
+
+    &__checkbox-label {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+        display: none;
+        width: 1.5em;
+        height: 1.5em;
+        background-color: transparent;
+        padding: .1em;
+        border: 2px solid #e91e63;
+        z-index: 2;
+        cursor: pointer;
+    }
+
+    &__checkbox {
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        z-index: -1;
+
+        &:checked {
+            + .contact-item__checkbox-label {
+                background-color: #e91e63;
+                background-clip: content-box;
+                display: block;
+            }
+
+            ~ div,
+            ~ img {
+                display: none;
+            }
+        }
+    }
+}
+
+.contact-item--checked {
+    background-color: #ccc;
+}
+
+@media (min-width: 500px) {
+    .contact-list {
+        width: 90%;
+    }
+}
+
+@media (min-width: 768px) {
+    .page-title h1 {
+        font-size: 5rem;
+        margin: 50px 0;
+    }
+}
+
+@media (min-width: 850px) {
+    .contact-item__birth,
+    .contact-item__phone {
+        display: block;
+        flex: 0 1 22%;
+    }
+}
+
+@media (min-width: 992px) {
+    .page-title h1 {
+        font-size: 5em;
+        line-height: 7rem;
+        margin: 50px auto;
+    }
+}
