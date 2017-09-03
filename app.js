@@ -134,8 +134,8 @@ const ADDRESS_BOOK = (function () {
 
         if (Array.isArray(IDList)) {
             IDList.forEach(function(IDStr) {
-                contactsList.forEach(function(birthElement, index) {
-                    if (birthElement.ID === IDStr) {
+                contactsList.forEach(function(contact, index) {
+                    if (contact.id === IDStr) {
                         if (callbackFunc && typeof callbackFunc === 'function') {
                             if (callbackObj && typeof callbackObj === 'object') {
                                 callbackFunc.call(callbackObj, index);
@@ -148,7 +148,7 @@ const ADDRESS_BOOK = (function () {
             });
         } else if (typeof IDList === 'string') {// pass ID string when edit or just need to find index of the only person who has that ID in contactsList
             for (let i = 0; i < len; i += 1) {
-                if (contactsList[i].ID === IDList) {
+                if (contactsList[i].id === IDList) {
                     if (callbackFunc && typeof callbackFunc === 'function') {
                         if (callbackObj && typeof callbackObj === 'object') {
                             callbackFunc.call(callbackObj, i);
@@ -156,14 +156,14 @@ const ADDRESS_BOOK = (function () {
                             callbackFunc(i);
                         }
                     }
-                    return i;
                 }
             }
         }
-
+        console.log(isModified);
         if (isModified) {
-            let updatedData = contactsList.filter(function(element, index) {
-                return element;
+            console.log('hello');
+            let updatedData = contactsList.filter(function (contact) {
+                return contact;
             });
             this.replaceData(updatedData);
         }
@@ -194,8 +194,8 @@ const ADDRESS_BOOK = (function () {
         needToBeReSorted = true;
     };
     API.rmContact = function (idx) {
-        contactsList.splice(idx, 1);
-        // delete contactsList[idx];// không cần cách này nữa vì cần phải giữ thứ tự cho các chỉ số index của các contact trong array data (giúp cho callback của API.find() hoạt động đúng item khi remove nhiều item bằng callback). Nhưng bây giờ KHÔNG CÒN SỬ DỤNG API.find() nữa nên có thể chỉnh sửa trực tiếp trên data.
+        // contactsList.splice(idx, 1);// không dùng được cách này nữa vì cần phải giữ thứ tự cho các chỉ số index của các contact trong array data (giúp cho callback của API.find() hoạt động đúng item khi remove nhiều item bằng callback).
+        delete contactsList[idx];
         isModified = true;
     };
     API.rmAllContacts = function () {
@@ -209,9 +209,8 @@ const ADDRESS_BOOK = (function () {
         contactsList = newData;
         needToBeReSorted = true;
     };
-    API.rangeOfWeek = function (testDay, testDateNum) {//Calculate range (array) of days in current week
+    API.rangeOfWeek = function (today = time.curDay, testDateNum) {//Calculate range (array) of days in current week
         let result = [],
-            today = testDay || time.curDay,//ngày trong tháng, 1-based
             toDate = testDateNum > -1 ? testDateNum : time.curDate,
             thisMonth = time.curMonth,
             thisYear = time.curYear,
@@ -238,59 +237,73 @@ const ADDRESS_BOOK = (function () {
         }
         return result;
     };
-    API.filterBirthInMonth = function (sourceArr, month) {
-        return sourceArr.filter(function(element, index) {
-            return element.birthDay[1] === month;
-        }).sort(function(a, b) {
-            return a.birthDay[0] - b.birthDay[0];
+    API.filterBirthsInMonth = function (month = time.curMonth) {
+        return contactsList.filter(function (contact) {
+            return parseInt(contact.birth.split('-')[1], 10) === month;
+        }).sort(function (a, b) {
+            let birthA = parseInt(a.birth.split('-')[2], 10),
+                birthB = parseInt(b.birth.split('-')[2], 10);
+            return birthA - birthB;
         });
     };
-    API.filterBirthInWeek = function (dayInWeekArr) {
-        let lastDayOfMonth,
-            curDay = time.curDay,
+    API.filterBirthsInWeek = function (dayInWeekArr = this.rangeOfWeek()) {
+        let curDay = time.curDay,
             curMonth = time.curMonth,
             curYear = time.curYear,
-            filterBirthInLastMonth = this.filterBirthInMonth(contactsList, (curMonth - 1 === 0) ? 12 : (curMonth - 1)),
-            filterBirthInCurrentMonth = this.filterBirthInMonth(contactsList, curMonth),
-            filterBirthInNextMonth = this.filterBirthInMonth(contactsList, (curMonth + 1 === 13) ? 1 : (curMonth + 1));
+            birthsInLastMonth = this.filterBirthsInMonth((curMonth - 1) === 0 ? 12 : (curMonth - 1)),
+            birthsInCurrentMonth = this.filterBirthsInMonth(curMonth),
+            birthsInNextMonth = this.filterBirthsInMonth((curMonth + 1) === 13 ? 1 : (curMonth + 1));
 
-        if (Array.isArray(dayInWeekArr[0])) {//if we have ARRAY, it means we have a transform-week: a week have days in this month and another month
+        if (Array.isArray(dayInWeekArr[0])) {// if we have array, it means that we have a transforming-week: a week have days in current month & previous/next month
             let arr1, arr2;
-
             if (curDay > 15) {// we're in last days of the current month
-                arr1 = filterBirthInCurrentMonth.filter(function(element, index) {
-                    return dayInWeekArr[0].indexOf(element.birthDay[0]) !== -1;
-                }).sort(function(a, b) {
-                    return a.birthDay[0] - b.birthDay[0];
+                arr1 = birthsInCurrentMonth.filter(function (contact) {
+                    let birth = parseInt(contact.birth.split('-')[2], 10);
+                    return dayInWeekArr[0].indexOf(birth) !== -1;
+                }).sort(function (a, b) {
+                    let birthA = parseInt(a.birth.split('-')[2], 10),
+                        birthB = parseInt(b.birth.split('-')[2], 10);
+                    return birthA - birthB;
                 });
-                arr2 = filterBirthInNextMonth.filter(function(element, index) {
-                    return dayInWeekArr[1].indexOf(element.birthDay[0]) !== -1;
-                }).sort(function(a, b) {
-                    return a.birthDay[0] - b.birthDay[0];
+                arr2 = birthsInNextMonth.filter(function (contact) {
+                    let birth = parseInt(contact.birth.split('-')[2], 10);
+                    return dayInWeekArr[1].indexOf(birth) !== -1;
+                }).sort(function (a, b) {
+                    let birthA = parseInt(a.birth.split('-')[2], 10),
+                        birthB = parseInt(b.birth.split('-')[2], 10);
+                    return birthA - birthB;
                 });
             } else {// we're in first days of the current month
-                arr1 = filterBirthInLastMonth.filter(function(element, index) {
-                    return dayInWeekArr[0].indexOf(element.birthDay[0]) !== -1;
-                }).sort(function(a, b) {
-                    return a.birthDay[0] - b.birthDay[0];
+                arr1 = birthsInLastMonth.filter(function (contact) {
+                    let birth = parseInt(contact.birth.split('-')[2], 10);
+                    return dayInWeekArr[0].indexOf(birth) !== -1;
+                }).sort(function (a, b) {
+                    let birthA = parseInt(a.birth.split('-')[2], 10),
+                        birthB = parseInt(b.birth.split('-')[2], 10);
+                    return birthA - birthB;
                 });
-                arr2 = filterBirthInCurrentMonth.filter(function(element, index) {
-                    return dayInWeekArr[1].indexOf(element.birthDay[0]) !== -1;
-                }).sort(function(a, b) {
-                    return a.birthDay[0] - b.birthDay[0];
+                arr2 = birthsInCurrentMonth.filter(function (contact) {
+                    let birth = parseInt(contact.birth.split('-')[2], 10);
+                    return dayInWeekArr[1].indexOf(birth) !== -1;
+                }).sort(function (a, b) {
+                    let birthA = parseInt(a.birth.split('-')[2], 10),
+                        birthB = parseInt(b.birth.split('-')[2], 10);
+                    return birthA - birthB;
                 });
             }
-      
             return arr1.concat(arr2);    
         } else {// we're in the middle of the current month
-            return filterBirthInCurrentMonth.filter(function(element, index) {
-                return dayInWeekArr.indexOf(element.birthDay[0]) !== -1;
-            }).sort(function(a, b) {
-                return a.birthDay[0] - b.birthDay[0];
+            return birthsInCurrentMonth.filter(function (contact) {
+                let birth = parseInt(contact.birth.split('-')[2], 10);
+                return dayInWeekArr.indexOf(birth) !== -1;
+            }).sort(function (a, b) {
+                let birthA = parseInt(a.birth.split('-')[2], 10),
+                    birthB = parseInt(b.birth.split('-')[2], 10);
+                return birthA - birthB;
             });
         }
     };
-    API.sortContactsList = function() {
+    API.sortContactsList = function () {
         // sort by name in alphabet order
         contactsList = contactsList.sort((a, b) => {
             let x = a.name.toLowerCase(),
@@ -300,8 +313,8 @@ const ADDRESS_BOOK = (function () {
             return 0;
         });
         needToBeReSorted = false;
-    }
-    API.init = function() {   
+    };
+    API.init = function () {   
         // get data from localStorage
         if (this.isStorageAvailable) {
             const localStorageData = (typeof localStorage.contactsList !== 'undefined') ? JSON.parse(localStorage.contactsList) : undefined;
@@ -327,8 +340,8 @@ const ADDRESS_BOOK = (function () {
         saveDataToLocalStorage:     API.saveDataToLocalStorage,
         replaceData:                API.replaceData,
         rangeOfWeek:                API.rangeOfWeek,
-        filterBirthInMonth:         API.filterBirthInMonth,
-        filterBirthInWeek:          API.filterBirthInWeek,
+        filterBirthsInMonth:        API.filterBirthsInMonth,
+        filterBirthsInWeek:         API.filterBirthsInWeek,
         sortContactsList:           API.sortContactsList,
         init:                       API.init
     };

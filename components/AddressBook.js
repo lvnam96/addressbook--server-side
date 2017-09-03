@@ -5,20 +5,27 @@ import ContactCard from './contact-card';
 import ContactItem from './contact-item';
 import Form from './form';
 import MenuBar from './menu-bar';
+import NotiBar from './noti-bar';
 
 class AddressBook extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             contacts: this.props.API.getContactsList(),
-            showContactDetails: false,
             contactIndex: 0,
-            showForm: false
+            showContactDetails: false,
+            showForm: false,
+            showNoti: false,
+            notiList: []
         };
         this.delAllPressTimer;
+        // this.showNotiTimer;
+        this.notiMsg;
+        this.notiType;// 'alert' or 'success' or 'error'
+        this.presentFilterState = 'all';// or 'week' or 'month'
     }
     setTimer() {
-        this.delAllPressTimer = setTimeout(this.delAll, 1000);
+        this.delAllPressTimer = setTimeout(this.delAll, 600);
     }
     clearTimer() {
         clearTimeout(this.delAllPressTimer);
@@ -69,21 +76,37 @@ class AddressBook extends React.Component {
             showForm: false
         });
     }
-    onClickRemoveItem(index) {
+    refresh() {
+        let newData;
+        switch (this.presentFilterState) {
+        case 'week':
+            newData = this.props.API.filterBirthsInWeek();
+        break;
+        case 'month':
+            newData = this.props.API.filterBirthsInMonth();
+        break;
+        case 'all':
+            newData = this.props.API.getContactsList();
+        break;
+        }
+        this.setState({
+            contacts: newData
+        });
+    }
+    onClickRemoveItem(contactId) {
         if (confirm('Are you sure?')) {
-            this.props.API.rmContact(index);
-            this.setState({
-                contacts: this.props.API.getContactsList()
-            });
+            this.props.API.find(contactId, this.props.API.rmContact);
+            this.refresh();
             if (this.state.showContactDetails) { this.onCloseDetails(); }
         }
     }
     saveEditedContact(editedContact) {
-        this.props.API.editContact(editedContact, this.state.contactIndex);
-        this.setState({
-            contacts: this.props.API.getContactsList()
-        });
+        // this.props.API.editContact(editedContact, this.state.contactIndex);
+        let curryingEditDataFunc = this.props.API.editContact(editedContact);
+        this.props.API.find(editedContact.id, curryingEditDataFunc);
+        this.refresh();
         this.onCloseForm();
+        this.showNoti('success', `Saved.`);
     }
     addNewContact(newContact) {
         let getRandomCode = string_length => {
@@ -107,16 +130,50 @@ class AddressBook extends React.Component {
         newContact.id = getRandomCode(4);
         newContact.color = getRandomColor();
         this.props.API.addContact(newContact);
-        this.setState({
-            contacts: this.props.API.getContactsList()
-        });
+        // this.setState({
+        //     contacts: this.props.API.getContactsList()
+        // });
+        this.refresh();
         this.onCloseForm();
+        this.showNoti('success', `New contact: "${newContact.name}" was created.`);
     }
-    onClickOnBackupMenu() {
-        let sortBtnGroup = document.getElementsByClassName('sort-sub-nav')[0],
+    showNoti(notiType, notiMsg) {
+        // clearTimeout(this.showNotiTimer);
+        // let hideNoti = () => {
+        //     console.log(this.state.showNoti);
+        //     this.setState({
+        //         showNoti: false
+        //     });
+        // // }
+        // this.notiMsg = notiMsg;
+        // this.notiType = notiType;
+        //     console.log(this.state.showNoti);
+        // this.setState({
+        //     showNoti: true
+        // });
+        //     console.log(this.state.showNoti);
+        // this.showNotiTimer = setTimeout(hideNoti, 3000);// 3s is animating time
+        this.state.notiList.push({
+            notiType,
+            notiMsg,
+            notiId: this.state.notiList.length
+        });
+        this.setState({
+            showNoti: true
+        });
+    }
+    openBackupRestoreSubNav() {
+        let filterBtnGroup = document.getElementsByClassName('filter-sub-nav')[0],
             backupBtnGroup = document.getElementsByClassName('backup-restore-sub-nav')[0];
-        sortBtnGroup.classList.add('translatedDown200');
+        filterBtnGroup.classList.add('translatedDown200');
         backupBtnGroup.classList.toggle('translatedDown100');
+    }
+    openFilterSubNav() {
+        let filterBtnGroup = document.getElementsByClassName('filter-sub-nav')[0],
+            backupBtnGroup = document.getElementsByClassName('backup-restore-sub-nav')[0];
+        
+        backupBtnGroup.classList.add('translatedDown100');
+        filterBtnGroup.classList.toggle('translatedDown200');
     }
     // rstrData = (function() {
     //     if ('FileReader' in window) {
@@ -185,6 +242,18 @@ class AddressBook extends React.Component {
             alert('Sorry, your browser does not support HTML5 Blob. We can not export your data.');
         }
     }
+    filterBirthsInWeek() {
+        this.presentFilterState = 'week';
+        this.refresh();
+    }
+    filterBirthsInMonth() {
+        this.presentFilterState = 'month';
+        this.refresh();
+    }
+    displayAll() {
+        this.presentFilterState = 'all';
+        this.refresh();
+    }
     render() {
         return (
             <div>
@@ -193,20 +262,28 @@ class AddressBook extends React.Component {
                         <h1>Address Book</h1>
                     </header>
                     <ul className="contact-list">
-                        {this.state.contacts.map((contact, index) => {
-                            console.log(index);// BUG: bị render lại cả list mỗi lần cho hiện Details Box & Edit Form
+                        {this.state.contacts.length === 0 ? null : this.state.contacts.map((contact, index) => {
+                            console.log('re-rendered', index);// IS IT BUG?: render lại cả list mỗi khi state thay đổi, dù không phải thay đổi ở state.contacts
                             return <ContactItem
                                         contact={contact}
                                         key={contact.id}
                                         onClickEdit={(e) => { e.stopPropagation();this.onOpenEditForm(index); }}
-                                        onClickRemove={(e) => { e.stopPropagation();this.onClickRemoveItem(index); }}
+                                        onClickRemove={(e) => { e.stopPropagation();this.onClickRemoveItem(contact.id); }}
                                         onClickOnItem={(e) => { this.onClickOnItem(index); }} />
                         })}
                     </ul>
                 </main>
-                <MenuBar 
-                    onClickOnBackupMenu={this.onClickOnBackupMenu}
-                    onClickAddMenu={() => this.onOpenEditForm(-1)}
+                {this.state.showNoti && this.state.notiList.map((notiObj, index) => {
+                    return (<NotiBar type={notiObj.notiType} msg={notiObj.notiMsg} key={notiObj.notiId}/>);
+                })}
+                <MenuBar
+                    totalContacts={this.props.API.getContactsList().length}
+                    onClickDisplayAll={e => { this.displayAll(); }}
+                    onClickOnFilterMenu={this.openFilterSubNav}
+                    onFilterBirthsInWeek={e => { this.filterBirthsInWeek(); }}
+                    onFilterBirthsInMonth={e => { this.filterBirthsInMonth(); }}
+                    onClickOnBackupMenu={this.openBackupRestoreSubNav}
+                    onClickAddMenu={e => { this.onOpenEditForm(-1); }}
                     onClickRestore={this.rstrData}
                     onUploadFile={this.inptFile.bind(this)}
                     onClickBackup={this.bckpData.bind(this)}
@@ -214,12 +291,14 @@ class AddressBook extends React.Component {
                         this.delAllPressTimer = setTimeout(this.delAll.bind(this), 1000);
                     }}
                     onClearTimer={e => clearTimeout(this.delAllPressTimer)} />
-                {this.state.showContactDetails && <ContactCard
+                {this.state.showContactDetails &&
+                    <ContactCard
                     data={this.state.contacts[this.state.contactIndex]}
                     onClose={this.onCloseDetails.bind(this)}
-                    onEditContact={e => this.onOpenEditForm(this.state.contactIndex)}
-                    onRemoveContact={e => this.onClickRemoveItem(this.state.contactIndex)} />}
-                {this.state.showForm && <Form
+                    onEditContact={e => { this.onOpenEditForm(this.state.contactIndex); }}
+                    onRemoveContact={e => { this.onClickRemoveItem(this.state.contacts[this.state.contactIndex].id); }} />}
+                {this.state.showForm &&
+                    <Form
                     title="Edit Contact"
                     data={this.state.contactIndex > -1 ?
                         this.state.contacts[this.state.contactIndex]
@@ -237,7 +316,8 @@ class AddressBook extends React.Component {
                     onSave={this.state.contactIndex > -1 ?
                         this.saveEditedContact.bind(this)
                         :
-                        this.addNewContact.bind(this)} />}
+                        this.addNewContact.bind(this)}
+                    showNoti={this.showNoti.bind(this)} />}
             </div>
         );
     }

@@ -7,6 +7,7 @@ class Form extends React.Component {
         let data = this.props.data;
         this.state = {
             name: data.name,
+            id: data.id,
             labels: data.labels,
             birth: data.birth,
             note: data.note,
@@ -14,12 +15,16 @@ class Form extends React.Component {
             website: data.website,
             phone: data.phone
         };
+        this.cboxFamily;
+        this.cboxFriends;
+        this.cboxCoWorker;
     }
     static propTypes() {
         return {
             title: PropTypes.string,
             data: PropTypes.shape({
                 name: PropTypes.string.isRequired,
+                id: PropTypes.string.isRequired,
                 labels: PropTypes.arrayOf(PropTypes.string),
                 birth: PropTypes.string,
                 note: PropTypes.string,
@@ -52,11 +57,16 @@ class Form extends React.Component {
     handlerSaveForm(e) {
         e.preventDefault();
 
+        if (this.state.name === '') {
+            this.props.showNoti('error', 'Please type a name');
+            return;
+        }
+
         // format data for labels
         let newLabels = [];
-        if (document.getElementById('checkbox__family').checked) { newLabels.push('family') }
-        if (document.getElementById('checkbox__coWorker').checked) { newLabels.push('coWorker') }
-        if (document.getElementById('checkbox__friends').checked) { newLabels.push('friends') }
+        if (this.cboxFamily.checked) { newLabels.push('family') }
+        if (this.cboxCoWorker.checked) { newLabels.push('coWorker') }
+        if (this.cboxFriends.checked) { newLabels.push('friends') }
         this.state.labels = newLabels;
 
         this.props.onSave(this.state);
@@ -85,22 +95,22 @@ class Form extends React.Component {
                                 </div>
                                 <div className="form-body__inputs__labels">
                                     <div className="form-body__inputs__labels__family">
-                                        <input type="checkbox"
-                                            id="checkbox__family"
+                                        <input type="checkbox" id="checkbox__family"
+                                            ref={thisDOM => this.cboxFamily = thisDOM}
                                             defaultChecked={(this.state.labels.indexOf('family') > -1) ? true : false} />
                                         <label className="checkbox__label" htmlFor="checkbox__family"></label>
                                         <label htmlFor="checkbox__family">Family</label>
                                     </div>
                                     <div className="form-body__inputs__labels__coWorker">
-                                        <input type="checkbox"
-                                            id="checkbox__coWorker"
+                                        <input type="checkbox" id="checkbox__coWorker"
+                                            ref={thisDOM => this.cboxCoWorker = thisDOM}
                                             defaultChecked={(this.state.labels.indexOf('coWorker') > -1) ? true : false} />
                                         <label className="checkbox__label" htmlFor="checkbox__coWorker"></label>
                                         <label htmlFor="checkbox__coWorker">Co-worker</label>
                                     </div>
                                     <div className="form-body__inputs__labels__friends">
-                                        <input type="checkbox"
-                                            id="checkbox__friends"
+                                        <input type="checkbox" id="checkbox__friends"
+                                            ref={thisDOM => this.cboxFriends = thisDOM}
                                             defaultChecked={(this.state.labels.indexOf('friends') > -1) ? true : false} />
                                         <label className="checkbox__label" htmlFor="checkbox__friends"></label>
                                         <label htmlFor="checkbox__friends">Friends</label>

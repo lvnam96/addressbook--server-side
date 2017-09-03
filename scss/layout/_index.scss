@@ -5,16 +5,9 @@
     padding: .5rem 0;
 }
 
-// sticky navbar --------------------
-.sticky-nav {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    font-size: 1rem;
-    z-index: 2;
-    pointer-events: none;
-
-    * {
-        pointer-events: auto;
+@media (min-width: 800px) {
+    .main {
+        // width: calc(100% - 280px);// 280px is side-menu's max-width
+        margin-left: 280px;
     }
 }

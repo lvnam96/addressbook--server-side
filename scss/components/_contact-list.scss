@@ -176,14 +176,7 @@
     }
 }
 
-@media (min-width: 768px) {
-    .page-title h1 {
-        font-size: 5rem;
-        margin: 50px 0;
-    }
-}
-
-@media (min-width: 850px) {
+@media (min-width: 1050px) {
     .contact-item__birth,
     .contact-item__phone {
         display: block;
@@ -191,7 +184,7 @@
     }
 }
 
-@media (min-width: 992px) {
+@media (min-width: 1280px) {
     .page-title h1 {
         font-size: 5em;
         line-height: 7rem;

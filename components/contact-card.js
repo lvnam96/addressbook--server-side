@@ -2,6 +2,45 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const ContactCard = function(props) {
+    let month;
+    switch (parseInt(props.data.birth.split('-')[1])) {
+    case 1:
+        month = 'Jan';
+    break;
+    case 2:
+        month = 'Feb';
+    break;
+    case 3:
+        month = 'Mar';
+    break;
+    case 4:
+        month = 'Apr';
+    break;
+    case 5:
+        month = 'May';
+    break;
+    case 6:
+        month = 'Jun';
+    break;
+    case 7:
+        month = 'Jul';
+    break;
+    case 8:
+        month = 'Aug';
+    break;
+    case 9:
+        month = 'Sep';
+    break;
+    case 10:
+        month = 'Oct';
+    break;
+    case 11:
+        month = 'Nov';
+    break;
+    case 12:
+        month = 'Dec';
+    break;
+    }
     return (
         <div className="overlay" onClick={props.onClose}>
             <div className="contact-card" onClick={e => e.stopPropagation()}>
@@ -52,9 +91,9 @@ const ContactCard = function(props) {
                                 </div>
                             </div>
                         </div>) : null}
-                        {props.data.phone ? (<div>
+                        {props.data.birth ? (<div>
                             <div className="contact-card__details__info">
-                                <a>Nov {props.data.birth.split('-')[2]}, {props.data.birth.split('-')[0]}</a>
+                                <a>{month} {props.data.birth.split('-')[2]}, {props.data.birth.split('-')[0]}</a>
                             </div>
                             <div className="contact-card__details__icon">
                                 <div>
