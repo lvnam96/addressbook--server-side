@@ -1,6 +1,6 @@
 .page-title h1 {
     text-transform: uppercase;
-    font-size: 3em;
+    font-size: 2.3em;
     text-align: center;
     padding: .625rem 0;
     margin-bottom: 20px;
@@ -171,6 +171,9 @@
 }
 
 @media (min-width: 500px) {
+    .page-title h1 {
+        font-size: 2.5em;
+    }
     .contact-list {
         width: 90%;
     }
@@ -184,10 +187,10 @@
     }
 }
 
-@media (min-width: 1280px) {
+@media (min-width: 1360px) {
     .page-title h1 {
-        font-size: 5em;
-        line-height: 7rem;
+        font-size: 4em;
+        line-height: .8em;
         margin: 50px auto;
     }
 }
