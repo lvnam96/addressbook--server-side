@@ -1,6 +1,6 @@
 .form-container {
     width: 100%;
-    background-color: #feea3c;
+    background-color: #ccc;
 }
 
 .form-header {
@@ -43,15 +43,34 @@
         height: 50px;
         width: 100%;
         text-align: center;
+        position: relative;
 
-        img {
-            transform: translate(0,-80px);
+        > img {
             display: inline-block;
             width: 100px;
             height: 100px;
             margin: 0 auto;
             padding: 0;
             border-radius: 50%;
+            transform: translate(0,-80px);// 30px (parrent's padding) + 50px (1/2 its height)
+        }
+
+        &__first-letter {
+            display: inline-block;
+            color: #fff;
+            width: 100px;
+            height: 100px;
+            text-align: center;
+            font-size: 2em;
+            white-space: nowrap;
+            line-height: 100px;
+            border-radius: 50%;
+            margin: 0 auto;
+            padding: 0;
+            z-index: 1;
+            position: absolute;
+            transform: translate(-100%,-80px);
+            cursor: pointer;
         }
     }
 
@@ -179,14 +198,6 @@
 }
 
 @media (min-width: 700px) {
-    .overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-    }
     .form-container {
         max-width: 640px;
         width: 80%;

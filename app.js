@@ -30,7 +30,7 @@ const ADDRESS_BOOK = (function () {
                 id: 'TjXD',
                 color: 'hsl(179,40%,51%)',
                 labels: ['friends','coWorker'],
-                birth: '1990-10-02',
+                birth: '1990-09-30',
                 note: '',
                 email: '',
                 website: 'http://batman.fake.com',
@@ -41,7 +41,7 @@ const ADDRESS_BOOK = (function () {
                 id: '0CvB',
                 color: 'hsl(262,66%,64%)',
                 labels: ['coWorker'],
-                birth: '1996-01-12',
+                birth: '1990-09-04',
                 note: '',
                 email: 'supergirl@iamnotgay.com',
                 website: 'http://superman.vn',
@@ -103,6 +103,17 @@ const ADDRESS_BOOK = (function () {
     API.dontSaveDataToLocalStorageAgain = function () {
         isModified = false;
     };
+    API.sortContactsList = function () {
+        // sort by name in alphabet order
+        contactsList = contactsList.sort((a, b) => {
+            let x = a.name.toLowerCase(),
+                y = b.name.toLowerCase();
+            if (x < y) { return -1; }
+            if (x > y) { return 1; }
+            return 0;
+        });
+        needToBeReSorted = false;
+    };
     API.getContactsList = function () {
         if (needToBeReSorted) {
             this.sortContactsList();
@@ -114,8 +125,8 @@ const ADDRESS_BOOK = (function () {
     };
     // https://gist.github.com/lvnam96/592fa2a61bfc7de728ea6785197dae13
     API.getRandomCode = function (string_length) {
-        let text = "";
-        const POSSIBLE = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
+        let text = '';
+        const POSSIBLE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
             POSSIBLE_SCOPE = POSSIBLE.length;
       
         for (let i = 0; i < string_length; i += 1) {
@@ -123,6 +134,15 @@ const ADDRESS_BOOK = (function () {
         }
 
         return text;
+    };
+    API.getRandomColor = function () {
+        let h = Math.floor(Math.random() * 360),
+        s = Math.floor(Math.random() * 100) + '%',
+        l = Math.floor(Math.random() * 60) + '%';
+        // while (hexCode > 12895428) {16042184
+        //     hexCode = Math.floor(Math.random() * 16777215);16042184
+        // }
+        return `hsl(${h},${s},${l})`;
     };
     API.addContact = function (newPersonObj) {
         contactsList.push(newPersonObj);
@@ -156,12 +176,11 @@ const ADDRESS_BOOK = (function () {
                             callbackFunc(i);
                         }
                     }
+                    break;
                 }
             }
         }
-        console.log(isModified);
         if (isModified) {
-            console.log('hello');
             let updatedData = contactsList.filter(function (contact) {
                 return contact;
             });
@@ -173,6 +192,7 @@ const ADDRESS_BOOK = (function () {
         if (typeof idx === 'undefined') {
             return function (idx) {
                 contactsList[idx].name = editedContact.name;
+                contactsList[idx].color = editedContact.color;
                 contactsList[idx].birth = editedContact.birth;
                 contactsList[idx].labels = editedContact.labels;
                 contactsList[idx].email = editedContact.email;
@@ -184,6 +204,7 @@ const ADDRESS_BOOK = (function () {
             };
         }
         contactsList[idx].name = editedContact.name;
+        contactsList[idx].color = editedContact.color;
         contactsList[idx].birth = editedContact.birth;
         contactsList[idx].labels = editedContact.labels;
         contactsList[idx].email = editedContact.email;
@@ -303,17 +324,6 @@ const ADDRESS_BOOK = (function () {
             });
         }
     };
-    API.sortContactsList = function () {
-        // sort by name in alphabet order
-        contactsList = contactsList.sort((a, b) => {
-            let x = a.name.toLowerCase(),
-                y = b.name.toLowerCase();
-            if (x < y) { return -1; }
-            if (x > y) { return 1; }
-            return 0;
-        });
-        needToBeReSorted = false;
-    };
     API.init = function () {   
         // get data from localStorage
         if (this.isStorageAvailable) {
@@ -329,7 +339,8 @@ const ADDRESS_BOOK = (function () {
         getTime:                    time,
         getContactsList:            API.getContactsList,
         listLength:                 API.listLength,
-        getRandomID:                API.getRandomCode,
+        getRandomId:                API.getRandomCode,
+        getRandomColor:             API.getRandomColor,
         addContact:                 API.addContact,
         find:                       API.find,
         editContact:                API.editContact,
@@ -369,20 +380,5 @@ document.addEventListener('DOMContentLoaded', function() {
 
     ReactDOM.render(<AddressBook API={ADDRESS_BOOK} />, document.getElementsByClassName('body-wrapper')[0]);
 
-    (function() {
-        let delAllPressTimer,
-        delAllBtn = document.getElementsByClassName('main-nav__item')[1];;
-        function setTimer2() {
-            delAllPressTimer = setTimeout(HANDLERS.delAll, 1000);
-        }
-        function clearTimer2() {
-            clearTimeout(delAllPressTimer);
-        }
-        // UI/UX events: long-pressing will delete all items
-        delAllBtn.addEventListener('mousedown', setTimer2, false);
-        delAllBtn.addEventListener('mouseup', clearTimer2, false);
-        delAllBtn.addEventListener('touchstart', setTimer2, false);
-        delAllBtn.addEventListener('touchend', clearTimer2, false);
-    }());
     window.addEventListener('beforeunload', HANDLERS.clsTab, false);
 });

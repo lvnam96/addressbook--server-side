@@ -24,6 +24,11 @@ class AddressBook extends React.Component {
         this.notiType;// 'alert' or 'success' or 'error'
         this.presentFilterState = 'all';// or 'week' or 'month'
     }
+    static get propTypes() {
+        return {
+            API: PropTypes.object.isRequired
+        };
+    }
     setTimer() {
         this.delAllPressTimer = setTimeout(this.delAll, 600);
     }
@@ -36,7 +41,7 @@ class AddressBook extends React.Component {
             alert('There is no data left. Is it bad?');
             return;
         }
-        if (confirm("Are you sure to delete all your data?")) {
+        if (confirm('Are you sure to delete all your data?')) {
             this.props.API.rmAllContacts();
             this.setState({
                 contacts: this.props.API.getContactsList()
@@ -44,15 +49,6 @@ class AddressBook extends React.Component {
             // checkedList = [];
             // METHOD_A();
         }
-    }
-    static get propTypes() {
-        return {
-            initialContacts: PropTypes.arrayOf(PropTypes.shape({
-                name: PropTypes.string.isRequired,
-                id: PropTypes.number.isRequired
-            })),
-            API: PropTypes.object.isRequired
-        };
     }
     onClickOnItem(index) {
         this.setState({
@@ -109,33 +105,14 @@ class AddressBook extends React.Component {
         this.showNoti('success', `Saved.`);
     }
     addNewContact(newContact) {
-        let getRandomCode = string_length => {
-            let text = "";
-            const POSSIBLE = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
-                POSSIBLE_SCOPE = POSSIBLE.length;
-            for (let i = 0; i < string_length; i += 1) {
-                text += POSSIBLE.charAt(Math.floor(Math.random() * POSSIBLE_SCOPE));
-            }
-            return text;
-        },
-        getRandomColor = () => {
-            let h = Math.floor(Math.random() * 360),
-            s = Math.floor(Math.random() * 100) + '%',
-            l = Math.floor(Math.random() * 60) + '%';
-            // while (hexCode > 12895428) {16042184
-            //     hexCode = Math.floor(Math.random() * 16777215);16042184
-            // }
-            return `hsl(${h},${s},${l})`;
-        };
-        newContact.id = getRandomCode(4);
-        newContact.color = getRandomColor();
+        newContact.id = this.props.API.getRandomId(4);
         this.props.API.addContact(newContact);
         // this.setState({
         //     contacts: this.props.API.getContactsList()
         // });
         this.refresh();
         this.onCloseForm();
-        this.showNoti('success', `New contact: "${newContact.name}" was created.`);
+        this.showNoti('success', `New contact: "${newContact.name}"" was created.`);
     }
     showNoti(notiType, notiMsg) {
         // clearTimeout(this.showNotiTimer);
@@ -202,9 +179,7 @@ class AddressBook extends React.Component {
                     dataParsedFromTextFile = JSON.parse(textFromFileLoaded);
                 this.props.API.replaceData(dataParsedFromTextFile);
                 this.props.API.saveDataToLocalStorage();
-                this.setState({
-                    contacts: this.props.API.getContactsList()
-                });
+                this.displayAll();
             }, false);
             reader.readAsText(fileToLoad, 'UTF-8');
         }
@@ -257,11 +232,11 @@ class AddressBook extends React.Component {
     render() {
         return (
             <div>
-                <main className="main">
-                    <header className="page-title">
+                <main className='main'>
+                    <header className='page-title'>
                         <h1>Address Book</h1>
                     </header>
-                    <ul className="contact-list">
+                    <ul className='contact-list'>
                         {this.state.contacts.length === 0 ? null : this.state.contacts.map((contact, index) => {
                             console.log('re-rendered', index);// IS IT BUG?: render lại cả list mỗi khi state thay đổi, dù không phải thay đổi ở state.contacts
                             return <ContactItem
@@ -277,7 +252,7 @@ class AddressBook extends React.Component {
                     return (<NotiBar type={notiObj.notiType} msg={notiObj.notiMsg} key={notiObj.notiId}/>);
                 })}
                 <MenuBar
-                    totalContacts={this.props.API.getContactsList().length}
+                    totalContacts={this.props.API.listLength()}
                     onClickDisplayAll={e => { this.displayAll(); }}
                     onClickOnFilterMenu={this.openFilterSubNav}
                     onFilterBirthsInWeek={e => { this.filterBirthsInWeek(); }}
@@ -285,7 +260,7 @@ class AddressBook extends React.Component {
                     onClickOnBackupMenu={this.openBackupRestoreSubNav}
                     onClickAddMenu={e => { this.onOpenEditForm(-1); }}
                     onClickRestore={this.rstrData}
-                    onUploadFile={this.inptFile.bind(this)}
+                    onUploadFile={e => { this.inptFile(e); }}
                     onClickBackup={this.bckpData.bind(this)}
                     onSetTimer={e => {
                         this.delAllPressTimer = setTimeout(this.delAll.bind(this), 1000);
@@ -299,12 +274,14 @@ class AddressBook extends React.Component {
                     onRemoveContact={e => { this.onClickRemoveItem(this.state.contacts[this.state.contactIndex].id); }} />}
                 {this.state.showForm &&
                     <Form
-                    title="Edit Contact"
+                    title={this.state.contactIndex > -1 ? 'Edit Contact' : 'Add new contact'}
                     data={this.state.contactIndex > -1 ?
                         this.state.contacts[this.state.contactIndex]
                         :
                         {
                             name: '',
+                            id: 'example id',
+                            color: this.props.API.getRandomColor(),
                             labels: [],
                             birth: '',
                             note: '',
@@ -317,11 +294,12 @@ class AddressBook extends React.Component {
                         this.saveEditedContact.bind(this)
                         :
                         this.addNewContact.bind(this)}
-                    showNoti={this.showNoti.bind(this)} />}
+                    showNoti={this.showNoti.bind(this)}
+                    getRandomColor={this.props.API.getRandomColor} />}
             </div>
         );
     }
 }
 // {!this.state.hideContactBox && <ContactBox contact={this.state.contacts[this.state.showContactDetailsBoxOrder]} />}
-// <div className="overlay overlay--hidden"></div>
+// <div className='overlay overlay--hidden'></div>
 export default AddressBook;
