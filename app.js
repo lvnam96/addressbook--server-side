@@ -375,7 +375,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     e.returnValue = 'Sure?';
                 }
                 return 'Sure?';// For Safari
-            }            
+            }
         };
 
     ReactDOM.render(<AddressBook API={ADDRESS_BOOK} />, document.getElementsByClassName('body-wrapper')[0]);
