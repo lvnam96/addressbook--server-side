@@ -3,58 +3,58 @@ import PropTypes from 'prop-types';
 
 const MenuBar = function (props) {
     return (
-        <nav className="sticky-nav">
-            <ul className="filter-sub-nav translatedDown200">
-                <li className="sort-sub-nav__item--presentState" onClick={props.onFilterBirthsInWeek}>Current WEEK</li>
+        <nav className='sticky-nav'>
+            <ul className='filter-sub-nav translatedDown200'>
+                <li className='sort-sub-nav__item--presentState' onClick={props.onFilterBirthsInWeek}>Current WEEK</li>
                 <li onClick={props.onFilterBirthsInMonth}>Current MONTH</li>
             </ul>
-            <input style={{display: 'none'}} type="file" id="inptFileBtn" accept=".txt"
+            <input style={{display: 'none'}} type='file' id='inptFileBtn' accept='.txt'
                 onChange={props.onUploadFile} />
-            <ul className="backup-restore-sub-nav translatedDown100">
-                <li id="bckpDataBtn" onClick={props.onClickBackup} title="Save current data into a text file">Backup</li>
-                <li id="rstrDataBtn" onClick={props.onClickRestore} title="Replace current data by the new one in your backup file">Restore</li>
+            <ul className='backup-restore-sub-nav translatedDown100'>
+                <li id='bckpDataBtn' onClick={props.onClickBackup} title='Save current data into a text file'>Backup</li>
+                <li id='rstrDataBtn' onClick={props.onClickRestore} title='Replace current data by the new one in your backup file'>Restore</li>
             </ul>
-            <nav className="main-nav">
-                <div className="main-nav__item" onClick={props.onClickDisplayAll}>
-                    <i className="fa fa-address-book-o"></i>
+            <nav className='main-nav'>
+                <div className='main-nav__item' onClick={props.onClickDisplayAll}>
+                    <i className='fa fa-address-book-o'></i>
                     <span>Contacts ({props.totalContacts})</span>
                 </div>
-                <input type="checkbox" id="sort-toggle" style={{display: 'none'}} />
-                <label htmlFor="sort-toggle" className="main-nav__item" onClick={props.onClickOnFilterMenu}>
-                    <i className="fa fa-sort"></i>
-                    <span>Filter by...</span>
+                <input type='checkbox' id='sort-toggle' style={{display: 'none'}} />
+                <label htmlFor='sort-toggle' className='main-nav__item' title='Display contacts whose birthday in current week/month' onClick={props.onClickOnFilterMenu}>
+                    <i className='fa fa-birthday-cake'></i>
+                    <span>Filter by births in...</span>
                 </label>
-                <div className="main-nav__item week-btn" title="Save current data into a text file" onClick={props.onFilterBirthsInWeek}>
-                    <i className="fa fa-calendar-minus-o"></i>
+                <div className='main-nav__item week-btn' title='Save current data into a text file' onClick={props.onFilterBirthsInWeek}>
+                    <i className='fa fa-calendar-minus-o'></i>
                     <span>... week</span>
                 </div>
-                <div className="main-nav__item month-btn" title="Replace current data by the new one in your backup file" onClick={props.onFilterBirthsInMonth}>
-                    <i className="fa fa-calendar"></i>
+                <div className='main-nav__item month-btn' title='Replace current data by the new one in your backup file' onClick={props.onFilterBirthsInMonth}>
+                    <i className='fa fa-calendar'></i>
                     <span>... month</span>
                 </div>
-                <div className="main-nav__item trash-btn" title="Long-press this button to delete everything"
+                <div className='main-nav__item trash-btn' title='Long-press this button to delete everything'
                     onMouseDown={props.onSetTimer}
                     onMouseUp={props.onClearTimer}
                     onTouchStart={props.onSetTimer}
                     onTouchEnd={props.onClearTimer}>
-                    <i className="fa fa-trash-o"></i>
+                    <i className='fa fa-trash-o'></i>
                     <span>Delete all contacts</span>
                 </div>
-                <input type="checkbox" id="bckp-rstr-toggle" style={{display: 'none'}} />
-                <label htmlFor="bckp-rstr-toggle" className="main-nav__item" onClick={props.onClickOnBackupMenu}>
-                    <i className="fa fa-floppy-o"></i>
+                <input type='checkbox' id='bckp-rstr-toggle' style={{display: 'none'}} />
+                <label htmlFor='bckp-rstr-toggle' className='main-nav__item' onClick={props.onClickOnBackupMenu}>
+                    <i className='fa fa-floppy-o'></i>
                     <span>Backup / Restore</span>
                 </label>
-                <div className="main-nav__item backup-btn" onClick={props.onClickBackup} title="Save current data into a text file">
-                    <i className="fa fa-download"></i>
+                <div className='main-nav__item backup-btn' onClick={props.onClickBackup} title='Save current data into a text file'>
+                    <i className='fa fa-download'></i>
                     <span>Backup</span>
                 </div>
-                <div className="main-nav__item restore-btn" onClick={props.onClickRestore} title="Replace current data by the new one in your backup file">
-                    <i className="fa fa-upload"></i>
+                <div className='main-nav__item restore-btn' onClick={props.onClickRestore} title='Replace current data by the new one in your backup file'>
+                    <i className='fa fa-upload'></i>
                     <span>Restore</span>
                 </div>
-                <div className="main-nav__item" onClick={props.onClickAddMenu}>
-                    <i className="fa fa-plus"></i>
+                <div className='main-nav__item' onClick={props.onClickAddMenu}>
+                    <i className='fa fa-plus'></i>
                     <span>Add new contact</span>
                 </div>
             </nav>

@@ -5,9 +5,11 @@
     padding: .5rem 0;
 }
 
-@media (min-width: 800px) {
+@media (min-width: 800px) {// when menu bar transform from horizontal to vertical
     .main {
         // width: calc(100% - 280px);// 280px is side-menu's max-width
         margin-left: 280px;
+        min-height: unset;
+        margin-bottom: 50px;
     }
 }

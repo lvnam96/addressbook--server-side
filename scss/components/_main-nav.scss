@@ -29,7 +29,7 @@
 
     &__item {
         flex: 1;
-        padding: .3em;
+        padding: .5em;
         margin: 0 .3em;
         text-align: center;
         color: rgba(255,255,255,.7);
@@ -65,7 +65,7 @@
     .fa {
         pointer-events: none;
         transition: ease .3s;
-        font-size: 2em;
+        font-size: 1.2em;
     }
 }
 
@@ -116,6 +116,12 @@
 //     }
 // }
 
+@media (min-width: 400px) {
+    .main-nav .fa {
+        font-size: 1.5em;
+    }
+}
+
 @media (min-width: 800px) {
     .sticky-nav {
         position: fixed;
@@ -125,13 +131,8 @@
         width: 30%;
         max-width: 280px;
         background-color: #40223c;
-        font-size: 1rem;
-        z-index: 2;
-        pointer-events: none;
-
-        * {
-            pointer-events: auto;
-        }
+        overflow: auto;
+        pointer-events: auto;
     }
 
     .main-nav {
