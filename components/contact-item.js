@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const ContactItem = function(props) {
-    // const randomColor = '#'+Math.floor(Math.random()*16777215).toString(16);
+const ContactItem = function (props) {
     return (
         <li className="contact-list__item" onClick={props.onClickOnItem}>
             <div className="contact-item__avt" onClick={function(e) {e.stopPropagation();}}>

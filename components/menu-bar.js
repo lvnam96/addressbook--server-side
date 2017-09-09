@@ -5,8 +5,8 @@ const MenuBar = function (props) {
     return (
         <nav className='sticky-nav'>
             <ul className='filter-sub-nav translatedDown200'>
-                <li className='sort-sub-nav__item--presentState' onClick={props.onFilterBirthsInWeek}>Current WEEK</li>
-                <li onClick={props.onFilterBirthsInMonth}>Current MONTH</li>
+                <li className='sort-sub-nav__item--presentState' title='Display contacts whose birthday is in current week' onClick={props.onFilterBirthsInWeek}>Current WEEK</li>
+                <li title='Display contacts whose birthday is in current month' onClick={props.onFilterBirthsInMonth}>Current MONTH</li>
             </ul>
             <input style={{display: 'none'}} type='file' id='inptFileBtn' accept='.txt'
                 onChange={props.onUploadFile} />
@@ -20,23 +20,24 @@ const MenuBar = function (props) {
                     <span>Contacts ({props.totalContacts})</span>
                 </div>
                 <input type='checkbox' id='sort-toggle' style={{display: 'none'}} />
-                <label htmlFor='sort-toggle' className='main-nav__item' title='Display contacts whose birthday in current week/month' onClick={props.onClickOnFilterMenu}>
+                <label htmlFor='sort-toggle' className='main-nav__item' title='Display contacts whose birthday is in current week/month' onClick={props.onClickOnFilterMenu}>
                     <i className='fa fa-birthday-cake'></i>
                     <span>Filter by births in...</span>
                 </label>
-                <div className='main-nav__item week-btn' title='Save current data into a text file' onClick={props.onFilterBirthsInWeek}>
+                <div className='main-nav__item week-btn' onClick={props.onFilterBirthsInWeek}>
                     <i className='fa fa-calendar-minus-o'></i>
-                    <span>... week</span>
+                    <span>... current week</span>
                 </div>
-                <div className='main-nav__item month-btn' title='Replace current data by the new one in your backup file' onClick={props.onFilterBirthsInMonth}>
+                <div className='main-nav__item month-btn' onClick={props.onFilterBirthsInMonth}>
                     <i className='fa fa-calendar'></i>
-                    <span>... month</span>
+                    <span>... current month</span>
                 </div>
-                <div className='main-nav__item trash-btn' title='Long-press this button to delete everything'
+                <div className='main-nav__item trash-btn' title='Long-press this button to delete all contacts'
                     onMouseDown={props.onSetTimer}
                     onMouseUp={props.onClearTimer}
                     onTouchStart={props.onSetTimer}
-                    onTouchEnd={props.onClearTimer}>
+                    onTouchEnd={props.onClearTimer}
+                    onClick={e => props.showNoti('alert', 'Long-press to delete all contacts')}>
                     <i className='fa fa-trash-o'></i>
                     <span>Delete all contacts</span>
                 </div>
@@ -70,7 +71,8 @@ MenuBar.propTypes = {
     onUploadFile: PropTypes.func.isRequired,
     onClickAddMenu: PropTypes.func.isRequired,
     onFilterBirthsInWeek: PropTypes.func.isRequired,
-    onFilterBirthsInMonth: PropTypes.func.isRequired
+    onFilterBirthsInMonth: PropTypes.func.isRequired,
+    showNoti: PropTypes.func.isRequired
 };
 
 export default MenuBar;

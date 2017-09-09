@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const ContactCard = function(props) {
+const ContactCard = function (props) {
     let month;
     switch (parseInt(props.data.birth.split('-')[1])) {
     case 1:
@@ -83,7 +83,7 @@ const ContactCard = function(props) {
                     <div className="contact-card__details">
                         {props.data.phone ? (<div>
                             <div className="contact-card__details__info">
-                                <a href={"tel:+84" + props.data.phone}>{props.data.phone}</a>
+                                <a href={"tel:+84" + props.data.phone}>+84{props.data.phone}</a>
                             </div>
                             <div className="contact-card__details__icon">
                                 <div>

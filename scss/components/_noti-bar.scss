@@ -13,10 +13,9 @@
     left: 0;
     width: 100%;
     padding: 20px;
-    background-color: #1E88E5;
+    // background-color: #1E88E5;// This prop will be set by style attribute
     color: #fff;
     font-size: 1rem;
-    // transition: transform .3s ease-in-out;
     display: flex;
     z-index: 999;
     animation: showhide 3s ease-in-out both;

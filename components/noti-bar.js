@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const NotiBar = function(props) {
+const NotiBar = function (props) {
     let ico, bgColor;
     switch (props.type) {
         case 'success':
@@ -12,7 +12,7 @@ const NotiBar = function(props) {
             ico = (<i className="fa fa-exclamation-triangle"></i>);
             bgColor = '#e53935';
         break;
-        case 'alert':
+        default:
             ico = (<i className="fa fa-exclamation"></i>);
             bgColor = '#1E88E5';
         break;

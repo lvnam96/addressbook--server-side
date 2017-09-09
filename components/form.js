@@ -40,22 +40,22 @@ class Form extends React.Component {
             getRandomColor: PropTypes.func.isRequired
         };
     }
-    onChangeName(e) {
+    handlerChangeName(e) {
         this.setState({ name: e.target.value });
     }
-    onChangePhone(e) {
+    handlerChangePhone(e) {
         this.setState({ phone: e.target.value });
     }
-    onChangeBirth(e) {
+    handlerChangeBirth(e) {
         this.setState({ birth: e.target.value });
     }
-    onChangeWebsite(e) {
+    handlerChangeWebsite(e) {
         this.setState({ website: e.target.value });
     }
-    onChangeEmail(e) {
+    handlerChangeEmail(e) {
         this.setState({ email: e.target.value });
     }
-    onChangeNote(e) {
+    handlerChangeNote(e) {
         this.setState({ note: e.target.value });
     }
     handlerSaveForm(e) {
@@ -76,7 +76,6 @@ class Form extends React.Component {
         this.props.onSave(this.state);
     }
     changeColor(e) {
-        // this.avtDOM.style.backgroundColor = this.getRandomColor()
         this.setState({
             color: this.props.getRandomColor()
         });
@@ -107,7 +106,7 @@ class Form extends React.Component {
                             </div>
                             <div className='form-body__inputs'>
                                 <div className='form-body__inputs__name'>
-                                    <input type='text' id='inputs__name' required value={this.state.name} onChange={this.onChangeName.bind(this)} />
+                                    <input type='text' id='inputs__name' required value={this.state.name} onChange={this.handlerChangeName.bind(this)} />
                                     <label htmlFor='inputs__name'>Name</label>
                                 </div>
                                 <div className='form-body__inputs__labels'>
@@ -134,23 +133,23 @@ class Form extends React.Component {
                                     </div>
                                 </div>
                                 <div className='form-body__inputs__phone'>
-                                    <input type='number' id='inputs__phone' value={this.state.phone} onChange={this.onChangePhone.bind(this)} />
+                                    <input type='number' id='inputs__phone' value={this.state.phone} onChange={this.handlerChangePhone.bind(this)} />
                                     <label htmlFor='inputs__phone'>Phone</label>
                                 </div>
                                 <div className='form-body__inputs__birth'>
-                                    <input type='date' id='inputs__birth' value={this.state.birth} onChange={this.onChangeBirth.bind(this)} />
+                                    <input type='date' id='inputs__birth' value={this.state.birth} onChange={this.handlerChangeBirth.bind(this)} />
                                     <label htmlFor='inputs__birth'>Birth</label>
                                 </div>
                                 <div className='form-body__inputs__email'>
-                                    <input type='email' id='inputs__email' value={this.state.email} onChange={this.onChangeEmail.bind(this)} />
+                                    <input type='email' id='inputs__email' value={this.state.email} onChange={this.handlerChangeEmail.bind(this)} />
                                     <label htmlFor='inputs__email'>Email</label>
                                 </div>
                                 <div className='form-body__inputs__website'>
-                                    <input type='text' id='inputs__website' value={this.state.website} onChange={this.onChangeWebsite.bind(this)} />
+                                    <input type='text' id='inputs__website' value={this.state.website} onChange={this.handlerChangeWebsite.bind(this)} />
                                     <label htmlFor='inputs__website'>Website</label>
                                 </div>
                                 <div className='form-body__inputs__note'>
-                                    <textarea id='inputs__note' value={this.state.note} onChange={this.onChangeNote.bind(this)} />
+                                    <textarea id='inputs__note' value={this.state.note} onChange={this.handlerChangeNote.bind(this)} />
                                     <label htmlFor='inputs__note'>Note</label>
                                 </div>
                             </div>
