@@ -2,4 +2,8 @@ node_modules/
 font/
 img/
 css/
-build/
+fav/
+browserconfig.xml
+bundle.js
+bundle.js.map
+manifest.json
