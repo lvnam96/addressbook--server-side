@@ -1,3 +1,5 @@
+'use strict';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -49,13 +51,13 @@ const ADDRESS_BOOK = (function () {
             }
         ];
 
-    time = (function () {
+    time = (() => {
         let newDateObj = new Date(),
-            isLeap = function (year) {// tính năm nhuận
-              if (year % 4 || (year % 100 === 0 && year % 400)) {return 0;}
-              else {return 1;}
+            isLeap = (year) => {// tính năm nhuận
+              if (year % 4 || (year % 100 === 0 && year % 400)) { return 0; }
+              else { return 1; }
             },
-            howManyDaysInMonth = function (month, year) {// tính ngày trong tháng
+            howManyDaysInMonth = (month, year) => {// tính ngày trong tháng
               return month === 2 ? (28 + isLeap(year)) : (31 - (month - 1) % 7 % 2);
             };
 
@@ -72,9 +74,9 @@ const ADDRESS_BOOK = (function () {
           curYear: newDateObj.getFullYear(),
           daysInMonth: howManyDaysInMonth
         };
-    }());
+    })();
 
-    isStorageAvailable = (function storageAvailable(type) {
+    isStorageAvailable = ((type) => {
         try {
             let storage = window[type],
                 x = '__storage_test__';
@@ -95,15 +97,18 @@ const ADDRESS_BOOK = (function () {
             // acknowledge QuotaExceededError only if there's something already stored
             storage.length !== 0;
         }
-    }('localStorage'));
+    })('localStorage');
 
-    API.shouldBeSaved = function () {
+    const shouldBeSaved = () => {
         return isModified;
-    };
-    API.dontSaveDataToLocalStorageAgain = function () {
+    },
+    dontSaveDataToLocalStorageAgain = () => {
         isModified = false;
-    };
-    API.sortContactsList = function () {
+    },
+    saveDataToLocalStorage = () => {
+        localStorage.contactsList = JSON.stringify(contactsList);
+    },
+    sortContactsList = () => {
         // sort by name in alphabet order
         contactsList = contactsList.sort((a, b) => {
             let x = a.name.toLowerCase(),
@@ -113,18 +118,18 @@ const ADDRESS_BOOK = (function () {
             return 0;
         });
         needToBeReSorted = false;
-    };
-    API.getContactsList = function () {
+    },
+    getContactsList = () => {
         if (needToBeReSorted) {
-            this.sortContactsList();
+            sortContactsList();
         }
         return contactsList;
-    };
-    API.listLength = function () {
+    },
+    listLength = () => {
         return contactsList.length;
-    };
-    // https://gist.github.com/lvnam96/592fa2a61bfc7de728ea6785197dae13
-    API.getRandomCode = function (string_length) {
+    },
+    getRandomId = (string_length) => {
+        // https://gist.github.com/lvnam96/592fa2a61bfc7de728ea6785197dae13
         let text = '';
         const POSSIBLE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
             POSSIBLE_SCOPE = POSSIBLE.length;
@@ -134,22 +139,23 @@ const ADDRESS_BOOK = (function () {
         }
 
         return text;
-    };
-    API.getRandomColor = function () {
+    },
+    getRandomColor = () => {
         let h = Math.floor(Math.random() * 360),
-        s = Math.floor(Math.random() * 100) + '%',
-        l = Math.floor(Math.random() * 60) + '%';
-        // while (hexCode > 12895428) {16042184
-        //     hexCode = Math.floor(Math.random() * 16777215);16042184
-        // }
+            s = Math.floor(Math.random() * 100) + '%',
+            l = Math.floor(Math.random() * 60) + '%';
         return `hsl(${h},${s},${l})`;
-    };
-    API.addContact = function (newPersonObj) {
+    },
+    addContact = (newPersonObj) => {
         contactsList.push(newPersonObj);
         isModified = true;
         needToBeReSorted = true;
-    };
-    API.find = function (IDList, callbackFunc, callbackObj) {
+    },
+    replaceData = (newData = contactsList) => {
+        contactsList = newData;
+        needToBeReSorted = true;
+    },
+    find = (IDList, callbackFunc, callbackObj) => {
         let len = contactsList.length;
 
         if (Array.isArray(IDList)) {
@@ -176,21 +182,20 @@ const ADDRESS_BOOK = (function () {
                             callbackFunc(i);
                         }
                     }
-                    break;
+                    break;// Found contact -> execute callback -> stop loop (cause it's no need to loop anymore)
                 }
             }
         }
+        // if there's a change in data (by removing contact), re-filter data to completely remove contact(s)
         if (isModified) {
-            let updatedData = contactsList.filter(function (contact) {
-                return contact;
-            });
-            this.replaceData(updatedData);
+            let updatedData = contactsList.filter(contact => contact);
+            replaceData(updatedData);
         }
-    };
-    API.editContact = function (editedContact, idx) {
+    },
+    editContact = (editedContact, idx) => {
         // this func editContact is only currying func (partial application) in this app.
         if (typeof idx === 'undefined') {
-            return function (idx) {
+            return (idx) => {
                 contactsList[idx].name = editedContact.name;
                 contactsList[idx].color = editedContact.color;
                 contactsList[idx].birth = editedContact.birth;
@@ -213,24 +218,18 @@ const ADDRESS_BOOK = (function () {
         contactsList[idx].note = editedContact.note;
         isModified = true;
         needToBeReSorted = true;
-    };
-    API.rmContact = function (idx) {
+    },
+    rmContact = (idx) => {
         // contactsList.splice(idx, 1);// không dùng được cách này nữa vì cần phải giữ thứ tự cho các chỉ số index của các contact trong array data (giúp cho callback của API.find() hoạt động đúng item khi remove nhiều item bằng callback).
         delete contactsList[idx];
         isModified = true;
-    };
-    API.rmAllContacts = function () {
+    },
+    rmAllContacts = () => {
         contactsList = [];
         isModified = true;
-    };
-    API.saveDataToLocalStorage = function () {
-        localStorage.contactsList = JSON.stringify(contactsList);
-    };
-    API.replaceData = function (newData = contactsList) {
-        contactsList = newData;
-        needToBeReSorted = true;
-    };
-    API.rangeOfWeek = function (today = time.curDay, testDateNum) {//Calculate range (array) of days in current week
+    },
+    rangeOfWeek = (today = time.curDay, testDateNum) => {
+        //Calculate range (array) of days in current week
         let result = [],
             toDate = testDateNum > -1 ? testDateNum : time.curDate,
             thisMonth = time.curMonth,
@@ -257,128 +256,120 @@ const ADDRESS_BOOK = (function () {
             }
         }
         return result;
-    };
-    API.filterBirthsInMonth = function (month = time.curMonth) {
-        return contactsList.filter(function (contact) {
-            return parseInt(contact.birth.split('-')[1], 10) === month;
-        }).sort(function (a, b) {
+    },
+    filterBirthsInMonth = (month = time.curMonth) => {
+        return contactsList.filter((contact) => parseInt(contact.birth.split('-')[1], 10) === month).sort((a, b) => {
             let birthA = parseInt(a.birth.split('-')[2], 10),
                 birthB = parseInt(b.birth.split('-')[2], 10);
             return birthA - birthB;
         });
-    };
-    API.filterBirthsInWeek = function (dayInWeekArr = this.rangeOfWeek()) {
+    },
+    filterBirthsInWeek = (dayInWeekArr = rangeOfWeek()) => {
         let curDay = time.curDay,
             curMonth = time.curMonth,
             curYear = time.curYear,
-            birthsInLastMonth = this.filterBirthsInMonth((curMonth - 1) === 0 ? 12 : (curMonth - 1)),
-            birthsInCurrentMonth = this.filterBirthsInMonth(curMonth),
-            birthsInNextMonth = this.filterBirthsInMonth((curMonth + 1) === 13 ? 1 : (curMonth + 1));
+            birthsInLastMonth = filterBirthsInMonth((curMonth - 1) === 0 ? 12 : (curMonth - 1)),
+            birthsInCurrentMonth = filterBirthsInMonth(curMonth),
+            birthsInNextMonth = filterBirthsInMonth((curMonth + 1) === 13 ? 1 : (curMonth + 1));
 
         if (Array.isArray(dayInWeekArr[0])) {// if we have array, it means that we have a transforming-week: a week have days in current month & previous/next month
             let arr1, arr2;
             if (curDay > 15) {// we're in last days of the current month
-                arr1 = birthsInCurrentMonth.filter(function (contact) {
-                    let birth = parseInt(contact.birth.split('-')[2], 10);
+                arr1 = birthsInCurrentMonth.filter((contact) => {
+                    const birth = parseInt(contact.birth.split('-')[2], 10);
                     return dayInWeekArr[0].indexOf(birth) !== -1;
-                }).sort(function (a, b) {
-                    let birthA = parseInt(a.birth.split('-')[2], 10),
-                        birthB = parseInt(b.birth.split('-')[2], 10);
+                }).sort((a, b) => {
+                    const birthA = parseInt(a.birth.split('-')[2], 10),
+                          birthB = parseInt(b.birth.split('-')[2], 10);
                     return birthA - birthB;
                 });
-                arr2 = birthsInNextMonth.filter(function (contact) {
-                    let birth = parseInt(contact.birth.split('-')[2], 10);
+                arr2 = birthsInNextMonth.filter((contact) => {
+                    const birth = parseInt(contact.birth.split('-')[2], 10);
                     return dayInWeekArr[1].indexOf(birth) !== -1;
-                }).sort(function (a, b) {
-                    let birthA = parseInt(a.birth.split('-')[2], 10),
-                        birthB = parseInt(b.birth.split('-')[2], 10);
+                }).sort((a, b) => {
+                    const birthA = parseInt(a.birth.split('-')[2], 10),
+                          birthB = parseInt(b.birth.split('-')[2], 10);
                     return birthA - birthB;
                 });
             } else {// we're in first days of the current month
-                arr1 = birthsInLastMonth.filter(function (contact) {
-                    let birth = parseInt(contact.birth.split('-')[2], 10);
+                arr1 = birthsInLastMonth.filter((contact) => {
+                    const birth = parseInt(contact.birth.split('-')[2], 10);
                     return dayInWeekArr[0].indexOf(birth) !== -1;
-                }).sort(function (a, b) {
-                    let birthA = parseInt(a.birth.split('-')[2], 10),
-                        birthB = parseInt(b.birth.split('-')[2], 10);
+                }).sort((a, b) => {
+                    const birthA = parseInt(a.birth.split('-')[2], 10),
+                          birthB = parseInt(b.birth.split('-')[2], 10);
                     return birthA - birthB;
                 });
-                arr2 = birthsInCurrentMonth.filter(function (contact) {
-                    let birth = parseInt(contact.birth.split('-')[2], 10);
+                arr2 = birthsInCurrentMonth.filter((contact) => {
+                    const birth = parseInt(contact.birth.split('-')[2], 10);
                     return dayInWeekArr[1].indexOf(birth) !== -1;
-                }).sort(function (a, b) {
-                    let birthA = parseInt(a.birth.split('-')[2], 10),
-                        birthB = parseInt(b.birth.split('-')[2], 10);
+                }).sort((a, b) => {
+                    const birthA = parseInt(a.birth.split('-')[2], 10),
+                          birthB = parseInt(b.birth.split('-')[2], 10);
                     return birthA - birthB;
                 });
             }
             return arr1.concat(arr2);    
         } else {// we're in the middle of the current month
-            return birthsInCurrentMonth.filter(function (contact) {
-                let birth = parseInt(contact.birth.split('-')[2], 10);
+            return birthsInCurrentMonth.filter((contact) => {
+                const birth = parseInt(contact.birth.split('-')[2], 10);
                 return dayInWeekArr.indexOf(birth) !== -1;
-            }).sort(function (a, b) {
-                let birthA = parseInt(a.birth.split('-')[2], 10),
-                    birthB = parseInt(b.birth.split('-')[2], 10);
+            }).sort((a, b) => {
+                const birthA = parseInt(a.birth.split('-')[2], 10),
+                      birthB = parseInt(b.birth.split('-')[2], 10);
                 return birthA - birthB;
             });
         }
-    };
-    API.init = function () {   
+    },
+    init = () => {
         // get data from localStorage
-        if (this.isStorageAvailable) {
-            const localStorageData = (typeof localStorage.contactsList !== 'undefined') ? JSON.parse(localStorage.contactsList) : undefined;
-            this.replaceData(localStorageData);
+        if (isStorageAvailable) {
+            if (typeof localStorage.contactsList !== 'undefined') {
+                const localStorageData = JSON.parse(localStorage.contactsList);
+                replaceData(localStorageData);
+            }
         } else {
-            alert('Trình duyệt hiện tại của bạn không hỗ trợ lưu trữ dữ liệu ngoại tuyến.\nChúng tôi sẽ không thể lưu lại dữ liệu bạn nhập hiện tại.');
+            alert('Sorry, your browser does NOT support Local Storage.\nWe will not be able to save your data.');
         }
     };
 
     return {
-        isStorageAvailable:         isStorageAvailable,
-        getTime:                    time,
-        getContactsList:            API.getContactsList,
-        listLength:                 API.listLength,
-        getRandomId:                API.getRandomCode,
-        getRandomColor:             API.getRandomColor,
-        addContact:                 API.addContact,
-        find:                       API.find,
-        editContact:                API.editContact,
-        rmContact:                  API.rmContact,
-        rmAllContacts:              API.rmAllContacts,
-        shouldBeSaved:              API.shouldBeSaved,
-        dontSaveDataAgain:          API.dontSaveDataAgain,
-        saveDataToLocalStorage:     API.saveDataToLocalStorage,
-        replaceData:                API.replaceData,
-        rangeOfWeek:                API.rangeOfWeek,
-        filterBirthsInMonth:        API.filterBirthsInMonth,
-        filterBirthsInWeek:         API.filterBirthsInWeek,
-        sortContactsList:           API.sortContactsList,
-        init:                       API.init
+        shouldBeSaved,
+        dontSaveDataToLocalStorageAgain,
+        saveDataToLocalStorage,
+        sortContactsList,
+        getContactsList,
+        listLength,
+        getRandomId,
+        getRandomColor,
+        addContact,
+        replaceData,
+        find,
+        editContact,
+        rmContact,
+        rmAllContacts,
+        rangeOfWeek,
+        filterBirthsInMonth,
+        filterBirthsInWeek,
+        init
     };
 }());
 
 ADDRESS_BOOK.init();
 
-document.addEventListener('DOMContentLoaded', function() {
-    let checkedList = [],
-        longPressedBefore = false,
-        HANDLERS = {
-            clsTab: (e) => {
-                e = e || window.event;
-                if (ADDRESS_BOOK.shouldBeSaved()) {
-                    console.log('Dữ liệu đã có sự thay đổi, đang lưu dữ liệu...');
-                    ADDRESS_BOOK.saveDataToLocalStorage();
-                    ADDRESS_BOOK.dontSaveDataToLocalStorageAgain();
-                }
-                if (e) {// For IE and Firefox prior to version 4
-                    e.returnValue = 'Sure?';
-                }
-                return 'Sure?';// For Safari
+document.addEventListener('DOMContentLoaded', () => {
+    const checkedList = [],
+        clsTab = (e) => {
+            e = e || window.event;
+            if (ADDRESS_BOOK.shouldBeSaved()) {
+                ADDRESS_BOOK.saveDataToLocalStorage();
+                ADDRESS_BOOK.dontSaveDataToLocalStorageAgain();
             }
+            if (e) { e.returnValue = 'Sure?'; }// For IE and Firefox prior to version 4
+            return 'Sure?';// For Safari
         };
 
     ReactDOM.render(<AddressBook API={ADDRESS_BOOK} />, document.getElementsByClassName('body-wrapper')[0]);
 
-    window.addEventListener('beforeunload', HANDLERS.clsTab, false);
+    window.addEventListener('beforeunload', clsTab, false);
 });
