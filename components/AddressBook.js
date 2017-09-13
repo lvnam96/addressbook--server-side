@@ -71,12 +71,17 @@ class AddressBook extends React.Component {
     }
     refresh() {
         let newData;
+        if (this.props.API.shouldBeSorted()) {
+            this.props.API.sortContactsList();
+            this.props.API.filterBirthsToday();
+            this.props.API.dontSortAgain();
+        }
         switch (this.presentFilterState) {
         case 'week':
-            newData = this.props.API.filterBirthsInWeek();
+            newData = this.props.API.getBirthsInWeek();
         break;
         case 'month':
-            newData = this.props.API.filterBirthsInMonth();
+            newData = this.props.API.getBirthsInMonth();
         break;
         default:
             newData = this.props.API.getContactsList();
@@ -235,7 +240,7 @@ class AddressBook extends React.Component {
                     </header>
                     <ul className='contact-list'>
                         {this.state.contacts.length === 0 ? null : this.state.contacts.map((contact, idx) => {
-                            console.log('re-rendered', idx);// IS IT BUG?: render lại cả list mỗi khi state thay đổi, dù không phải thay đổi ở state.contacts
+                            // console.log('re-rendered', idx);// IS IT BUG?: render lại cả list mỗi khi state thay đổi, dù không phải thay đổi ở state.contacts
                             return <ContactItem
                                         contact={contact}
                                         key={contact.id}

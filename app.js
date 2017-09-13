@@ -21,7 +21,7 @@ const ADDRESS_BOOK = (function () {
                 id: 'e8dA',
                 color: 'hsl(340,51%,51%)',
                 labels: ['family'],
-                birth: '1996-11-27',
+                birth: '1996-04-17',
                 note: '',
                 email: '',
                 website: '',
@@ -32,7 +32,7 @@ const ADDRESS_BOOK = (function () {
                 id: 'TjXD',
                 color: 'hsl(179,40%,51%)',
                 labels: ['friends','coWorker'],
-                birth: '1990-09-30',
+                birth: '1996-11-27',
                 note: '',
                 email: '',
                 website: 'http://batman.fake.com',
@@ -43,7 +43,7 @@ const ADDRESS_BOOK = (function () {
                 id: '0CvB',
                 color: 'hsl(262,66%,64%)',
                 labels: ['coWorker'],
-                birth: '1990-09-04',
+                birth: '1996-11-20',
                 note: '',
                 email: 'supergirl@iamnotgay.com',
                 website: 'http://superman.vn',
@@ -108,21 +108,161 @@ const ADDRESS_BOOK = (function () {
     saveDataToLocalStorage = () => {
         localStorage.contactsList = JSON.stringify(contactsList);
     },
+    rangeOfWeek = (today = time.curDay, testDateNum) => {
+        //Calculate range (array) of days in current week
+        let result = [],
+            toDate = testDateNum > -1 ? testDateNum : time.curDate,
+            thisMonth = time.curMonth,
+            thisYear = time.curYear,
+            daysInMonth = time.daysInMonth,
+            dayInLastMonth = (thisMonth - 1) === 0 ? daysInMonth(12, thisYear - 1) : daysInMonth(thisMonth - 1, thisYear),
+            dayInThisMonth = daysInMonth(thisMonth, thisYear),
+            dayInNextMonth = (thisMonth + 1) === 13 ? daysInMonth(1, thisYear + 1) : daysInMonth(thisMonth + 1, thisYear),
+            startDayInWeek = today - toDate + ((today - toDate < 1) ? dayInLastMonth : 0),
+            endDayInWeek = today + 7 - toDate - 1 - ((today + 7 - toDate - 1 > dayInThisMonth) ? dayInThisMonth : 0);
+
+        if (startDayInWeek > endDayInWeek) {
+            let condition = today > 15 ? dayInThisMonth : dayInLastMonth;
+            result.push([], []);
+            for (let i = startDayInWeek; i <= condition; i++) {
+                result[0].push(i);
+            }
+            for (let j = 1; j <= endDayInWeek; j++) {
+                result[1].push(j);
+            }
+        } else {
+            for (let i = startDayInWeek; i <= endDayInWeek; i++) {
+                result.push(i);
+            }
+        }
+        return result;
+    },
+    getBirthsInMonth = (month = time.curMonth) => {
+        return contactsList.filter((contact) => parseInt(contact.birth.split('-')[1], 10) === month).sort((a, b) => {
+            let birthA = parseInt(a.birth.split('-')[2], 10),
+                birthB = parseInt(b.birth.split('-')[2], 10);
+            return birthA - birthB;
+        });
+    },
+    getBirthsInWeek = (dayInWeekArr = rangeOfWeek()) => {
+        let curDay = time.curDay,
+            curMonth = time.curMonth,
+            curYear = time.curYear,
+            birthsInLastMonth = getBirthsInMonth((curMonth - 1) === 0 ? 12 : (curMonth - 1)),
+            birthsInCurrentMonth = getBirthsInMonth(curMonth),
+            birthsInNextMonth = getBirthsInMonth((curMonth + 1) === 13 ? 1 : (curMonth + 1));
+
+        if (Array.isArray(dayInWeekArr[0])) {// if we have array, it means that we have a transforming-week: a week have days in current month & previous/next month
+            let arr1, arr2;
+            if (curDay > 15) {// we're in last days of the current month
+                arr1 = birthsInCurrentMonth.filter((contact) => {
+                    const birth = parseInt(contact.birth.split('-')[2], 10);
+                    return dayInWeekArr[0].indexOf(birth) !== -1;
+                }).sort((a, b) => {
+                    const birthA = parseInt(a.birth.split('-')[2], 10),
+                          birthB = parseInt(b.birth.split('-')[2], 10);
+                    return birthA - birthB;
+                });
+                arr2 = birthsInNextMonth.filter((contact) => {
+                    const birth = parseInt(contact.birth.split('-')[2], 10);
+                    return dayInWeekArr[1].indexOf(birth) !== -1;
+                }).sort((a, b) => {
+                    const birthA = parseInt(a.birth.split('-')[2], 10),
+                          birthB = parseInt(b.birth.split('-')[2], 10);
+                    return birthA - birthB;
+                });
+            } else {// we're in first days of the current month
+                arr1 = birthsInLastMonth.filter((contact) => {
+                    const birth = parseInt(contact.birth.split('-')[2], 10);
+                    return dayInWeekArr[0].indexOf(birth) !== -1;
+                }).sort((a, b) => {
+                    const birthA = parseInt(a.birth.split('-')[2], 10),
+                          birthB = parseInt(b.birth.split('-')[2], 10);
+                    return birthA - birthB;
+                });
+                arr2 = birthsInCurrentMonth.filter((contact) => {
+                    const birth = parseInt(contact.birth.split('-')[2], 10);
+                    return dayInWeekArr[1].indexOf(birth) !== -1;
+                }).sort((a, b) => {
+                    const birthA = parseInt(a.birth.split('-')[2], 10),
+                          birthB = parseInt(b.birth.split('-')[2], 10);
+                    return birthA - birthB;
+                });
+            }
+            return arr1.concat(arr2);    
+        } else {// we're in the middle of the current month
+            return birthsInCurrentMonth.filter((contact) => {
+                const birth = parseInt(contact.birth.split('-')[2], 10);
+                return dayInWeekArr.indexOf(birth) !== -1;
+            }).sort((a, b) => {
+                const birthA = parseInt(a.birth.split('-')[2], 10),
+                      birthB = parseInt(b.birth.split('-')[2], 10);
+                return birthA - birthB;
+            });
+        }
+    },
+    getBirthsToday = () => {
+        const today = time.curDay;
+        return getBirthsInMonth().filter(contact => parseInt(contact.birth.split('-')[2], 10) === today);
+        // let birthsToday;
+        // birthsToday = getBirthsInMonth().filter(contact => parseInt(contact.birth.split('-')[2], 10) === today);
+        // localStorage.birthsToday = JSON.stringify(birthsToday);
+        // return birthsToday;
+    },
+    getBirthsIncoming = () => {
+
+    },
+    filterBirthsToday = () => {
+        // re-update happy-birthday list
+        let birthsToday;
+        console.log(`${time.curDay}/${time.curMonth}`);
+        console.log(localStorage.lastVisited);
+        if (needToBeReSorted) {
+            console.log("data is edited or a new contact's added");
+            birthsToday = getBirthsToday();
+            localStorage.birthsToday = JSON.stringify(birthsToday);
+        } else if (localStorage.lastVisited === `${time.curDay}/${time.curMonth}`) {
+            console.log("visited more than ONE time today");
+            // Memoization technique: no need to do the job if the func is called more than two times a day
+            birthsToday = JSON.parse(localStorage.birthsToday);
+        } else {
+            console.log("first time visited today");
+            birthsToday = getBirthsToday();
+            localStorage.birthsToday = JSON.stringify(birthsToday);
+            localStorage.lastVisited = `${time.curDay}/${time.curMonth}`;
+        }
+        console.log(birthsToday);
+        contactsList.forEach(contact => {
+            // contact.hpbd = birthsToday.indexOf(contact) >= 0 ? true : false;
+            contact.hpbd = birthsToday.findIndex((contactHaveBirthToday) => {
+                return contactHaveBirthToday.name === contact.name;
+            }) >= 0 ? true : false;
+        });
+    },
+    shouldBeSorted = () => {
+        return needToBeReSorted;
+    },
+    dontSortAgain = () => {
+        needToBeReSorted = false;
+    },
     sortContactsList = () => {
-        // sort by name in alphabet order
-        contactsList = contactsList.sort((a, b) => {
-            let x = a.name.toLowerCase(),
+        // sort by name
+        contactsList.sort((a, b) => {
+            const x = a.name.toLowerCase(),
                 y = b.name.toLowerCase();
             if (x < y) { return -1; }
             if (x > y) { return 1; }
             return 0;
         });
-        needToBeReSorted = false;
     },
     getContactsList = () => {
+        // it might be no need to sort, cause refresh() method in React app is handling this
         if (needToBeReSorted) {
             sortContactsList();
+            needToBeReSorted = false;
         }
+        // techniquely, we must not return reference to real app's data
+        // but we do not want the app is too heavy (too many tasks to do) when its data becomes bigger
         return contactsList;
     },
     listLength = () => {
@@ -133,7 +273,7 @@ const ADDRESS_BOOK = (function () {
         let text = '';
         const POSSIBLE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
             POSSIBLE_SCOPE = POSSIBLE.length;
-      
+
         for (let i = 0; i < string_length; i += 1) {
         text += POSSIBLE.charAt(Math.floor(Math.random() * POSSIBLE_SCOPE));
         }
@@ -153,7 +293,6 @@ const ADDRESS_BOOK = (function () {
     },
     replaceData = (newData = contactsList) => {
         contactsList = newData;
-        needToBeReSorted = true;
     },
     find = (IDList, callbackFunc, callbackObj) => {
         let len = contactsList.length;
@@ -228,106 +367,15 @@ const ADDRESS_BOOK = (function () {
         contactsList = [];
         isModified = true;
     },
-    rangeOfWeek = (today = time.curDay, testDateNum) => {
-        //Calculate range (array) of days in current week
-        let result = [],
-            toDate = testDateNum > -1 ? testDateNum : time.curDate,
-            thisMonth = time.curMonth,
-            thisYear = time.curYear,
-            daysInMonth = time.daysInMonth,
-            dayInLastMonth = (thisMonth - 1) === 0 ? daysInMonth(12, thisYear - 1) : daysInMonth(thisMonth - 1, thisYear),
-            dayInThisMonth = daysInMonth(thisMonth, thisYear),
-            dayInNextMonth = (thisMonth + 1) === 13 ? daysInMonth(1, thisYear + 1) : daysInMonth(thisMonth + 1, thisYear),
-            startDayInWeek = today - toDate + ((today - toDate < 1) ? dayInLastMonth : 0),
-            endDayInWeek = today + 7 - toDate - 1 - ((today + 7 - toDate - 1 > dayInThisMonth) ? dayInThisMonth : 0);
-
-        if (startDayInWeek > endDayInWeek) {
-            let condition = today > 15 ? dayInThisMonth : dayInLastMonth;
-            result.push([], []);
-            for (let i = startDayInWeek; i <= condition; i++) {
-                result[0].push(i);
-            }
-            for (let j = 1; j <= endDayInWeek; j++) {
-                result[1].push(j);
-            }
-        } else {
-            for (let i = startDayInWeek; i <= endDayInWeek; i++) {
-                result.push(i);
-            }
-        }
-        return result;
-    },
-    filterBirthsInMonth = (month = time.curMonth) => {
-        return contactsList.filter((contact) => parseInt(contact.birth.split('-')[1], 10) === month).sort((a, b) => {
-            let birthA = parseInt(a.birth.split('-')[2], 10),
-                birthB = parseInt(b.birth.split('-')[2], 10);
-            return birthA - birthB;
-        });
-    },
-    filterBirthsInWeek = (dayInWeekArr = rangeOfWeek()) => {
-        let curDay = time.curDay,
-            curMonth = time.curMonth,
-            curYear = time.curYear,
-            birthsInLastMonth = filterBirthsInMonth((curMonth - 1) === 0 ? 12 : (curMonth - 1)),
-            birthsInCurrentMonth = filterBirthsInMonth(curMonth),
-            birthsInNextMonth = filterBirthsInMonth((curMonth + 1) === 13 ? 1 : (curMonth + 1));
-
-        if (Array.isArray(dayInWeekArr[0])) {// if we have array, it means that we have a transforming-week: a week have days in current month & previous/next month
-            let arr1, arr2;
-            if (curDay > 15) {// we're in last days of the current month
-                arr1 = birthsInCurrentMonth.filter((contact) => {
-                    const birth = parseInt(contact.birth.split('-')[2], 10);
-                    return dayInWeekArr[0].indexOf(birth) !== -1;
-                }).sort((a, b) => {
-                    const birthA = parseInt(a.birth.split('-')[2], 10),
-                          birthB = parseInt(b.birth.split('-')[2], 10);
-                    return birthA - birthB;
-                });
-                arr2 = birthsInNextMonth.filter((contact) => {
-                    const birth = parseInt(contact.birth.split('-')[2], 10);
-                    return dayInWeekArr[1].indexOf(birth) !== -1;
-                }).sort((a, b) => {
-                    const birthA = parseInt(a.birth.split('-')[2], 10),
-                          birthB = parseInt(b.birth.split('-')[2], 10);
-                    return birthA - birthB;
-                });
-            } else {// we're in first days of the current month
-                arr1 = birthsInLastMonth.filter((contact) => {
-                    const birth = parseInt(contact.birth.split('-')[2], 10);
-                    return dayInWeekArr[0].indexOf(birth) !== -1;
-                }).sort((a, b) => {
-                    const birthA = parseInt(a.birth.split('-')[2], 10),
-                          birthB = parseInt(b.birth.split('-')[2], 10);
-                    return birthA - birthB;
-                });
-                arr2 = birthsInCurrentMonth.filter((contact) => {
-                    const birth = parseInt(contact.birth.split('-')[2], 10);
-                    return dayInWeekArr[1].indexOf(birth) !== -1;
-                }).sort((a, b) => {
-                    const birthA = parseInt(a.birth.split('-')[2], 10),
-                          birthB = parseInt(b.birth.split('-')[2], 10);
-                    return birthA - birthB;
-                });
-            }
-            return arr1.concat(arr2);    
-        } else {// we're in the middle of the current month
-            return birthsInCurrentMonth.filter((contact) => {
-                const birth = parseInt(contact.birth.split('-')[2], 10);
-                return dayInWeekArr.indexOf(birth) !== -1;
-            }).sort((a, b) => {
-                const birthA = parseInt(a.birth.split('-')[2], 10),
-                      birthB = parseInt(b.birth.split('-')[2], 10);
-                return birthA - birthB;
-            });
-        }
-    },
     init = () => {
         // get data from localStorage
         if (isStorageAvailable) {
             if (typeof localStorage.contactsList !== 'undefined') {
                 const localStorageData = JSON.parse(localStorage.contactsList);
                 replaceData(localStorageData);
+                getBirthsToday();
             }
+            filterBirthsToday();
         } else {
             alert('Sorry, your browser does NOT support Local Storage.\nWe will not be able to save your data.');
         }
@@ -337,6 +385,14 @@ const ADDRESS_BOOK = (function () {
         shouldBeSaved,
         dontSaveDataToLocalStorageAgain,
         saveDataToLocalStorage,
+        rangeOfWeek,
+        getBirthsInMonth,
+        getBirthsInWeek,
+        getBirthsToday,
+        getBirthsIncoming,
+        filterBirthsToday,
+        shouldBeSorted,
+        dontSortAgain,
         sortContactsList,
         getContactsList,
         listLength,
@@ -348,9 +404,6 @@ const ADDRESS_BOOK = (function () {
         editContact,
         rmContact,
         rmAllContacts,
-        rangeOfWeek,
-        filterBirthsInMonth,
-        filterBirthsInWeek,
         init
     };
 }());

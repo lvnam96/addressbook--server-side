@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+// import img from '../img/party-pattern.jpg';
+
 const ContactItem = function (props) {
     return (
-        <li className="contact-list__item" onClick={props.onClickOnItem}>
+        <li className={"contact-list__item" + (props.contact.hpbd ? ' contact-list__item--hpbd' : '')} onClick={props.onClickOnItem} style={props.contact.hpbd ? {color: props.contact.color} : undefined}>
             <div className="contact-item__avt" onClick={function(e) {e.stopPropagation();}}>
                 <input className="contact-item__checkbox" type="checkbox" id={props.contact.id}/>
                 <label className="contact-item__checkbox-label" htmlFor={props.contact.id}></label>
