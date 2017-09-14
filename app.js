@@ -283,7 +283,7 @@ const ADDRESS_BOOK = (function () {
     getRandomColor = () => {
         let h = Math.floor(Math.random() * 360),
             s = Math.floor(Math.random() * 100) + '%',
-            l = Math.floor(Math.random() * 60) + '%';
+            l = Math.floor(Math.random() * 60) + 20 + '%';
         return `hsl(${h},${s},${l})`;
     },
     addContact = (newPersonObj) => {
