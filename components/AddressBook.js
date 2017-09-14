@@ -273,15 +273,14 @@ class AddressBook extends React.Component {
                         <h1>Address Book</h1>
                     </header>
                     <ul className='contact-list'>
-                        {this.state.contacts.length === 0 ? null : this.state.contacts.map((contact, idx) => {
-                            // console.log('re-rendered', idx);// IS IT BUG?: render lại cả list mỗi khi state thay đổi, dù không phải thay đổi ở state.contacts
-                            return <ContactItem
-                                        contact={contact}
-                                        key={contact.id}
-                                        onClickEdit={this.handlerEditContactOnItem.bind(this, idx)}
-                                        onClickRemove={this.handlerRmContactOnItem.bind(this, contact.id)}
-                                        onClickOnItem={this.openContactDetails.bind(this, idx)} />
-                        })}
+                        {this.state.contacts.length !== 0 &&
+                            this.state.contacts.map((contact, idx) => (
+                                <ContactItem key={contact.id}
+                                    contact={contact}
+                                    onClickEdit={this.handlerEditContactOnItem.bind(this, idx)}
+                                    onClickRemove={this.handlerRmContactOnItem.bind(this, contact.id)}
+                                    onClickOnItem={this.openContactDetails.bind(this, idx)} />
+                        ))}
                     </ul>
                 </main>
                 {this.state.showNoti && this.state.notiList.map((notiObj) => (

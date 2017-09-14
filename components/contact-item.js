@@ -5,7 +5,9 @@ import PropTypes from 'prop-types';
 
 const ContactItem = function (props) {
     return (
-        <li className={"contact-list__item" + (props.contact.hpbd ? ' contact-list__item--hpbd' : '')} onClick={props.onClickOnItem} style={props.contact.hpbd ? {color: props.contact.color} : undefined}>
+        <li className={"contact-list__item" + (props.contact.hpbd ? ' contact-list__item--hpbd' : '')}
+            onClick={props.onClickOnItem}
+            style={props.contact.hpbd ? {color: props.contact.color} : undefined}>
             <div className="contact-item__avt" onClick={function(e) {e.stopPropagation();}}>
                 <input className="contact-item__checkbox" type="checkbox" id={props.contact.id}/>
                 <label className="contact-item__checkbox-label" htmlFor={props.contact.id}></label>
@@ -15,10 +17,10 @@ const ContactItem = function (props) {
                 <span>{props.contact.name}</span>
             </div>
             <div className="contact-item__birth">
-                <span>{props.contact.birth ? props.contact.birth.split('-').reverse().join('/') : ''}</span>
+                <span>{props.contact.birth && props.contact.birth.split('-').reverse().join('/')}</span>
             </div>
             <div className="contact-item__phone">
-                <span>{props.contact.phone ? '+84' + props.contact.phone : ''}</span>
+                <span>{props.contact.phone && '+84' + props.contact.phone}</span>
             </div>
             <div className="contact-item__buttons">
                 <div onClick={props.onClickEdit} title="Edit this contact"><i className="fa fa-pencil"></i></div>

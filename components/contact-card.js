@@ -81,7 +81,7 @@ const ContactCard = function (props) {
                 <div className="contact-card__body">
                     <p>Contact Details</p>
                     <div className="contact-card__details">
-                        {props.data.phone ? (<div>
+                        {props.data.phone && (<div>
                             <div className="contact-card__details__info">
                                 <a href={"tel:+84" + props.data.phone}>+84{props.data.phone}</a>
                             </div>
@@ -90,8 +90,8 @@ const ContactCard = function (props) {
                                     <i className="fa fa-phone"></i>
                                 </div>
                             </div>
-                        </div>) : null}
-                        {props.data.birth ? (<div>
+                        </div>)}
+                        {props.data.birth && (<div>
                             <div className="contact-card__details__info">
                                 <a>{month} {props.data.birth.split('-')[2]}, {props.data.birth.split('-')[0]}</a>
                             </div>
@@ -100,8 +100,8 @@ const ContactCard = function (props) {
                                     <i className="fa fa-birthday-cake"></i>
                                 </div>
                             </div>
-                        </div>) : null}
-                        {props.data.jobTitle ? (<div>
+                        </div>)}
+                        {props.data.jobTitle && (<div>
                             <div className="contact-card__details__info">
                                 <span>{props.data.jobTitle}</span>
                             </div>
@@ -110,8 +110,8 @@ const ContactCard = function (props) {
                                     <i className="fa fa-id-badge"></i>
                                 </div>
                             </div>
-                        </div>) : null}
-                        {props.data.email ? (<div>
+                        </div>)}
+                        {props.data.email && (<div>
                             <div className="contact-card__details__info">
                                 <span>{props.data.email}</span>
                             </div>
@@ -120,8 +120,8 @@ const ContactCard = function (props) {
                                     <i className="fa fa-envelope-o"></i>
                                 </div>
                             </div>
-                        </div>) : null}
-                        {props.data.address ? (<div>
+                        </div>)}
+                        {props.data.address && (<div>
                             <div className="contact-card__details__info">
                                 <span>{props.data.address}</span>
                             </div>
@@ -130,8 +130,8 @@ const ContactCard = function (props) {
                                     <i className="fa fa-map-marker"></i>
                                 </div>
                             </div>
-                        </div>) : null}
-                        {props.data.website ? (<div>
+                        </div>)}
+                        {props.data.website && (<div>
                             <div className="contact-card__details__info">
                                 <span>{props.data.website}</span>
                             </div>
@@ -140,8 +140,8 @@ const ContactCard = function (props) {
                                     <i className="fa fa-globe"></i>
                                 </div>
                             </div>
-                        </div>) : null}
-                        {props.data.note ? (<div>
+                        </div>)}
+                        {props.data.note && (<div>
                             <div className="contact-card__details__info">
                                 <span>{props.data.note}</span>
                             </div>
@@ -150,8 +150,8 @@ const ContactCard = function (props) {
                                     <i className="fa fa-sticky-note-o"></i>
                                 </div>
                             </div>
-                        </div>) : null}
-                        {props.data.relationship ? (<div>
+                        </div>)}
+                        {props.data.relationship && (<div>
                             <div className="contact-card__details__info">
                                 <span>{props.data.relationship}</span>
                             </div>
@@ -160,7 +160,7 @@ const ContactCard = function (props) {
                                     <i className="fa fa-users"></i>
                                 </div>
                             </div>
-                        </div>) : null}
+                        </div>)}
                     </div>
                 </div>
             </div>
