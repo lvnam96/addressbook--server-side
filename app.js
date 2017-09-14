@@ -215,23 +215,23 @@ const ADDRESS_BOOK = (function () {
     filterBirthsToday = () => {
         // re-update happy-birthday list
         let birthsToday;
-        console.log(`${time.curDay}/${time.curMonth}`);
-        console.log(localStorage.lastVisited);
+        // console.log(`${time.curDay}/${time.curMonth}`);
+        // console.log(localStorage.lastVisited);
         if (needToBeReSorted) {
-            console.log("data is edited or a new contact's added");
+            // console.log("data is edited or a new contact's added");
             birthsToday = getBirthsToday();
             localStorage.birthsToday = JSON.stringify(birthsToday);
         } else if (localStorage.lastVisited === `${time.curDay}/${time.curMonth}`) {
-            console.log("visited more than ONE time today");
+            // console.log("visited more than ONE time today");
             // Memoization technique: no need to do the job if the func is called more than two times a day
             birthsToday = JSON.parse(localStorage.birthsToday);
         } else {
-            console.log("first time visited today");
+            // console.log("first time visited today");
             birthsToday = getBirthsToday();
             localStorage.birthsToday = JSON.stringify(birthsToday);
             localStorage.lastVisited = `${time.curDay}/${time.curMonth}`;
         }
-        console.log(birthsToday);
+        // console.log(birthsToday);
         contactsList.forEach(contact => {
             // contact.hpbd = birthsToday.indexOf(contact) >= 0 ? true : false;
             contact.hpbd = birthsToday.findIndex((contactHaveBirthToday) => {

@@ -28,6 +28,17 @@ class AddressBook extends React.Component {
             API: PropTypes.object.isRequired
         };
     }
+    componentDidMount() {
+        const birthsToday = this.props.API.getBirthsToday();
+        if (birthsToday.length > 0) {
+            let contacts = birthsToday[0].name;
+            birthsToday.forEach((contact, idx) => {
+                if (idx === 0) { return; }
+                contacts += ` & ${contact.name}`;
+            });
+            this.showNoti('alert', `Today is ${contacts}'s birthday!! Wish ${birthsToday.length > 1 ? 'them' : 'him/her'} a happy birthday!`);
+        }
+    }
     setTimer(e) {
         this.delAllPressTimer = setTimeout(this.delAll.bind(this), 600);
     }
