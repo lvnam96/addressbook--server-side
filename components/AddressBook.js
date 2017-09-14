@@ -22,6 +22,22 @@ class AddressBook extends React.Component {
         this.notiMsg;
         this.notiType;// 'alert' or 'success' or 'error'
         this.presentFilterState = 'all';// or 'week' or 'month'
+        this.displayAll = this.displayAll.bind(this);
+        this.filterBirthsInWeek = this.filterBirthsInWeek.bind(this);
+        this.filterBirthsInMonth = this.filterBirthsInMonth.bind(this);
+        this.handlerAddContact = this.handlerAddContact.bind(this);
+        this.inptFile = this.inptFile.bind(this);
+        this.bckpData = this.bckpData.bind(this);
+        this.setTimer = this.setTimer.bind(this);
+        this.clearTimer = this.clearTimer.bind(this);
+        this.showNoti = this.showNoti.bind(this);
+        this.delAll = this.delAll.bind(this);
+        this.closeForm = this.closeForm.bind(this);
+        this.saveEditedContact = this.saveEditedContact.bind(this);
+        this.addNewContact = this.addNewContact.bind(this);
+        this.closeContactDetails = this.closeContactDetails.bind(this);
+        this.handlerEditContact = this.handlerEditContact.bind(this);
+        this.handlerRmContact = this.handlerRmContact.bind(this);
     }
     static get propTypes() {
         return {
@@ -46,13 +62,14 @@ class AddressBook extends React.Component {
         clearTimeout(this.delAllPressTimer);
     }
     delAll() {
+        const API = this.props.API;
         // if data is empty already, no need to do anything
-        if (!this.props.API.listLength()) {
+        if (!API.listLength()) {
             this.showNoti('alert', 'There is no data left. Is it bad?');
             return;
         }
         if (confirm('Are you sure to delete all your data?')) {
-            this.props.API.rmAllContacts();
+            API.rmAllContacts();
             this.refresh();
             // checkedList = [];
             // METHOD_A();
@@ -82,20 +99,21 @@ class AddressBook extends React.Component {
     }
     refresh() {
         let newData;
-        if (this.props.API.shouldBeSorted()) {
-            this.props.API.sortContactsList();
-            this.props.API.filterBirthsToday();
-            this.props.API.dontSortAgain();
+        const API = this.props.API;
+        if (API.shouldBeSorted()) {
+            API.sortContactsList();
+            API.filterBirthsToday();
+            API.dontSortAgain();
         }
         switch (this.presentFilterState) {
         case 'week':
-            newData = this.props.API.getBirthsInWeek();
+            newData = API.getBirthsInWeek();
         break;
         case 'month':
-            newData = this.props.API.getBirthsInMonth();
+            newData = API.getBirthsInMonth();
         break;
         default:
-            newData = this.props.API.getContactsList();
+            newData = API.getContactsList();
         break;
         }
         this.setState({
@@ -103,22 +121,25 @@ class AddressBook extends React.Component {
         });
     }
     rmItem(contactId) {
+        const API = this.props.API;
         if (confirm('Delete this contact? Are you sure?')) {
-            this.props.API.find(contactId, this.props.API.rmContact);
+            API.find(contactId, API.rmContact);
             this.refresh();
             if (this.state.showContactDetails) { this.closeContactDetails(); }
         }
     }
     saveEditedContact(editedContact) {
-        let curryingEditDataFunc = this.props.API.editContact(editedContact);
-        this.props.API.find(editedContact.id, curryingEditDataFunc);
+        const API = this.props.API;
+        let curryingEditDataFunc = API.editContact(editedContact);
+        API.find(editedContact.id, curryingEditDataFunc);
         this.refresh();
         this.closeForm();
         this.showNoti('success', `Saved.`);
     }
     addNewContact(newContact) {
-        newContact.id = this.props.API.getRandomId(4);
-        this.props.API.addContact(newContact);
+        const API = this.props.API;
+        newContact.id = API.getRandomId(4);
+        API.addContact(newContact);
         this.refresh();
         this.closeForm();
         this.showNoti('success', `New contact: "${newContact.name}" was created.`);
@@ -170,8 +191,9 @@ class AddressBook extends React.Component {
             reader.addEventListener('load', fileLoadedEvent => {
                 let textFromFileLoaded = fileLoadedEvent.target.result,
                     dataParsedFromTextFile = JSON.parse(textFromFileLoaded);
-                this.props.API.replaceData(dataParsedFromTextFile);
-                this.props.API.saveDataToLocalStorage();
+                const API = this.props.API;
+                API.replaceData(dataParsedFromTextFile);
+                API.saveDataToLocalStorage();
                 this.displayAll();
                 this.showNoti('success', 'Your data is restored successfully!');
             }, false);
@@ -243,6 +265,7 @@ class AddressBook extends React.Component {
         this.rmItem(contactId);
     }
     render() {
+        const API = this.props.API;
         return (
             <div>
                 <main className='main'>
@@ -265,25 +288,25 @@ class AddressBook extends React.Component {
                     <NotiBar type={notiObj.notiType} msg={notiObj.notiMsg} key={notiObj.notiId}/>
                 ))}
                 <MenuBar
-                    totalContacts={this.props.API.listLength()}
-                    onClickDisplayAll={this.displayAll.bind(this)}
+                    totalContacts={API.listLength()}
+                    onClickDisplayAll={this.displayAll}
                     onClickOnFilterMenu={this.openFilterSubNav}
-                    onFilterBirthsInWeek={this.filterBirthsInWeek.bind(this)}
-                    onFilterBirthsInMonth={this.filterBirthsInMonth.bind(this)}
+                    onFilterBirthsInWeek={this.filterBirthsInWeek}
+                    onFilterBirthsInMonth={this.filterBirthsInMonth}
                     onClickOnBackupMenu={this.openBackupRestoreSubNav}
-                    onClickAddMenu={this.handlerAddContact.bind(this)}
+                    onClickAddMenu={this.handlerAddContact}
                     onClickRestore={this.rstrData}
-                    onUploadFile={this.inptFile.bind(this)}
-                    onClickBackup={this.bckpData.bind(this)}
-                    onSetTimer={this.setTimer.bind(this)}
-                    onClearTimer={this.clearTimer.bind(this)}
-                    showNoti={this.showNoti.bind(this)} />
+                    onUploadFile={this.inptFile}
+                    onClickBackup={this.bckpData}
+                    onSetTimer={this.setTimer}
+                    onClearTimer={this.clearTimer}
+                    showNoti={this.showNoti} />
                 {this.state.showContactDetails &&
                     <ContactCard
                     data={this.state.contacts[this.state.contactIndex]}
-                    onClose={this.closeContactDetails.bind(this)}
-                    onEditContact={this.handlerEditContact.bind(this)}
-                    onRemoveContact={this.handlerRmContact.bind(this)} />}
+                    onClose={this.closeContactDetails}
+                    onEditContact={this.handlerEditContact}
+                    onRemoveContact={this.handlerRmContact} />}
                 {this.state.showForm &&
                     <Form
                     title={this.state.contactIndex > -1 ? 'Edit Contact' : 'Add new contact'}
@@ -293,7 +316,7 @@ class AddressBook extends React.Component {
                         {
                             name: '',
                             id: 'example id',
-                            color: this.props.API.getRandomColor(),
+                            color: API.getRandomColor(),
                             labels: [],
                             birth: '',
                             note: '',
@@ -301,13 +324,13 @@ class AddressBook extends React.Component {
                             website: '',
                             phone: ''
                         }}
-                    onClose={this.closeForm.bind(this)}
+                    onClose={this.closeForm}
                     onSave={this.state.contactIndex > -1 ?
-                        this.saveEditedContact.bind(this)
+                        this.saveEditedContact
                         :
-                        this.addNewContact.bind(this)}
-                    showNoti={this.showNoti.bind(this)}
-                    getRandomColor={this.props.API.getRandomColor} />}
+                        this.addNewContact}
+                    showNoti={this.showNoti}
+                    getRandomColor={API.getRandomColor} />}
             </div>
         );
     }

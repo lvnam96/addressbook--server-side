@@ -19,6 +19,14 @@ class Form extends React.Component {
         this.cboxFamily;
         this.cboxFriends;
         this.cboxCoWorker;
+        this.handlerSaveForm = this.handlerSaveForm.bind(this);
+        this.changeColor = this.changeColor.bind(this);
+        this.handlerChangeName = this.handlerChangeName.bind(this);
+        this.handlerChangePhone = this.handlerChangePhone.bind(this);
+        this.handlerChangeBirth = this.handlerChangeBirth.bind(this);
+        this.handlerChangeWebsite = this.handlerChangeWebsite.bind(this);
+        this.handlerChangeEmail = this.handlerChangeEmail.bind(this);
+        this.handlerChangeNote = this.handlerChangeNote.bind(this);
     }
     static get propTypes() {
         return {
@@ -100,13 +108,13 @@ class Form extends React.Component {
                                 style={{backgroundColor: this.state.color}}
                                 title='We have not support avatar yet! So... choose a random color for this contact!'
                                 ref={thisDiv => { this.avtDOM = thisDiv; }}
-                                onClick={this.changeColor.bind(this)}>
+                                onClick={this.changeColor}>
                                     {this.state.name ? this.state.name[0].toUpperCase() : '?'}
                                 </div>
                             </div>
                             <div className='form-body__inputs'>
                                 <div className='form-body__inputs__name'>
-                                    <input type='text' id='inputs__name' required value={this.state.name} onChange={this.handlerChangeName.bind(this)} />
+                                    <input type='text' id='inputs__name' required value={this.state.name} onChange={this.handlerChangeName} />
                                     <label htmlFor='inputs__name'>Name</label>
                                 </div>
                                 <div className='form-body__inputs__labels'>
@@ -133,23 +141,23 @@ class Form extends React.Component {
                                     </div>
                                 </div>
                                 <div className='form-body__inputs__phone'>
-                                    <input type='number' id='inputs__phone' value={this.state.phone} onChange={this.handlerChangePhone.bind(this)} />
+                                    <input type='number' id='inputs__phone' value={this.state.phone} onChange={this.handlerChangePhone} />
                                     <label htmlFor='inputs__phone'>Phone</label>
                                 </div>
                                 <div className='form-body__inputs__birth'>
-                                    <input type='date' id='inputs__birth' value={this.state.birth} onChange={this.handlerChangeBirth.bind(this)} />
+                                    <input type='date' id='inputs__birth' value={this.state.birth} onChange={this.handlerChangeBirth} />
                                     <label htmlFor='inputs__birth'>Birth</label>
                                 </div>
                                 <div className='form-body__inputs__email'>
-                                    <input type='email' id='inputs__email' value={this.state.email} onChange={this.handlerChangeEmail.bind(this)} />
+                                    <input type='email' id='inputs__email' value={this.state.email} onChange={this.handlerChangeEmail} />
                                     <label htmlFor='inputs__email'>Email</label>
                                 </div>
                                 <div className='form-body__inputs__website'>
-                                    <input type='text' id='inputs__website' value={this.state.website} onChange={this.handlerChangeWebsite.bind(this)} />
+                                    <input type='text' id='inputs__website' value={this.state.website} onChange={this.handlerChangeWebsite} />
                                     <label htmlFor='inputs__website'>Website</label>
                                 </div>
                                 <div className='form-body__inputs__note'>
-                                    <textarea id='inputs__note' value={this.state.note} onChange={this.handlerChangeNote.bind(this)} />
+                                    <textarea id='inputs__note' value={this.state.note} onChange={this.handlerChangeNote} />
                                     <label htmlFor='inputs__note'>Note</label>
                                 </div>
                             </div>
@@ -161,7 +169,7 @@ class Form extends React.Component {
                             <div className='form-footer__cancel-btn' onClick={this.props.onClose}>
                                 <span>Cancel</span>
                             </div>
-                            <div className='form-footer__save-btn' onClick={this.handlerSaveForm.bind(this)}>
+                            <div className='form-footer__save-btn' onClick={this.handlerSaveForm}>
                                 <span>Save</span>
                             </div>
                         </div>
