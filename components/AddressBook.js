@@ -129,8 +129,8 @@ class AddressBook extends React.Component {
         }
     }
     saveEditedContact(editedContact) {
-        const API = this.props.API;
-        let curryingEditDataFunc = API.editContact(editedContact);
+        const API = this.props.API,
+            curryingEditDataFunc = API.editContact(editedContact);
         API.find(editedContact.id, curryingEditDataFunc);
         this.refresh();
         this.closeForm();
@@ -218,7 +218,8 @@ class AddressBook extends React.Component {
                     downloadLink.innerHTML = 'Download File';
                     if ('webkitURL' in window) {
                     // Chrome allows the link to be clicked without actually adding it to the DOM.
-                        downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
+                        const polyURL = window.URL || window.webkitURL;
+                        downloadLink.href = polyURL.createObjectURL(textFileAsBlob);
                     } else {
                     // Firefox requires the link to be added to the DOM before it can be clicked.
                         downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
