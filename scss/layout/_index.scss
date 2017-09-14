@@ -3,6 +3,9 @@
     min-height: calc(100vh - 140px);
     margin-bottom: 140px;
     padding: .5rem 0;
+    overflow-y: scroll;// force to scroll, 'auto' doesn't seem to work
+    scroll-behavior: smooth;// Firefox 49+, Experimental Feature in Chrome 41+
+    -webkit-overflow-scrolling: touch;// lazy scrolling in webkit
 }
 
 @media (min-width: 800px) {// when menu bar transform from horizontal to vertical
