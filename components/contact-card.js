@@ -57,7 +57,6 @@ const ContactCard = function (props) {
                 </div>
                 <div className="contact-card__header">
                     <div className="contact-card__header__avt">
-                        <img src="http://res.cloudinary.com/nh0kvjpp0ybh/image/upload/v1502960147/photo3_styhnr.png" alt={`${props.name}'s avatar`} />
                         <div className="contact-card__header__avt__first-letter" style={{backgroundColor: props.color}}>{props.name[0].toUpperCase()}</div>
                     </div>
                     <div className="contact-card__header__name">
