@@ -45,8 +45,8 @@ const ContactCard = function (props) {
         <div className="overlay" onClick={props.onClose}>
             <div className="contact-card" onClick={e => e.stopPropagation()}>
                 <div className="contact-card__buttons">
-                    <div className="contact-card__buttons__close" title="Close this card" onClick={props.onClose}>
-                        <i className="fa fa-close"></i>
+                    <div className="contact-card__buttons__close" title="Close Contact Details" onClick={props.onClose}>
+                        <i className="fa fa-arrow-left"></i>
                     </div>
                     <div className="contact-card__buttons__edit" title="Edit this contact" onClick={props.onEditContact}>
                         <i className="fa fa-pencil"></i>

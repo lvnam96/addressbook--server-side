@@ -1,19 +1,32 @@
-@keyframes showCard {
+@keyframes showOnDesktop {
     0% {
+        opacity: 0;
         transform: scale(.5);
     }
 
     100% {
-        transform: scale(1);
+        opacity: 1;
+        transform: scale(1) translateY(-50%);
+    }
+}
+
+@keyframes showOnMobile {
+    0% {
+        opacity: 0;
+        // transform: scale(.5) translateY(100%);
+    }
+
+    100% {
+        opacity: 1;
+        // transform: scale(1) translateY(0);
     }
 }
 
 .contact-card {
-    // width: 100%;
     margin: 0 auto;
     background-color: #fff;
     font-size: 1rem;
-    // animation: showCard .5s ease-in-out both;
+    animation: showOnMobile .2s ease-out both;
 
     > div {
 
@@ -29,6 +42,7 @@
         z-index: 10;
         width: 100%;
         font-size: 1em;
+        // transform: translateY(-100%);// if transform is used in animation of .contact-card, the .contact-card__buttons will not be fixed on top of screen.
 
         > div {
             width: 50px;
@@ -47,12 +61,10 @@
             }
 
             &:hover > i {
-                /*background-color: #d0d0d0;*/
                 color: #000;
             }
 
             &:hover > .fa-user-times {
-                /*background-color: #d0d0d0;*/
                 color: #ef5350;
             }
         }
@@ -62,20 +74,21 @@
     &__header {
         display: flex;
         flex-flow: row wrap;
+        justify-content: center;
         background-color: #f7f7f7;
         margin-top: 50px;
         font-size: 1em;
+        width: 100%;
+        text-align: center;
 
         > div {
-            display: inline-block;
+
         }
 
         &__avt {
             height: 80px;
-            flex-basis: 80px;
+            flex-basis: 100%;
             margin: 20px;
-            border: #f1f1f1 1px solid;
-            border-radius: 50%;
             position: relative;
 
             > img {
@@ -107,9 +120,8 @@
         }
 
         &__name {
-            flex-grow: 1;
-            flex-basis: 200px;
-            height: 120px;
+            // flex-grow: 1;
+            // flex-basis: 200px;
 
             > div {
                 display: flex;
@@ -131,7 +143,11 @@
         }
 
         &__tags {
+            width: 100%;
+            margin-bottom: 10px;
+
             > span {
+                display: inline-block;
                 border-radius: 4px;
                 font-size: .8em;
                 margin-right: 5px;
@@ -149,7 +165,7 @@
         }
 
         &__tag-friends {
-            background-color: #66BB6A;
+            background-color: #66bb6a;
         }
     }
 
@@ -182,7 +198,7 @@
             > div > i {
                 font-size: 1em;
                 line-height: 3em;
-                // transition: transform .3s cubic-bezier(.7,.67,.62,1);
+                // transition: transform .1s cubic-bezier(.7,.67,.62,1);
             }
         }
 
@@ -202,24 +218,56 @@
     }
 }
 
+@media (min-width: 375px) {
+    .contact-card__header {
+        display: flex;
+        flex-flow: row wrap;
+        background-color: #f7f7f7;
+        margin-top: 50px;
+        font-size: 1em;
+        width: 100%;
+
+        > div {
+            display: inline-block;
+        }
+
+        &__avt {
+            flex-basis: 80px;
+            border: #f1f1f1 1px solid;
+            border-radius: 50%;
+        }
+
+        &__name {
+            flex-grow: 1;
+            flex-basis: 200px;
+            height: 120px;
+            text-align: left;   
+        }
+
+        &__tags {
+            margin-bottom: 0;
+        }
+    }
+}
+
 @media (min-width: 700px) {
     .contact-card {
         position: absolute;
         top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
-
-    .contact-card {
+        left: 0;
+        right: 0;
         max-width: 640px;
         width: 80%;
+        animation: showOnDesktop .2s ease-out both;
     }
 
     .contact-card__buttons {
         position: static;
+        // transform: translateY(0);
     }
 
     .contact-card__header {
         margin-top: 0;
+        transform: none;
     }
 }
