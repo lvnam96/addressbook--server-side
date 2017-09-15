@@ -38,6 +38,7 @@
     margin: 1em auto;
     list-style-type: none;
     padding: 0;
+    overflow-x: hidden;
 
     &__item {
         display: flex;
@@ -60,12 +61,64 @@
                 display: none;
             }
         }
-
-        // &--hpbd {
-        //     border: 2px solid #f00;
-        //     background-color: #454545;
-        // }
     }
+}
+
+@keyframes slide {
+    0% {
+        opacity: .1;
+        transform: translateX(100%);
+        background-color: #ccc;
+    }
+
+    5% {
+        transform: translateX(90%) skewX(-15deg);
+    }
+
+    35% {
+        opacity: 1;
+        transform: translateX(-10%) skewX(15deg);
+    }
+
+    60% {
+        transform: translateX(8%) skewX(-12deg);
+    }
+
+    70% {
+        transform: translateX(-6%) skewX(8deg);
+    }
+
+    80% {
+        transform: translateX(3%) skewX(-4deg);
+    }
+
+    95% {
+        transform: translateX(-1%) skewX(2deg);
+    }
+
+    100% {
+        transform: translateX(0%);
+    }
+}
+
+.fadeIn-enter {
+    transform: translateX(100%);
+}
+
+.fadeIn-enter.fadeIn-enter-active {
+    animation: slide 1s;
+}
+
+.fadeIn-exit {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.fadeIn-exit.fadeIn-exit-active {
+    opacity: .3;
+    transform: translateX(100%) skewX(15deg);
+    transition: .8s cubic-bezier(.35,-.58,.37,.89);
+    transition-property: transform, opacity;
 }
 
 .contact-item {

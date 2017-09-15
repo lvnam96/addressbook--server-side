@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
 import ContactCard from './contact-card';
 import ContactItem from './contact-item';
@@ -267,7 +268,21 @@ class AddressBook extends React.Component {
         this.rmItem(contactId);
     }
     render() {
-        const API = this.props.API;
+        const API = this.props.API,
+            ContactItems = this.state.contacts.map((contact, idx) => (
+                <CSSTransition key={contact.id}
+                    classNames="fadeIn"
+                    timeout={{ enter: 1000, exit: 800 }}>
+                    <ContactItem key={contact.id}
+                        contact={contact}
+                        onClickEdit={this.handlerEditContactOnItem.bind(this, idx)}
+                        onClickRemove={this.handlerRmContactOnItem.bind(this, contact.id)}
+                        onClickOnItem={this.openContactDetails.bind(this, idx)} />
+                </CSSTransition>
+            )),
+            notifications = this.state.notiList.map((notiObj) => (
+                <NotiBar type={notiObj.notiType} msg={notiObj.notiMsg} key={notiObj.notiId}/>
+            ));
         return (
             <div>
                 <main className='main'>
@@ -275,19 +290,14 @@ class AddressBook extends React.Component {
                         <h1>Address Book</h1>
                     </header>
                     <ul className='contact-list'>
-                        {this.state.contacts.length !== 0 &&
-                            this.state.contacts.map((contact, idx) => (
-                                <ContactItem key={contact.id}
-                                    contact={contact}
-                                    onClickEdit={this.handlerEditContactOnItem.bind(this, idx)}
-                                    onClickRemove={this.handlerRmContactOnItem.bind(this, contact.id)}
-                                    onClickOnItem={this.openContactDetails.bind(this, idx)} />
-                        ))}
+                        <TransitionGroup>
+                        {this.state.contacts.length > 0 &&
+                            ContactItems
+                        }
+                        </TransitionGroup>
                     </ul>
                 </main>
-                {this.state.showNoti && this.state.notiList.map((notiObj) => (
-                    <NotiBar type={notiObj.notiType} msg={notiObj.notiMsg} key={notiObj.notiId}/>
-                ))}
+                {this.state.showNoti && notifications}
                 <MenuBar
                     totalContacts={API.listLength()}
                     onClickDisplayAll={this.displayAll}
