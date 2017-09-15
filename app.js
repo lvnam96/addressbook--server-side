@@ -242,6 +242,9 @@ const ADDRESS_BOOK = (function () {
     shouldBeSorted = () => {
         return needToBeReSorted;
     },
+    dataNeedToBeSorted = () => {
+        needToBeReSorted = true;
+    },
     dontSortAgain = () => {
         needToBeReSorted = false;
     },
@@ -392,6 +395,7 @@ const ADDRESS_BOOK = (function () {
         getBirthsIncoming,
         filterBirthsToday,
         shouldBeSorted,
+        dataNeedToBeSorted,
         dontSortAgain,
         sortContactsList,
         getContactsList,

@@ -194,6 +194,7 @@ class AddressBook extends React.Component {
                 const API = this.props.API;
                 API.replaceData(dataParsedFromTextFile);
                 API.saveDataToLocalStorage();
+                API.dataNeedToBeSorted();
                 this.displayAll();
                 this.showNoti('success', 'Your data is restored successfully!');
             }, false);
