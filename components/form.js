@@ -4,17 +4,27 @@ import PropTypes from 'prop-types';
 class Form extends React.Component {
     constructor(props) {
         super(props);
-        let data = this.props.data;
+        const {
+            name,
+            id,
+            color,
+            labels,
+            birth,
+            note,
+            email,
+            website,
+            phone
+        } = this.props;
         this.state = {
-            name: data.name,
-            id: data.id,
-            color: data.color,
-            labels: data.labels,
-            birth: data.birth,
-            note: data.note,
-            email: data.email,
-            website: data.website,
-            phone: data.phone
+            name,
+            id,
+            color,
+            labels,
+            birth,
+            note,
+            email,
+            website,
+            phone
         };
         this.cboxFamily;
         this.cboxFriends;
@@ -31,17 +41,15 @@ class Form extends React.Component {
     static get propTypes() {
         return {
             title: PropTypes.string.isRequired,
-            data: PropTypes.shape({
-                name: PropTypes.string.isRequired,
-                id: PropTypes.string.isRequired,
-                color: PropTypes.string.isRequired,
-                labels: PropTypes.arrayOf(PropTypes.string),
-                birth: PropTypes.string,
-                note: PropTypes.string,
-                email: PropTypes.string,
-                website: PropTypes.string,
-                phone: PropTypes.string
-            }).isRequired,
+            name: PropTypes.string.isRequired,
+            id: PropTypes.string.isRequired,
+            color: PropTypes.string.isRequired,
+            labels: PropTypes.arrayOf(PropTypes.string),
+            birth: PropTypes.string,
+            note: PropTypes.string,
+            email: PropTypes.string,
+            website: PropTypes.string,
+            phone: PropTypes.string,
             onClose: PropTypes.func.isRequired,
             onSave: PropTypes.func.isRequired,
             showNoti: PropTypes.func.isRequired,

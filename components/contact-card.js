@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 const ContactCard = function (props) {
     let month;
-    switch (parseInt(props.data.birth.split('-')[1])) {
+    switch (parseInt(props.birth.split('-')[1])) {
     case 1:
         month = 'Jan';
     break;
@@ -57,14 +57,14 @@ const ContactCard = function (props) {
                 </div>
                 <div className="contact-card__header">
                     <div className="contact-card__header__avt">
-                        <img src="http://res.cloudinary.com/nh0kvjpp0ybh/image/upload/v1502960147/photo3_styhnr.png" alt={`${props.data.name}'s avatar`} />
-                        <div className="contact-card__header__avt__first-letter" style={{backgroundColor: props.data.color}}>{props.data.name[0].toUpperCase()}</div>
+                        <img src="http://res.cloudinary.com/nh0kvjpp0ybh/image/upload/v1502960147/photo3_styhnr.png" alt={`${props.name}'s avatar`} />
+                        <div className="contact-card__header__avt__first-letter" style={{backgroundColor: props.color}}>{props.name[0].toUpperCase()}</div>
                     </div>
                     <div className="contact-card__header__name">
                         <div>
-                            <h2>{props.data.name}</h2>
+                            <h2>{props.name}</h2>
                             <div className="contact-card__header__tags">
-                                {props.data.labels.map((label) => {
+                                {props.labels.map((label) => {
                                     switch (label) {
                                         case 'family':
                                             return (<span className="contact-card__header__tag-family" key={1}>Family</span>);
@@ -81,9 +81,9 @@ const ContactCard = function (props) {
                 <div className="contact-card__body">
                     <p>Contact Details</p>
                     <div className="contact-card__details">
-                        {props.data.phone && (<div>
+                        {props.phone && (<div>
                             <div className="contact-card__details__info">
-                                <a href={"tel:+84" + props.data.phone}>+84{props.data.phone}</a>
+                                <a href={"tel:+84" + props.phone}>+84{props.phone}</a>
                             </div>
                             <div className="contact-card__details__icon">
                                 <div>
@@ -91,9 +91,9 @@ const ContactCard = function (props) {
                                 </div>
                             </div>
                         </div>)}
-                        {props.data.birth && (<div>
+                        {props.birth && (<div>
                             <div className="contact-card__details__info">
-                                <a>{month} {props.data.birth.split('-')[2]}, {props.data.birth.split('-')[0]}</a>
+                                <a>{month} {props.birth.split('-')[2]}, {props.birth.split('-')[0]}</a>
                             </div>
                             <div className="contact-card__details__icon">
                                 <div>
@@ -101,9 +101,9 @@ const ContactCard = function (props) {
                                 </div>
                             </div>
                         </div>)}
-                        {props.data.jobTitle && (<div>
+                        {props.jobTitle && (<div>
                             <div className="contact-card__details__info">
-                                <span>{props.data.jobTitle}</span>
+                                <span>{props.jobTitle}</span>
                             </div>
                             <div className="contact-card__details__icon">
                                 <div>
@@ -111,9 +111,9 @@ const ContactCard = function (props) {
                                 </div>
                             </div>
                         </div>)}
-                        {props.data.email && (<div>
+                        {props.email && (<div>
                             <div className="contact-card__details__info">
-                                <span>{props.data.email}</span>
+                                <span>{props.email}</span>
                             </div>
                             <div className="contact-card__details__icon">
                                 <div>
@@ -121,9 +121,9 @@ const ContactCard = function (props) {
                                 </div>
                             </div>
                         </div>)}
-                        {props.data.address && (<div>
+                        {props.address && (<div>
                             <div className="contact-card__details__info">
-                                <span>{props.data.address}</span>
+                                <span>{props.address}</span>
                             </div>
                             <div className="contact-card__details__icon">
                                 <div>
@@ -131,9 +131,9 @@ const ContactCard = function (props) {
                                 </div>
                             </div>
                         </div>)}
-                        {props.data.website && (<div>
+                        {props.website && (<div>
                             <div className="contact-card__details__info">
-                                <span>{props.data.website}</span>
+                                <span>{props.website}</span>
                             </div>
                             <div className="contact-card__details__icon">
                                 <div>
@@ -141,9 +141,9 @@ const ContactCard = function (props) {
                                 </div>
                             </div>
                         </div>)}
-                        {props.data.note && (<div>
+                        {props.note && (<div>
                             <div className="contact-card__details__info">
-                                <span>{props.data.note}</span>
+                                <span>{props.note}</span>
                             </div>
                             <div className="contact-card__details__icon">
                                 <div>
@@ -151,9 +151,9 @@ const ContactCard = function (props) {
                                 </div>
                             </div>
                         </div>)}
-                        {props.data.relationship && (<div>
+                        {props.relationship && (<div>
                             <div className="contact-card__details__info">
-                                <span>{props.data.relationship}</span>
+                                <span>{props.relationship}</span>
                             </div>
                             <div className="contact-card__details__icon">
                                 <div>
@@ -169,7 +169,6 @@ const ContactCard = function (props) {
 };
 
 ContactCard.propTypes = {
-    data: PropTypes.object.isRequired,
     onClose: PropTypes.func.isRequired,
     onEditContact: PropTypes.func.isRequired,
     onRemoveContact: PropTypes.func.isRequired

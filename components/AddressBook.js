@@ -274,7 +274,7 @@ class AddressBook extends React.Component {
                     classNames="fadeIn"
                     timeout={{ enter: 1000, exit: 800 }}>
                     <ContactItem key={contact.id}
-                        contact={contact}
+                        {...contact}
                         onClickEdit={this.handlerEditContactOnItem.bind(this, idx)}
                         onClickRemove={this.handlerRmContactOnItem.bind(this, contact.id)}
                         onClickOnItem={this.openContactDetails.bind(this, idx)} />
@@ -314,14 +314,14 @@ class AddressBook extends React.Component {
                     showNoti={this.showNoti} />
                 {this.state.showContactDetails &&
                     <ContactCard
-                    data={this.state.contacts[this.state.contactIndex]}
+                    {...(this.state.contacts[this.state.contactIndex])}
                     onClose={this.closeContactDetails}
                     onEditContact={this.handlerEditContact}
                     onRemoveContact={this.handlerRmContact} />}
                 {this.state.showForm &&
                     <Form
                     title={this.state.contactIndex > -1 ? 'Edit Contact' : 'Add new contact'}
-                    data={this.state.contactIndex > -1 ?
+                    {...(this.state.contactIndex > -1 ?
                         this.state.contacts[this.state.contactIndex]
                         :
                         {
@@ -334,7 +334,7 @@ class AddressBook extends React.Component {
                             email: '',
                             website: '',
                             phone: ''
-                        }}
+                        })}
                     onClose={this.closeForm}
                     onSave={this.state.contactIndex > -1 ?
                         this.saveEditedContact
