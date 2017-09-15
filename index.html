@@ -16,11 +16,9 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,700" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css" integrity="sha384-7tIwW4quYS2+TZCwuAPnUY+dRqg28ylzlIoVXAwpfiTs+CMKsAOSsWYQ96c/ZnV+" crossorigin="anonymous"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.6.1/css/pikaday.min.css" integrity="sha384-8I8HFTClHyM0SnB0wheCINKj52+03PhZDwnstnnxlT4OwCxORiAeFlmQ1oq4pk8D" crossorigin="anonymous">
-
     <!-- <link rel="stylesheet" href="./css/style.css"/> -->
 
-    <!--This is a best practice / advice from:
+    <!--This is a good practice / advice from:
     https://stackoverflow.com/questions/436411/where-should-i-put-script-tags-in-html-markup-->
     <!-- <script src="js/birthdayApp.min.js" async></script> -->
 </head>
@@ -43,33 +41,7 @@
              fjs.parentNode.insertBefore(js, fjs);
         }(document, 'script', 'facebook-jssdk'));
     </script> -->
-    <div class="body-wrapper">
-        
-    </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.6.1/pikaday.min.js" integrity="sha384-rx0BV63HhgGIr8YUlDXei/T7jwJ1aYuvH84xT11XN/SHH1jnCs7YohLWx+0Hut5v" crossorigin="anonymous"></script>
+    <div class="body-wrapper"></div>
     <script src="./bundle.js"></script>
-    <script>
-        const picker = new Pikaday({
-            field: document.getElementsByClassName('birth-reg-form__pikadayInput')[0],
-            yearRange: [1950, 2020], 
-            format: 'D/M/YYYY',
-            toString: function(date, format) {
-                // you should do formatting based on the passed format,
-                // but we will just return 'D/M/YYYY' for simplicity
-                const day = date.getDate(),
-                      month = date.getMonth() + 1,
-                      year = date.getFullYear();
-                return day + '/' + month + '/' + year;
-            },
-            parse: function(dateString, format) {
-                // dateString is the result of `toString` method
-                const parts = dateString.split('/'),
-                      day = parseInt(parts[0], 10),
-                      month = parseInt(parts[1] - 1, 10),
-                      year = parseInt(parts[1], 10);
-                return new Date(year, month, day);
-            }
-        });
-    </script>
 </body>
 </html>
