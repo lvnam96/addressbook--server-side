@@ -116,7 +116,7 @@
 
 .fadeIn-exit.fadeIn-exit-active {
     opacity: .3;
-    transform: translateX(100%) skewX(15deg);
+    transform: translateX(100%);
     transition: .8s cubic-bezier(.35,-.58,.37,.89);
     transition-property: transform, opacity;
 }
@@ -124,6 +124,7 @@
 .contact-item {
     &__avt {
         flex: 0 1 3em;
+        min-width: 3em;
         max-width: 3em;
         width: 3em;
         height: 3em;
@@ -161,6 +162,9 @@
     &__name {
         margin-right: auto;
         line-height: 3em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     &__birth {

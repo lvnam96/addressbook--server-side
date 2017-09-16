@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-// import img from '../img/party-pattern.jpg';
-
 const ContactItem = function (props) {
     return (
         <li className={"contact-list__item" + (props.hpbd ? ' contact-list__item--hpbd' : '')}
