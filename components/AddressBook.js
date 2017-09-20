@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
@@ -8,7 +8,7 @@ import Form from './form';
 import MenuBar from './menu-bar';
 import NotiBar from './noti-bar';
 
-class AddressBook extends React.Component {
+class AddressBook extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -23,6 +23,11 @@ class AddressBook extends React.Component {
         this.notiMsg;
         this.notiType;// 'alert' or 'success' or 'error'
         this.presentFilterState = 'all';// or 'week' or 'month'
+        this.newPerson = {
+            name: '',
+            id: 'example id',
+            labels: [],
+        };
         this.displayAll = this.displayAll.bind(this);
         this.filterBirthsInWeek = this.filterBirthsInWeek.bind(this);
         this.filterBirthsInMonth = this.filterBirthsInMonth.bind(this);
@@ -88,6 +93,9 @@ class AddressBook extends React.Component {
         });
     }
     openForm(index) {
+        if (index === -1) {
+            this.newPerson.color = this.props.API.getRandomColor();
+        }
         this.setState({
             contactIndex: index,
             showForm: true
@@ -322,19 +330,7 @@ class AddressBook extends React.Component {
                     <Form
                     title={this.state.contactIndex > -1 ? 'Edit Contact' : 'Add new contact'}
                     {...(this.state.contactIndex > -1 ?
-                        this.state.contacts[this.state.contactIndex]
-                        :
-                        {
-                            name: '',
-                            id: 'example id',
-                            color: API.getRandomColor(),
-                            labels: [],
-                            birth: '',
-                            note: '',
-                            email: '',
-                            website: '',
-                            phone: ''
-                        })}
+                        this.state.contacts[this.state.contactIndex] : this.newPerson)}
                     onClose={this.closeForm}
                     onSave={this.state.contactIndex > -1 ?
                         this.saveEditedContact
