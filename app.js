@@ -337,21 +337,20 @@ const ADDRESS_BOOK = (function () {
         }
     },
     editContact = (editedContact, idx) => {
-        // this func editContact is only currying func (partial application) in this app.
-        if (typeof idx === 'undefined') {
-            return (idx) => {
-                contactsList[idx].name = editedContact.name;
-                contactsList[idx].color = editedContact.color;
-                contactsList[idx].birth = editedContact.birth;
-                contactsList[idx].labels = editedContact.labels;
-                contactsList[idx].email = editedContact.email;
-                contactsList[idx].phone = editedContact.phone;
-                contactsList[idx].website = editedContact.website;
-                contactsList[idx].note = editedContact.note;
-                isModified = true;
-                needToBeReSorted = true;
-            };
-        }
+        // if (typeof idx === 'undefined') {// currying func (partially applied func) pattern
+        //     return (idx) => {
+        //         contactsList[idx].name = editedContact.name;
+        //         contactsList[idx].color = editedContact.color;
+        //         contactsList[idx].birth = editedContact.birth;
+        //         contactsList[idx].labels = editedContact.labels;
+        //         contactsList[idx].email = editedContact.email;
+        //         contactsList[idx].phone = editedContact.phone;
+        //         contactsList[idx].website = editedContact.website;
+        //         contactsList[idx].note = editedContact.note;
+        //         isModified = true;
+        //         needToBeReSorted = true;
+        //     };
+        // }
         contactsList[idx].name = editedContact.name;
         contactsList[idx].color = editedContact.color;
         contactsList[idx].birth = editedContact.birth;
