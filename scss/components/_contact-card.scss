@@ -207,8 +207,13 @@
             width: 80%;
             display: inline-block;
 
-            > * {
+            > span {
                 line-height: 3em;
+
+                > a {
+                    text-decoration: none;
+                    color: currentColor;
+                }
             }
 
             &:hover + .contact-card__details__icon > div > i {

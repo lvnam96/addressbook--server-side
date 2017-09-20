@@ -3,44 +3,47 @@ import PropTypes from 'prop-types';
 
 const ContactCard = function (props) {
     let month;
-    switch (parseInt(props.birth.split('-')[1])) {
-    case 1:
-        month = 'Jan';
-    break;
-    case 2:
-        month = 'Feb';
-    break;
-    case 3:
-        month = 'Mar';
-    break;
-    case 4:
-        month = 'Apr';
-    break;
-    case 5:
-        month = 'May';
-    break;
-    case 6:
-        month = 'Jun';
-    break;
-    case 7:
-        month = 'Jul';
-    break;
-    case 8:
-        month = 'Aug';
-    break;
-    case 9:
-        month = 'Sep';
-    break;
-    case 10:
-        month = 'Oct';
-    break;
-    case 11:
-        month = 'Nov';
-    break;
-    case 12:
-        month = 'Dec';
-    break;
+    if (props.birth) {
+        switch (parseInt(props.birth.split('-')[1])) {
+        case 1:
+            month = 'Jan';
+        break;
+        case 2:
+            month = 'Feb';
+        break;
+        case 3:
+            month = 'Mar';
+        break;
+        case 4:
+            month = 'Apr';
+        break;
+        case 5:
+            month = 'May';
+        break;
+        case 6:
+            month = 'Jun';
+        break;
+        case 7:
+            month = 'Jul';
+        break;
+        case 8:
+            month = 'Aug';
+        break;
+        case 9:
+            month = 'Sep';
+        break;
+        case 10:
+            month = 'Oct';
+        break;
+        case 11:
+            month = 'Nov';
+        break;
+        case 12:
+            month = 'Dec';
+        break;
+        }
     }
+    
     return (
         <div className="overlay" onClick={props.onClose}>
             <div className="contact-card" onClick={e => e.stopPropagation()}>
@@ -82,7 +85,7 @@ const ContactCard = function (props) {
                     <div className="contact-card__details">
                         {props.phone && (<div>
                             <div className="contact-card__details__info">
-                                <a href={"tel:+84" + props.phone}>+84{props.phone}</a>
+                                <span><a href={"tel:+84" + props.phone} rel="nofollow">+84{props.phone}</a></span>
                             </div>
                             <div className="contact-card__details__icon">
                                 <div>
@@ -92,7 +95,7 @@ const ContactCard = function (props) {
                         </div>)}
                         {props.birth && (<div>
                             <div className="contact-card__details__info">
-                                <a>{month} {props.birth.split('-')[2]}, {props.birth.split('-')[0]}</a>
+                                <span>{month} {props.birth.split('-')[2]}, {props.birth.split('-')[0]}</span>
                             </div>
                             <div className="contact-card__details__icon">
                                 <div>
@@ -112,7 +115,7 @@ const ContactCard = function (props) {
                         </div>)}
                         {props.email && (<div>
                             <div className="contact-card__details__info">
-                                <span>{props.email}</span>
+                                <span><a href={"mailto:" + props.email}>{props.email}</a></span>
                             </div>
                             <div className="contact-card__details__icon">
                                 <div>
@@ -132,7 +135,7 @@ const ContactCard = function (props) {
                         </div>)}
                         {props.website && (<div>
                             <div className="contact-card__details__info">
-                                <span>{props.website}</span>
+                                <span><a href={props.website}>{props.website}</a></span>
                             </div>
                             <div className="contact-card__details__icon">
                                 <div>
