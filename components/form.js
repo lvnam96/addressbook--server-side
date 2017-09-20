@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-class Form extends React.Component {
+class Form extends Component {
     constructor(props) {
         super(props);
         const {
@@ -9,11 +9,11 @@ class Form extends React.Component {
             id,
             color,
             labels,
-            birth,
-            note,
-            email,
-            website,
-            phone
+            birth = '',
+            note = '',
+            email = '',
+            website = '',
+            phone = ''
         } = this.props;
         this.state = {
             name,
@@ -29,6 +29,8 @@ class Form extends React.Component {
         this.cboxFamily;
         this.cboxFriends;
         this.cboxCoWorker;
+        this.firstNotSpecialCharPtrn = /[^\u0000-\u007F]|[0-9a-zA-Z]/g;
+        this.spacePtrn = /\s/g;
         this.handlerSaveForm = this.handlerSaveForm.bind(this);
         this.changeColor = this.changeColor.bind(this);
         this.handlerChangeName = this.handlerChangeName.bind(this);
@@ -37,6 +39,8 @@ class Form extends React.Component {
         this.handlerChangeWebsite = this.handlerChangeWebsite.bind(this);
         this.handlerChangeEmail = this.handlerChangeEmail.bind(this);
         this.handlerChangeNote = this.handlerChangeNote.bind(this);
+        this.preventCloseForm = this.preventCloseForm.bind(this);
+        this.resetForm = this.resetForm.bind(this);
     }
     static get propTypes() {
         return {
@@ -44,50 +48,135 @@ class Form extends React.Component {
             name: PropTypes.string.isRequired,
             id: PropTypes.string.isRequired,
             color: PropTypes.string.isRequired,
-            labels: PropTypes.arrayOf(PropTypes.string),
-            birth: PropTypes.string,
-            note: PropTypes.string,
-            email: PropTypes.string,
-            website: PropTypes.string,
-            phone: PropTypes.string,
+            labels: PropTypes.arrayOf(PropTypes.string).isRequired,
             onClose: PropTypes.func.isRequired,
             onSave: PropTypes.func.isRequired,
             showNoti: PropTypes.func.isRequired,
             getRandomColor: PropTypes.func.isRequired
         };
     }
-    handlerChangeName(e) {
-        this.setState({ name: e.target.value });
+    addFilledClass(e) {
+        e.target.parentNode.classList.add('form-body__input--filled');
     }
-    handlerChangePhone(e) {
-        this.setState({ phone: e.target.value });
+    checkInputFilled(e) {
+        const inputElem = e.target;
+        if (inputElem.value === '') {
+            inputElem.parentNode.classList.remove('form-body__input--filled');
+        }
     }
-    handlerChangeBirth(e) {
-        this.setState({ birth: e.target.value });
+    componentDidMount() {
+        const infoKeys = Object.keys(this.state);
+        for (let info of infoKeys) {
+            switch (info) {
+            case 'labels':
+            case 'id':
+            case 'color':
+                continue;
+            break;
+            }
+            if (this.state[info]) {
+                document.getElementById(`inputs__${info}`).parentNode.classList.add('form-body__input--filled');
+            }
+        }
     }
-    handlerChangeWebsite(e) {
-        this.setState({ website: e.target.value });
+    handlerChangeName({ target: { value: name } }) {
+        if (name !== ' ' && name.length < 25) {
+            this.setState({ name });
+        }
+    }
+    handlerChangePhone({ target: { value: phone } }) {
+        if (phone[0] !== '0') {
+            this.setState({ phone });
+        }
+    }
+    handlerChangeBirth({ target: { value: birth } }) {
+        this.setState({ birth });
+    }
+    handlerChangeWebsite({ target: { value: website } }) {
+        this.setState({ website });
     }
     handlerChangeEmail(e) {
-        this.setState({ email: e.target.value });
+        const email = e.target.value.replace(this.spacePtrn, '');
+        this.setState({ email });
     }
-    handlerChangeNote(e) {
-        this.setState({ note: e.target.value });
+    handlerChangeNote({ target: { value: note } }) {
+        this.setState({ note });
+    }
+    static fixedEncodeURIComponent(str) {
+        return encodeURIComponent(str).replace(/[!'()*]/g, c => '%' + c.charCodeAt(0).toString(16));
+    }
+    static fixedEncodeURI(str) {
+        return encodeURI(str).replace(/%5B/g, '[').replace(/%5D/g, ']');
+    }
+    resetForm() {
+        this.setState({
+            name: '',
+            labels: [],
+            birth: '',
+            note: '',
+            email: '',
+            website: '',
+            phone: ''
+        });
+        const infoKeys = Object.keys(this.state);
+        for (let info of infoKeys) {
+            switch (info) {
+            case 'labels':
+            case 'id':
+            case 'color':
+                continue;
+            break;
+            }
+            if (this.state[info]) {
+                document.getElementById(`inputs__${info}`).parentNode.classList.remove('form-body__input--filled');
+            }
+        }
     }
     handlerSaveForm(e) {
         e.preventDefault();
+        let {
+            name,
+            id,
+            color,
+            labels,
+            birth,
+            note,
+            email,
+            website,
+            phone
+        } = this.state;
 
-        if (this.state.name === '') {
+        name = name.trim();
+        if (name === '') {
             this.props.showNoti('error', 'Please type a name');
             return;
+        } else {
+            this.state.name = name;
         }
 
-        // format data for labels
+        this.state.website = (website => {
+            website = website.trim();
+            if (website.length) {
+                const hasURLSyntax = website.search(/^https?:\/\/\S+/g) === 0 ? true : false,
+                    hasOnlyProtocol = website.search(/^https?:\/\/$|^h?ttps?:\/\/$|^ht?tps?:\/\/$|^http?s?:\/\/$/g) === 0 ? true : false;
+                if (hasURLSyntax) {
+                    return Form.fixedEncodeURI(website);
+                } else if (hasOnlyProtocol) {
+                    return '';
+                } else {
+                    return "http://" + Form.fixedEncodeURIComponent(website);
+                }
+            } else return website;
+        })(website);
+
+        // format labels data
         let newLabels = [];
         if (this.cboxFamily.checked) { newLabels.push('family') }
         if (this.cboxCoWorker.checked) { newLabels.push('coWorker') }
         if (this.cboxFriends.checked) { newLabels.push('friends') }
         this.state.labels = newLabels;
+
+        this.state.note = this.state.note.trim();
 
         this.props.onSave(this.state);
     }
@@ -96,10 +185,15 @@ class Form extends React.Component {
             color: this.props.getRandomColor()
         });
     }
+    preventCloseForm(e) {
+        e.stopPropagation();
+    }
     render() {
+        const firstLetterIdx = this.state.name.search(this.firstNotSpecialCharPtrn),
+            firstLetter = this.state.name.trim() !== '' && firstLetterIdx !== -1 ? this.state.name[firstLetterIdx].toUpperCase() : '?';
         return (
             <div className='overlay' onClick={this.props.onClose}>
-                <div className='form-container' onClick={e => e.stopPropagation()}>
+                <div className='form-container' onClick={this.preventCloseForm}>
                     <form onSubmit={this.handlerSaveForm}>
                         <div className='form-header'>
                             <div className='form-header__title'>
@@ -111,19 +205,23 @@ class Form extends React.Component {
                         </div>
                         <div className='form-body'>
                             <div className='form-body__avt'>
-                                <img src='http://res.cloudinary.com/nh0kvjpp0ybh/image/upload/v1502960147/photo3_styhnr.png' />
                                 <div className="form-body__avt__first-letter"
-                                style={{backgroundColor: this.state.color}}
-                                title='We have not support avatar yet! So... choose a random color for this contact!'
-                                ref={thisDiv => { this.avtDOM = thisDiv; }}
-                                onClick={this.changeColor}>
-                                    {this.state.name ? this.state.name[0].toUpperCase() : '?'}
+                                    style={{backgroundColor: this.state.color}}
+                                    title='We have not support avatar yet! So... choose a random color for this contact!'
+                                    ref={thisDiv => { this.avtDOM = thisDiv; }}
+                                    onClick={this.changeColor}>
+                                    {firstLetter}
                                 </div>
                             </div>
                             <div className='form-body__inputs'>
-                                <div className='form-body__inputs__name'>
-                                    <input type='text' id='inputs__name' required value={this.state.name} onChange={this.handlerChangeName} />
-                                    <label htmlFor='inputs__name'>Name</label>
+                                <div className='form-body__input form-body__inputs__name'>
+                                    <input type='text' id='inputs__name' required autoFocus
+                                        value={this.state.name}
+                                        onChange={this.handlerChangeName}
+                                        onFocus={this.addFilledClass}
+                                        onBlur={this.checkInputFilled}
+                                        className="form__input-field"/>
+                                    <label htmlFor='inputs__name'><span>Name</span></label>
                                 </div>
                                 <div className='form-body__inputs__labels'>
                                     <div className='form-body__inputs__labels__family'>
@@ -148,38 +246,66 @@ class Form extends React.Component {
                                         <label htmlFor='checkbox__friends'>Friends</label>
                                     </div>
                                 </div>
-                                <div className='form-body__inputs__phone'>
-                                    <input type='number' id='inputs__phone' value={this.state.phone} onChange={this.handlerChangePhone} />
-                                    <label htmlFor='inputs__phone'>Phone</label>
+                                <div className='form-body__input form-body__inputs__phone'>
+                                    <input type='number' id='inputs__phone'
+                                        value={this.state.phone}
+                                        onChange={this.handlerChangePhone}
+                                        onFocus={this.addFilledClass}
+                                        onBlur={this.checkInputFilled}
+                                        className="form__input-field"/>
+                                    <label htmlFor='inputs__phone'><span>Phone</span></label>
                                 </div>
-                                <div className='form-body__inputs__birth'>
-                                    <input type='date' id='inputs__birth' value={this.state.birth} onChange={this.handlerChangeBirth} />
-                                    <label htmlFor='inputs__birth'>Birth</label>
+                                <div className='form-body__input form-body__inputs__birth'>
+                                    <input type='date' id='inputs__birth'
+                                        value={this.state.birth}
+                                        onChange={this.handlerChangeBirth}
+                                        onFocus={this.addFilledClass}
+                                        onBlur={this.checkInputFilled}
+                                        className="form__input-field"/>
+                                    <label htmlFor='inputs__birth'><span>Birth</span></label>
                                 </div>
-                                <div className='form-body__inputs__email'>
-                                    <input type='email' id='inputs__email' value={this.state.email} onChange={this.handlerChangeEmail} />
-                                    <label htmlFor='inputs__email'>Email</label>
+                                <div className='form-body__input form-body__inputs__email'>
+                                    <input type='email' id='inputs__email'
+                                        value={this.state.email}
+                                        onChange={this.handlerChangeEmail}
+                                        onFocus={this.addFilledClass}
+                                        onBlur={this.checkInputFilled}
+                                        className="form__input-field"/>
+                                    <label htmlFor='inputs__email'><span>Email</span></label>
                                 </div>
-                                <div className='form-body__inputs__website'>
-                                    <input type='text' id='inputs__website' value={this.state.website} onChange={this.handlerChangeWebsite} />
-                                    <label htmlFor='inputs__website'>Website</label>
+                                <div className='form-body__input form-body__inputs__website'>
+                                    <input type='text' id='inputs__website'
+                                        value={this.state.website}
+                                        onChange={this.handlerChangeWebsite}
+                                        onFocus={this.addFilledClass}
+                                        onBlur={this.checkInputFilled}
+                                        className="form__input-field"
+                                        pattern="^https?:\/\/\S*"
+                                        title="Website's link should start by 'http://' or 'https://'"/>
+                                    <label htmlFor='inputs__website'><span>Website</span></label>
                                 </div>
-                                <div className='form-body__inputs__note'>
-                                    <textarea id='inputs__note' value={this.state.note} onChange={this.handlerChangeNote} />
-                                    <label htmlFor='inputs__note'>Note</label>
+                                <div className='form-body__input form-body__inputs__note'>
+                                    <textarea id='inputs__note'
+                                        value={this.state.note}
+                                        onChange={this.handlerChangeNote}
+                                        onFocus={this.addFilledClass}
+                                        onBlur={this.checkInputFilled}
+                                        className="form__input-field"/>
+                                    <label htmlFor='inputs__note'><span>Note</span></label>
                                 </div>
                             </div>
                         </div>
                         <div className='form-footer'>
-                            <div className='form-footer__reset-btn'>
-                                <span>Reset</span>
-                            </div>
-                            <div className='form-footer__cancel-btn' onClick={this.props.onClose}>
-                                <span>Cancel</span>
-                            </div>
-                            <div className='form-footer__save-btn' onClick={this.handlerSaveForm}>
-                                <span>Save</span>
-                            </div>
+                            <input type='reset' value='Reset'
+                                className='form-footer__reset-btn'
+                                onClick={this.resetForm}/>
+                            <input type='button' value='Cancel'
+                                className='form-footer__cancel-btn'
+                                onClick={this.props.onClose}/>
+                            <input type='submit'
+                                value={this.props.title === 'Edit Contact' ? 'Save' : 'Add'}
+                                className='form-footer__save-btn'
+                                onClick={this.handlerSaveForm}/>
                         </div>
                     </form>
                 </div>
