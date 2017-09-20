@@ -422,8 +422,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 ADDRESS_BOOK.saveDataToLocalStorage();
                 ADDRESS_BOOK.dontSaveDataToLocalStorageAgain();
             }
-            if (e) { e.returnValue = 'Sure?'; }// For IE and Firefox prior to version 4
-            return 'Sure?';// For Safari
+            // if (e) { e.returnValue = 'Sure?'; }// For IE and Firefox prior to version 4
+            // return 'Sure?';// For Safari
         };
 
     ReactDOM.render(<AddressBook API={ADDRESS_BOOK} />, document.getElementsByClassName('body-wrapper')[0]);
