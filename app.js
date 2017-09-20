@@ -323,8 +323,10 @@ const ADDRESS_BOOK = (function () {
                         } else {
                             callbackFunc(i);
                         }
+                        break;// Found contact -> execute callback -> stop loop (cause it's no need to loop anymore)
+                    } else {
+                        return  i;
                     }
-                    break;// Found contact -> execute callback -> stop loop (cause it's no need to loop anymore)
                 }
             }
         }
