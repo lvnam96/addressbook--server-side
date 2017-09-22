@@ -64,7 +64,7 @@ class Form extends Component {
             inputElem.parentNode.classList.remove('form-body__input--filled');
         }
     }
-    componentDidMount() {
+    checkInputsHaveValueThen(callback) {
         const infoKeys = Object.keys(this.state);
         for (let info of infoKeys) {
             switch (info) {
@@ -75,9 +75,14 @@ class Form extends Component {
             break;
             }
             if (this.state[info]) {
-                document.getElementById(`inputs__${info}`).parentNode.classList.add('form-body__input--filled');
+                callback(info);
             }
         }
+    }
+    componentDidMount() {
+        this.checkInputsHaveValueThen((info) => {
+            document.getElementById(`inputs__${info}`).parentNode.classList.add('form-body__input--filled');
+        });
     }
     handlerChangeName({ target: { value: name } }) {
         if (name !== ' ' && name.length < 25) {
@@ -118,19 +123,9 @@ class Form extends Component {
             website: '',
             phone: ''
         });
-        const infoKeys = Object.keys(this.state);
-        for (let info of infoKeys) {
-            switch (info) {
-            case 'labels':
-            case 'id':
-            case 'color':
-                continue;
-            break;
-            }
-            if (this.state[info]) {
-                document.getElementById(`inputs__${info}`).parentNode.classList.remove('form-body__input--filled');
-            }
-        }
+        this.checkInputsHaveValueThen((info) => {
+            document.getElementById(`inputs__${info}`).parentNode.classList.remove('form-body__input--filled');
+        });
     }
     handlerSaveForm(e) {
         e.preventDefault();
@@ -166,7 +161,9 @@ class Form extends Component {
                 } else {
                     return "http://" + Form.fixedEncodeURIComponent(website);
                 }
-            } else return website;
+            } else {
+                return website;
+            }
         })(website);
 
         // format labels data
@@ -270,22 +267,24 @@ class Form extends Component {
                                         onChange={this.handlerChangeEmail}
                                         onFocus={this.addFilledClass}
                                         onBlur={this.checkInputFilled}
-                                        className="form__input-field"/>
+                                        className="form__input-field"
+                                        placeholder="hello@garyle.me"/>
                                     <label htmlFor='inputs__email'><span>Email</span></label>
                                 </div>
                                 <div className='form-body__input form-body__inputs__website'>
-                                    <input type='text' id='inputs__website'
+                                    <input type='url' id='inputs__website'
                                         value={this.state.website}
                                         onChange={this.handlerChangeWebsite}
                                         onFocus={this.addFilledClass}
                                         onBlur={this.checkInputFilled}
                                         className="form__input-field"
                                         pattern="^https?:\/\/\S*"
+                                        placeholder="https://facebook.com/lvnam96"
                                         title="Website's link should start by 'http://' or 'https://'"/>
                                     <label htmlFor='inputs__website'><span>Website</span></label>
                                 </div>
                                 <div className='form-body__input form-body__inputs__note'>
-                                    <textarea id='inputs__note'
+                                    <input type="text" id='inputs__note'
                                         value={this.state.note}
                                         onChange={this.handlerChangeNote}
                                         onFocus={this.addFilledClass}
