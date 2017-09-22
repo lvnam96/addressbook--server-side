@@ -28,6 +28,7 @@ class AddressBook extends Component {
             id: 'example id',
             labels: [],
         };
+        this.bodyElem = document.body;
         this.displayAll = this.displayAll.bind(this);
         this.filterBirthsInWeek = this.filterBirthsInWeek.bind(this);
         this.filterBirthsInMonth = this.filterBirthsInMonth.bind(this);
@@ -86,11 +87,13 @@ class AddressBook extends Component {
             contactIndex: index,
             showContactDetails: true
         });
+        this.bodyElem.classList.add('body--no-scroll');
     }
     closeContactDetails() {
         this.setState({
             showContactDetails: false
         });
+        this.bodyElem.classList.remove('body--no-scroll');
     }
     openForm(index) {
         if (index === -1) {
@@ -100,11 +103,15 @@ class AddressBook extends Component {
             contactIndex: index,
             showForm: true
         });
+        this.bodyElem.classList.add('body--no-scroll');
     }
     closeForm() {
         this.setState({
             showForm: false
         });
+        if (!this.state.showContactDetails) {
+            this.bodyElem.classList.remove('body--no-scroll');
+        }
     }
     refresh() {
         let newData;
@@ -216,7 +223,7 @@ class AddressBook extends Component {
     bckpData(e) {
         if ('Blob' in window) {
             function destroyClickedElement(e) {
-                document.body.removeChild(e.target);
+                this.bodyElem.removeChild(e.target);
             }
             let fileName = prompt('Type the name for your backup file:', 'contacts_backupFile.txt');
             fileName = (fileName === '' ? 'contacts_backupFile.txt' : fileName); 
@@ -238,7 +245,7 @@ class AddressBook extends Component {
                         downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
                         downloadLink.addEventListener('click', destroyClickedElement);
                         downloadLink.style.display = 'none';
-                        document.body.appendChild(downloadLink);
+                        this.bodyElem.appendChild(downloadLink);
                     }
                     downloadLink.click();
                 }
