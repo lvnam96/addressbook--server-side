@@ -238,7 +238,9 @@
     .contact-list {
         width: 90%;
     }
+}
 
+@media (min-width: 500px) and (hover) {
     .contact-item__buttons > div {
         visibility: hidden;
         display: inline-block;
@@ -262,5 +264,20 @@
         font-size: 4em;
         line-height: .8em;
         margin: 50px auto;
+    }
+}
+
+@media (hover) {
+    .contact-list__item:hover {
+        background-color: #e0e0e0;
+
+        .contact-item__checkbox-label {
+            display: block;
+        }
+
+        .contact-item__avt__first-letter,
+        .contact-item__avt__img {
+            display: none;
+        }
     }
 }
