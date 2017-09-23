@@ -32,14 +32,16 @@ const MenuBar = function (props) {
                     <i className='fa fa-calendar'></i>
                     <span>... current month</span>
                 </div>
-                <div className='main-nav__item trash-btn' title='Long-press this button to delete all contacts'
+                <div className={'main-nav__item trash-btn' +
+                    (props.numOfCheckedItems > 0 ? ' lighter' : '')}
+                    title='Long-press this button to delete all contacts'
                     onMouseDown={props.onSetTimer}
                     onMouseUp={props.onClearTimer}
                     onTouchStart={props.onSetTimer}
                     onTouchEnd={props.onClearTimer}
-                    onClick={e => props.showNoti('alert', 'Long-press to delete all contacts')}>
+                    onClick={props.onClickDelete}>
                     <i className='fa fa-trash-o'></i>
-                    <span>Delete all contacts</span>
+                    <span>Delete {props.numOfCheckedItems > 0 ? 'checked' : 'all'} contacts</span>
                 </div>
                 <input type='checkbox' id='bckp-rstr-toggle' style={{display: 'none'}} />
                 <label htmlFor='bckp-rstr-toggle' className='main-nav__item' onClick={props.onClickOnBackupMenu}>
@@ -72,7 +74,7 @@ MenuBar.propTypes = {
     onClickAddMenu: PropTypes.func.isRequired,
     onFilterBirthsInWeek: PropTypes.func.isRequired,
     onFilterBirthsInMonth: PropTypes.func.isRequired,
-    showNoti: PropTypes.func.isRequired
+    onClickDelete: PropTypes.func.isRequired
 };
 
 export default MenuBar;

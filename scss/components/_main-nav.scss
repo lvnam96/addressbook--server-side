@@ -50,11 +50,14 @@
             &:active {
                 cursor: wait;
             }
-        }
-        // &:nth-child(3) {}
-        // &:nth-child(4) {}
-        &__ico--rotate {
-            transform: rotate(45deg);
+
+            &.lighter {
+                color: rgba(253,33,73,.7);
+
+                &:hover {
+                    color: rgb(253,33,73);
+                }
+            }
         }
 
         span {
