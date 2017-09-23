@@ -293,7 +293,7 @@ class AddressBook extends Component {
             if (confirm('Are you want to delete these checked contacts?')) {
                 API.find(this.state.checkedItems, API.rmContact);
                 this.refresh();
-                this.state.checkedItems = [];
+                this.setState({ checkedItems: [] });
             }
         } else {
             this.showNoti('alert', 'Long-press to delete all contacts');
