@@ -17,7 +17,8 @@ class AddressBook extends Component {
             showContactDetails: false,
             showForm: false,
             showNoti: false,
-            notiList: []
+            notiList: [],
+            checkedItems: []
         };
         this.delAllPressTimer;
         this.notiMsg;
@@ -45,6 +46,8 @@ class AddressBook extends Component {
         this.closeContactDetails = this.closeContactDetails.bind(this);
         this.handlerEditContact = this.handlerEditContact.bind(this);
         this.handlerRmContact = this.handlerRmContact.bind(this);
+        this.handlerDeleteMenu = this.handlerDeleteMenu.bind(this);
+        this.handlerAddCheckedItem = this.handlerAddCheckedItem.bind(this);
     }
     static get propTypes() {
         return {
@@ -78,8 +81,7 @@ class AddressBook extends Component {
         if (confirm('Are you sure to delete all your data?')) {
             API.rmAllContacts();
             this.refresh();
-            // checkedList = [];
-            // METHOD_A();
+            this.setState({ checkedItems: [] });
         }
     }
     openContactDetails(index) {
@@ -141,7 +143,6 @@ class AddressBook extends Component {
         if (confirm('Delete this contact? Are you sure?')) {
             API.find(contactId, API.rmContact);
             this.refresh();
-            if (this.state.showContactDetails) { this.closeContactDetails(); }
         }
     }
     saveEditedContact(editedContact) {
@@ -280,10 +281,32 @@ class AddressBook extends Component {
     handlerRmContact() {
         const contactId = this.state.contacts[this.state.contactIndex].id;
         this.rmItem(contactId);
+        this.closeContactDetails();
     }
     handlerRmContactOnItem(contactId, e) {
         e.stopPropagation();
         this.rmItem(contactId);
+    }
+    handlerDeleteMenu(e) {
+        const API = this.props.API;
+        if (this.state.checkedItems.length > 0) {
+            if (confirm('Are you want to delete these checked contacts?')) {
+                API.find(this.state.checkedItems, API.rmContact);
+                this.refresh();
+                this.state.checkedItems = [];
+            }
+        } else {
+            this.showNoti('alert', 'Long-press to delete all contacts');
+        }
+    }
+    handlerAddCheckedItem(itemId) {
+        const itemIndex = this.state.checkedItems.indexOf(itemId);
+        if (itemIndex >= 0) {
+            this.state.checkedItems.splice(itemIndex, 1);
+        } else {
+            this.state.checkedItems.push(itemId);
+        }
+        this.setState(prevState => ({ checkedItems: prevState.checkedItems }));
     }
     render() {
         const API = this.props.API,
@@ -295,11 +318,12 @@ class AddressBook extends Component {
                         {...contact}
                         onClickEdit={this.handlerEditContactOnItem.bind(this, idx)}
                         onClickRemove={this.handlerRmContactOnItem.bind(this, contact.id)}
-                        onClickOnItem={this.openContactDetails.bind(this, idx)} />
+                        onClickOnItem={this.openContactDetails.bind(this, idx)}
+                        onClickCheckbox={this.handlerAddCheckedItem} />
                 </CSSTransition>
             )),
             notifications = this.state.notiList.map((notiObj) => (
-                <NotiBar type={notiObj.notiType} msg={notiObj.notiMsg} key={notiObj.notiId}/>
+                <NotiBar type={notiObj.notiType} msg={notiObj.notiMsg} key={notiObj.notiId} />
             ));
         return (
             <div>
@@ -329,7 +353,8 @@ class AddressBook extends Component {
                     onClickBackup={this.bckpData}
                     onSetTimer={this.setTimer}
                     onClearTimer={this.clearTimer}
-                    showNoti={this.showNoti} />
+                    onClickDelete={this.handlerDeleteMenu}
+                    numOfCheckedItems={this.state.checkedItems.length} />
                 {this.state.showContactDetails &&
                     <ContactCard
                     {...(this.state.contacts[this.state.contactIndex])}
