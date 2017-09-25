@@ -271,7 +271,7 @@ class AddressBook extends Component {
                 }
             });
             return {
-                checkItems: prevState.checkedItems.filter(contactId => contactId)
+                checkedItems: prevState.checkedItems.filter(contactId => contactId)
             };
         });
     }

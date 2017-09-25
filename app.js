@@ -324,8 +324,10 @@ const ADDRESS_BOOK = (function () {
                         } else {
                             callbackFunc(i);
                         }
+                        break;
+                    } else {
+                        return i;
                     }
-                    return i;
                 }
             }
         }
