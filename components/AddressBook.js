@@ -143,6 +143,11 @@ class AddressBook extends Component {
         if (confirm('Delete this contact? Are you sure?')) {
             API.find(contactId, API.rmContact);
             this.refresh();
+            // Remove contact's id out of checkedItems list if that contact was checked before
+            const itemIndex = this.state.checkedItems.indexOf(contactId);
+            if (itemIndex >= 0) {
+                this.state.checkedItems.splice(itemIndex, 1);
+            }
         }
     }
     saveEditedContact(editedContact) {
@@ -256,17 +261,34 @@ class AddressBook extends Component {
             this.showNoti('alert', 'Sorry, your browser does not support HTML5 Blob. We can not export your data.');
         }
     }
+    handleCheckedItems() {
+        this.setState(prevState => {
+            prevState.checkedItems.forEach((contactId, idx) => {
+                const checkedItemNotAppearInCurrentContactsList =
+                    prevState.contacts.findIndex(contact => contact.id === contactId) === -1;
+                if (checkedItemNotAppearInCurrentContactsList) {
+                    delete prevState.checkedItems[idx];
+                }
+            });
+            return {
+                checkItems: prevState.checkedItems.filter(contactId => contactId)
+            };
+        });
+    }
     filterBirthsInWeek() {
         this.presentFilterState = 'week';
         this.refresh();
+        this.handleCheckedItems();
     }
     filterBirthsInMonth() {
         this.presentFilterState = 'month';
         this.refresh();
+        this.handleCheckedItems();
     }
     displayAll() {
         this.presentFilterState = 'all';
         this.refresh();
+        this.handleCheckedItems();
     }
     handlerAddContact() {
         this.openForm(-1);
