@@ -301,32 +301,31 @@ const ADDRESS_BOOK = (function () {
         let len = contactsList.length;
 
         if (Array.isArray(IDList)) {
-            IDList.forEach(function(IDStr) {
-                contactsList.forEach(function(contact, index) {
+            IDList.forEach(IDStr => {
+                contactsList.forEach((contact, i) => {
                     if (contact.id === IDStr) {
-                        if (callbackFunc && typeof callbackFunc === 'function') {
-                            if (callbackObj && typeof callbackObj === 'object') {
-                                callbackFunc.call(callbackObj, index);
-                            } else {
-                                callbackFunc(index);
-                            }
+                        if (!(callbackFunc && typeof callbackFunc === 'function')) {
+                            throw new Error('Callback is required if first argument is an array!');
+                        } else if (callbackObj && typeof callbackObj === 'object') {
+                            callbackFunc.call(callbackObj, i);
+                        } else {
+                            callbackFunc(i);
                         }
                     }
                 });
             });
         } else if (typeof IDList === 'string') {// pass ID string when edit or just need to find index of the only person who has that ID in contactsList
+            const IDStr = IDList;
             for (let i = 0; i < len; i += 1) {
-                if (contactsList[i].id === IDList) {
+                if (contactsList[i].id === IDStr) {
                     if (callbackFunc && typeof callbackFunc === 'function') {
                         if (callbackObj && typeof callbackObj === 'object') {
                             callbackFunc.call(callbackObj, i);
                         } else {
                             callbackFunc(i);
                         }
-                        break;// Found contact -> execute callback -> stop loop (cause it's no need to loop anymore)
-                    } else {
-                        return  i;
                     }
+                    return i;
                 }
             }
         }
