@@ -8,52 +8,16 @@ import AddressBook from './components/AddressBook';
 import './scss/style.scss';
 
 const ADDRESS_BOOK = (function () {
-    let IDList,
-        maxID,
-        isModified = false,
+    let isModified = false,
         needToBeReSorted = false,
         API = {},
         time,
         isStorageAvailable,
-        contactsList = [
-            {
-                name: 'Awesome Man',
-                id: 'e8dA',
-                color: 'hsl(340,51%,51%)',
-                labels: ['family'],
-                birth: '1996-04-17',
-                note: '',
-                email: '',
-                website: '',
-                phone: '162664396'
-            },
-            {
-                name: 'Batman',
-                id: 'TjXD',
-                color: 'hsl(179,40%,51%)',
-                labels: ['friends','coWorker'],
-                birth: '1996-11-27',
-                note: '',
-                email: '',
-                website: 'http://batman.fake.com',
-                phone: '123456789'
-            },
-            {
-                name: 'Superman',
-                id: '0CvB',
-                color: 'hsl(262,66%,64%)',
-                labels: ['coWorker'],
-                birth: '1996-11-20',
-                note: '',
-                email: 'supergirl@iamnotgay.com',
-                website: 'http://superman.vn',
-                phone: '2541256847'
-            }
-        ];
+        contactsList = [];
 
     time = (() => {
         let newDateObj = new Date(),
-            isLeap = (year) => {// tính năm nhuận
+            isLeap = year => {
               if (year % 4 || (year % 100 === 0 && year % 400)) { return 0; }
               else { return 1; }
             },
@@ -76,7 +40,7 @@ const ADDRESS_BOOK = (function () {
         };
     })();
 
-    isStorageAvailable = ((type) => {
+    isStorageAvailable = (type => {
         try {
             let storage = window[type],
                 x = '__storage_test__';
@@ -85,16 +49,10 @@ const ADDRESS_BOOK = (function () {
             return true;
         } catch(e) {
             return e instanceof DOMException && (
-            // everything except Firefox
             e.code === 22 ||
-            // Firefox
             e.code === 1014 ||
-            // test name field too, because code might not be present
-            // everything except Firefox
             e.name === 'QuotaExceededError' ||
-            // Firefox
             e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
-            // acknowledge QuotaExceededError only if there's something already stored
             storage.length !== 0;
         }
     })('localStorage');
@@ -204,10 +162,6 @@ const ADDRESS_BOOK = (function () {
     getBirthsToday = () => {
         const today = time.curDay;
         return getBirthsInMonth().filter(contact => parseInt(contact.birth.split('-')[2], 10) === today);
-        // let birthsToday;
-        // birthsToday = getBirthsInMonth().filter(contact => parseInt(contact.birth.split('-')[2], 10) === today);
-        // localStorage.birthsToday = JSON.stringify(birthsToday);
-        // return birthsToday;
     },
     getBirthsIncoming = () => {
 
@@ -215,14 +169,10 @@ const ADDRESS_BOOK = (function () {
     filterBirthsToday = () => {
         // re-update happy-birthday list
         let birthsToday;
-        // console.log(`${time.curDay}/${time.curMonth}`);
-        // console.log(localStorage.lastVisited);
         if (needToBeReSorted) {
-            // console.log("data is edited or a new contact's added");
             birthsToday = getBirthsToday();
             localStorage.birthsToday = JSON.stringify(birthsToday);
         } else if (localStorage.lastVisited === `${time.curDay}/${time.curMonth}`) {
-            // console.log("visited more than ONE time today");
             // Memoization technique: no need to do the job if the func is called more than two times a day
             birthsToday = JSON.parse(localStorage.birthsToday);
         } else {
@@ -231,9 +181,7 @@ const ADDRESS_BOOK = (function () {
             localStorage.birthsToday = JSON.stringify(birthsToday);
             localStorage.lastVisited = `${time.curDay}/${time.curMonth}`;
         }
-        // console.log(birthsToday);
         contactsList.forEach(contact => {
-            // contact.hpbd = birthsToday.indexOf(contact) >= 0 ? true : false;
             contact.hpbd = birthsToday.findIndex((contactHaveBirthToday) => {
                 return contactHaveBirthToday.name === contact.name;
             }) >= 0 ? true : false;
