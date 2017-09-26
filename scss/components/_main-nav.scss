@@ -16,7 +16,11 @@
     display: flex;
     flex-flow: row wrap;
     padding: .7rem;
-    background-color: #40223c;
+    // background-color: #40223c;
+    background-color: #283048;
+    background: -webkit-linear-gradient(to right, #283048, #859398);
+    background: linear-gradient(to right, #283048, #859398);
+    box-shadow: 0 -1px 3px rgba(0,0,0,.12), 0 -1px 2px rgba(0,0,0,.24);
     position: relative;// just for making z-index:2 work (overfloat on filter-sub-nav)
     z-index: 2;
 
@@ -133,7 +137,11 @@
         min-width: 200px;
         width: 30%;
         max-width: 280px;
-        background-color: #40223c;
+        // background-color: #40223c;
+        background-color: #283048;
+        background: -webkit-linear-gradient(to right, #283048, #859398);
+        background: linear-gradient(to right, #283048, #859398);
+        box-shadow: 1px 0 3px rgba(0,0,0,.12), 1px 0 2px rgba(0,0,0,.24);
         overflow: auto;
         pointer-events: auto;
     }
@@ -143,6 +151,7 @@
         top: 0;
         width: 100%;
         padding: 0;
+        box-shadow: none;
 
         &__item {
             flex-basis: 100%;
@@ -163,9 +172,9 @@
                 font-size: 1.2em;
             }
 
-            &:hover {
-                background-color: #2e192b;
-            }
+            // &:hover {
+            //     background-color: #2e192b;
+            // }
         }
     }
 
