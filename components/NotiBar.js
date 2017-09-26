@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const NotiBar = function (props) {
+const NotiBar = props => {
     let ico, bgColor;
     switch (props.type) {
         case 'success':
@@ -17,6 +17,7 @@ const NotiBar = function (props) {
             bgColor = '#1E88E5';
         break;
     }
+
     return (
         <div className='noti-bar' style={{backgroundColor: bgColor}}>
             <div className='noti-bar__ico'>
@@ -30,5 +31,10 @@ const NotiBar = function (props) {
         </div>
     );
 }
+
+NotiBar.propTypes = {
+    type: PropTypes.string.isRequired,
+    msg: PropTypes.string.isRequired
+};
 
 export default NotiBar;
