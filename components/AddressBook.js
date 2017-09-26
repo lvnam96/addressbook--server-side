@@ -156,8 +156,11 @@ class AddressBook extends Component {
             curryingEditDataFunc = API.editContact.bind(API, editedContact);
         API.find(editedContact.id, curryingEditDataFunc);
         this.refresh();
-        this.setState({
-            contactIndex: API.find(editedContact.id)
+        this.setState(prevState => {
+            const contactIndex = prevState.contacts.findIndex(contact => contact.id === editedContact.id);
+            return {
+                contactIndex
+            };
         });
         this.closeForm();
         this.showNoti('success', `Saved.`);
