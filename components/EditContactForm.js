@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-<<<<<<< HEAD
-import Form from './form';
-=======
 import Form from './Form';
->>>>>>> refactoring
 
 const EditContactForm = props => (
     <Form title="Edit Contact" {...props} />
