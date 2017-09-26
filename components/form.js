@@ -50,7 +50,7 @@ class Form extends Component {
             color: PropTypes.string.isRequired,
             labels: PropTypes.arrayOf(PropTypes.string).isRequired,
             onClose: PropTypes.func.isRequired,
-            onSave: PropTypes.func.isRequired,
+            handlerSubmit: PropTypes.func.isRequired,
             showNoti: PropTypes.func.isRequired,
             getRandomColor: PropTypes.func.isRequired
         };
@@ -175,7 +175,7 @@ class Form extends Component {
 
         this.state.note = this.state.note.trim();
 
-        this.props.onSave(this.state);
+        this.props.handlerSubmit(this.state);
     }
     changeColor(e) {
         this.setState({

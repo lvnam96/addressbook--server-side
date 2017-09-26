@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const ContactCard = function (props) {
+const ContactCard = props => {
     let month;
     if (props.birth) {
         switch (parseInt(props.birth.split('-')[1])) {
