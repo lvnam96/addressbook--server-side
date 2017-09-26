@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Form from './form';
+import Form from './Form';
 
 const AddContactForm = props => (
     <Form title="Add new contact" {...props} />
