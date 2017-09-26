@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { TransitionGroup, CSSTransition } from 'react-transition-group';
+import { CSSTransition } from 'react-transition-group';
 
-import ContactCard from './contact-card';
-import ContactItem from './contact-item';
-import Form from './form';
-import MenuBar from './menu-bar';
-import NotiBar from './noti-bar';
+import ContactCard from './ContactCard';
+import ContactItem from './ContactItem';
+import MenuBar from './MenuBar';
+import NotiBar from './NotiBar';
+import ContactsList from './ContactsList';
+import WorkingForm from './WorkingForm';
 
 class AddressBook extends Component {
     constructor(props) {
@@ -271,7 +272,7 @@ class AddressBook extends Component {
                 }
             });
             return {
-                checkItems: prevState.checkedItems.filter(contactId => contactId)
+                checkedItems: prevState.checkedItems.filter(contactId => contactId)
             };
         });
     }
@@ -332,7 +333,7 @@ class AddressBook extends Component {
     }
     render() {
         const API = this.props.API,
-            ContactItems = this.state.contacts.map((contact, idx) => (
+            contactItems = this.state.contacts.map((contact, idx) => (
                 <CSSTransition key={contact.id}
                     classNames="fadeIn"
                     timeout={{ enter: 1000, exit: 800 }}>
@@ -353,13 +354,7 @@ class AddressBook extends Component {
                     <header className='page-title'>
                         <h1>Address Book</h1>
                     </header>
-                    <ul className='contact-list'>
-                        <TransitionGroup>
-                        {this.state.contacts.length > 0 &&
-                            ContactItems
-                        }
-                        </TransitionGroup>
-                    </ul>
+                    <ContactsList contacts={contactItems} />
                 </main>
                 {this.state.showNoti && notifications}
                 <MenuBar
@@ -378,26 +373,23 @@ class AddressBook extends Component {
                     onClickDelete={this.handlerDeleteMenu}
                     numOfCheckedItems={this.state.checkedItems.length} />
                 {this.state.showContactDetails &&
-                    <ContactCard
+                <ContactCard
                     {...(this.state.contacts[this.state.contactIndex])}
                     onClose={this.closeContactDetails}
                     onEditContact={this.handlerEditContact}
                     onRemoveContact={this.handlerRmContact} />}
                 {this.state.showForm &&
-                    <Form
-                    title={this.state.contactIndex > -1 ? 'Edit Contact' : 'Add new contact'}
-                    {...(this.state.contactIndex > -1 ?
-                        this.state.contacts[this.state.contactIndex] : this.newPerson)}
+                <WorkingForm
+                    isEditing={this.state.contactIndex > -1}
+                    editingContact={this.state.contacts[this.state.contactIndex]}
+                    newContact={this.newPerson}
                     onClose={this.closeForm}
-                    onSave={this.state.contactIndex > -1 ?
-                        this.saveEditedContact
-                        :
-                        this.addNewContact}
+                    onSave={this.saveEditedContact}
+                    onAdd={this.addNewContact}
                     showNoti={this.showNoti}
                     getRandomColor={API.getRandomColor} />}
             </div>
         );
     }
 }
-
 export default AddressBook;
