@@ -2,18 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const NotiBar = props => {
-    let ico, bgColor;
+    let icoClass, bgColor;
     switch (props.type) {
         case 'success':
-            ico = (<i className="fa fa-check"></i>);
+            icoClass = "fa fa-check";
             bgColor = '#4caf50';
         break;
         case 'error':
-            ico = (<i className="fa fa-exclamation-triangle"></i>);
+            icoClass = "fa fa-exclamation-triangle";
             bgColor = '#e53935';
         break;
         default:
-            ico = (<i className="fa fa-exclamation"></i>);
+            icoClass = "fa fa-exclamation";
             bgColor = '#1E88E5';
         break;
     }
@@ -21,7 +21,7 @@ const NotiBar = props => {
     return (
         <div className='noti-bar' style={{backgroundColor: bgColor}}>
             <div className='noti-bar__ico'>
-                {ico}
+                <i className={icoClass}></i>
             </div>
             <div className='noti-bar__msg'>
                 <span>{props.msg}</span>
@@ -33,7 +33,7 @@ const NotiBar = props => {
 }
 
 NotiBar.propTypes = {
-    type: PropTypes.string.isRequired,
+    type: PropTypes.oneOf(['success', 'error', 'alert']).isRequired,
     msg: PropTypes.string.isRequired
 };
 

@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import NavBtn from './NavBtn';
+
 const MenuBar = props => (
     <nav className='sticky-nav'>
         <ul className='filter-sub-nav translatedDown200'>
@@ -14,51 +16,22 @@ const MenuBar = props => (
             <li id='rstrDataBtn' onClick={props.onClickRestore} title='Replace current data by the new one in your backup file'>Restore</li>
         </ul>
         <nav className='main-nav'>
-            <div className='main-nav__item' onClick={props.onClickDisplayAll}>
-                <i className='fa fa-address-book-o'></i>
-                <span>Contacts ({props.totalContacts})</span>
-            </div>
+            <NavBtn label={`Contacts (${props.totalContacts})`} icon="fa-address-book-o" onClick={props.onClickDisplayAll} />
             <input type='checkbox' id='sort-toggle' style={{display: 'none'}} />
-            <label htmlFor='sort-toggle' className='main-nav__item' title='Display contacts whose birthday is in current week/month' onClick={props.onClickOnFilterMenu}>
-                <i className='fa fa-birthday-cake'></i>
-                <span>Filter by births in...</span>
-            </label>
-            <div className='main-nav__item week-btn' onClick={props.onFilterBirthsInWeek}>
-                <i className='fa fa-calendar-minus-o'></i>
-                <span>... current week</span>
-            </div>
-            <div className='main-nav__item month-btn' onClick={props.onFilterBirthsInMonth}>
-                <i className='fa fa-calendar'></i>
-                <span>... current month</span>
-            </div>
-            <div className={'main-nav__item trash-btn' +
-                (props.numOfCheckedItems > 0 ? ' lighter' : '')}
-                title='Long-press this button to delete all contacts'
+            <NavBtn isDropdownBtn={true} inputId="sort-toggle" title='Display contacts whose birthday is in current week/month' label="Filter by births in..." icon="fa-birthday-cake" onClick={props.onClickOnFilterMenu} />
+            <NavBtn moreClass="week-btn" label="... current week" icon="fa-calendar-minus-o" onClick={props.onFilterBirthsInWeek} />
+            <NavBtn moreClass="month-btn" label="... current month" icon="fa-calendar" onClick={props.onFilterBirthsInMonth} />
+            <NavBtn
                 onMouseDown={props.onSetTimer}
                 onMouseUp={props.onClearTimer}
                 onTouchStart={props.onSetTimer}
                 onTouchEnd={props.onClearTimer}
-                onClick={props.onClickDelete}>
-                <i className='fa fa-trash-o'></i>
-                <span>Delete {props.numOfCheckedItems > 0 ? 'checked' : 'all'} contacts</span>
-            </div>
-            <input type='checkbox' id='bckp-rstr-toggle' style={{display: 'none'}} />
-            <label htmlFor='bckp-rstr-toggle' className='main-nav__item' onClick={props.onClickOnBackupMenu}>
-                <i className='fa fa-floppy-o'></i>
-                <span>Backup / Restore</span>
-            </label>
-            <div className='main-nav__item backup-btn' onClick={props.onClickBackup} title='Save current data into a text file'>
-                <i className='fa fa-download'></i>
-                <span>Backup</span>
-            </div>
-            <div className='main-nav__item restore-btn' onClick={props.onClickRestore} title='Replace current data by the new one in your backup file'>
-                <i className='fa fa-upload'></i>
-                <span>Restore</span>
-            </div>
-            <div className='main-nav__item' onClick={props.onClickAddMenu}>
-                <i className='fa fa-plus'></i>
-                <span>Add new contact</span>
-            </div>
+                moreClass={"trash-btn" + (props.numOfCheckedItems > 0 ? ' lighter' : '')} title="Long-press this button to delete all contacts" label={`Delete ${props.numOfCheckedItems > 0 ? 'checked' : 'all'} contacts`} icon="fa-trash-o" onClick={props.onClickDelete} />
+            <input type='checkbox' id="bckp-rstr-toggle" style={{display: 'none'}} />
+            <NavBtn isDropdownBtn={true} inputId="bckp-rstr-toggle" label="Backup / Restore" icon="fa-floppy-o" onClick={props.onClickOnBackupMenu} />
+            <NavBtn moreClass="backup-btn" label="Backup" icon="fa-download" onClick={props.onClickBackup} />
+            <NavBtn moreClass="restore-btn" label="Restore" icon="fa-upload" onClick={props.onClickRestore} />
+            <NavBtn label="Add new contact" icon="fa-plus" onClick={props.onClickAddMenu} />
         </nav>
     </nav>
 );

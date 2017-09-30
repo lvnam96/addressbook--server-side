@@ -6,7 +6,7 @@ import ContactCard from './ContactCard';
 import ContactItem from './ContactItem';
 import MenuBar from './MenuBar';
 import NotiBar from './NotiBar';
-import ContactsList from './ContactsList';
+import MainContent from './MainContent';
 import WorkingForm from './WorkingForm';
 
 class AddressBook extends Component {
@@ -52,7 +52,7 @@ class AddressBook extends Component {
     }
     static get propTypes() {
         return {
-            API: PropTypes.object.isRequired
+            API: PropTypes.objectOf(PropTypes.func).isRequired
         };
     }
     componentDidMount() {
@@ -348,17 +348,12 @@ class AddressBook extends Component {
                         onClickCheckbox={this.handlerAddCheckedItem} />
                 </CSSTransition>
             )),
-            notifications = this.state.notiList.map((notiObj) => (
+            notifications = this.state.notiList.map(notiObj => (
                 <NotiBar type={notiObj.notiType} msg={notiObj.notiMsg} key={notiObj.notiId} />
             ));
         return (
             <div>
-                <main className='main'>
-                    <header className='page-title'>
-                        <h1>Address Book</h1>
-                    </header>
-                    <ContactsList contacts={contactItems} />
-                </main>
+                <MainContent contactItems={contactItems} />
                 {this.state.showNoti && notifications}
                 <MenuBar
                     totalContacts={API.listLength()}

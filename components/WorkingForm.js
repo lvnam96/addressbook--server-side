@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import EditContactForm from './EditContactForm';
 import AddContactForm from './AddContactForm';
 
-const WorkingForm = (props) => {
+const WorkingForm = props => {
     if (props.isEditing) {
         return (
             <EditContactForm {...props.editingContact}

@@ -3,15 +3,13 @@ import PropTypes from 'prop-types';
 import { TransitionGroup } from 'react-transition-group';
 
 const ContactsList = props => (
-    <ul className='contact-list'>
-        <TransitionGroup>
-            {props.contacts.length > 0 && props.contacts}
-        </TransitionGroup>
-    </ul>
+    <TransitionGroup component="ul" className="contact-list">
+        {props.children}
+    </TransitionGroup>
 );
 
 ContactsList.propTypes = {
-    contacts: PropTypes.array.isRequired
+    children: PropTypes.arrayOf(PropTypes.element).isRequired
 };
 
 export default ContactsList;
