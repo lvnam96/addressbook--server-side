@@ -10,13 +10,13 @@ const MainContent = props => (
             <h1>Address Book</h1>
         </header>
         <ContactsList>
-            {props.contactItems}
+            {props.children}
         </ContactsList>
     </main>
 );
 
 MainContent.propTypes = {
-    contactItems: PropTypes.arrayOf(PropTypes.element).isRequired
+    children: PropTypes.arrayOf(PropTypes.element).isRequired
 };
 
 export default MainContent;

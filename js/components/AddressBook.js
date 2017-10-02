@@ -1,6 +1,8 @@
+import API from '../API';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { CSSTransition } from 'react-transition-group';
+import { Route } from 'react-router-dom';
 
 import ContactCard from './ContactCard';
 import ContactItem from './ContactItem';
@@ -13,7 +15,7 @@ class AddressBook extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            contacts: this.props.API.getContactsList(),
+            contacts: API.getContactsList(),
             contactIndex: 0,
             showContactDetails: false,
             showForm: false,
@@ -51,12 +53,10 @@ class AddressBook extends Component {
         this.handlerAddCheckedItem = this.handlerAddCheckedItem.bind(this);
     }
     static get propTypes() {
-        return {
-            API: PropTypes.objectOf(PropTypes.func).isRequired
-        };
+        return {};
     }
     componentDidMount() {
-        const birthsToday = this.props.API.getBirthsToday();
+        const birthsToday = API.getBirthsToday();
         if (birthsToday.length > 0) {
             let contacts = birthsToday[0].name;
             birthsToday.forEach((contact, idx) => {
@@ -73,7 +73,6 @@ class AddressBook extends Component {
         clearTimeout(this.delAllPressTimer);
     }
     delAll() {
-        const API = this.props.API;
         // if data is empty already, no need to do anything
         if (!API.listLength()) {
             this.showNoti('alert', 'There is no data left. Is it bad?');
@@ -100,7 +99,7 @@ class AddressBook extends Component {
     }
     openForm(index) {
         if (index === -1) {
-            this.newPerson.color = this.props.API.getRandomColor();
+            this.newPerson.color = API.getRandomColor();
         }
         this.setState({
             contactIndex: index,
@@ -118,7 +117,6 @@ class AddressBook extends Component {
     }
     refresh() {
         let newData;
-        const API = this.props.API;
         if (API.shouldBeSorted()) {
             API.sortContactsList();
             API.filterBirthsToday();
@@ -140,7 +138,6 @@ class AddressBook extends Component {
         });
     }
     rmItem(contactId) {
-        const API = this.props.API;
         if (confirm('Delete this contact? Are you sure?')) {
             API.find(contactId, API.rmContact);
             this.refresh();
@@ -152,8 +149,7 @@ class AddressBook extends Component {
         }
     }
     saveEditedContact(editedContact) {
-        const API = this.props.API,
-            curryingEditDataFunc = API.editContact.bind(API, editedContact);
+        const curryingEditDataFunc = API.editContact.bind(API, editedContact);
         API.find(editedContact.id, curryingEditDataFunc);
         this.refresh();
         this.setState(prevState => {
@@ -166,7 +162,6 @@ class AddressBook extends Component {
         this.showNoti('success', `Saved.`);
     }
     addNewContact(newContact) {
-        const API = this.props.API;
         newContact.id = API.getRandomId(4);
         API.addContact(newContact);
         this.refresh();
@@ -182,18 +177,6 @@ class AddressBook extends Component {
         this.setState({
             showNoti: true
         });
-    }
-    openBackupRestoreSubNav() {
-        let filterBtnGroup = document.getElementsByClassName('filter-sub-nav')[0],
-            backupBtnGroup = document.getElementsByClassName('backup-restore-sub-nav')[0];
-        filterBtnGroup.classList.add('translatedDown200');
-        backupBtnGroup.classList.toggle('translatedDown100');
-    }
-    openFilterSubNav() {
-        let filterBtnGroup = document.getElementsByClassName('filter-sub-nav')[0],
-            backupBtnGroup = document.getElementsByClassName('backup-restore-sub-nav')[0];
-        backupBtnGroup.classList.add('translatedDown100');
-        filterBtnGroup.classList.toggle('translatedDown200');
     }
     // rstrData = (function() {
     //     if ('FileReader' in window) {
@@ -220,7 +203,6 @@ class AddressBook extends Component {
             reader.addEventListener('load', fileLoadedEvent => {
                 let textFromFileLoaded = fileLoadedEvent.target.result,
                     dataParsedFromTextFile = JSON.parse(textFromFileLoaded);
-                const API = this.props.API;
                 API.replaceData(dataParsedFromTextFile);
                 API.saveDataToLocalStorage();
                 API.dataNeedToBeSorted();
@@ -238,7 +220,7 @@ class AddressBook extends Component {
             let fileName = prompt('Type the name for your backup file:', 'contacts_backupFile.txt');
             fileName = (fileName === '' ? 'contacts_backupFile.txt' : fileName); 
             if (fileName) {
-                let textToWrite = JSON.stringify(this.props.API.getContactsList()).replace(/\n/g, '\r\n');
+                let textToWrite = JSON.stringify(API.getContactsList()).replace(/\n/g, '\r\n');
                 let textFileAsBlob = new Blob([textToWrite], { type: 'text/plain' });
                 if ('msSaveOrOpenBlob' in navigator) {
                     navigator.msSaveOrOpenBlob(textFileAsBlob, fileName);
@@ -265,34 +247,47 @@ class AddressBook extends Component {
             this.showNoti('alert', 'Sorry, your browser does not support HTML5 Blob. We can not export your data.');
         }
     }
-    handleCheckedItems() {
-        this.setState(prevState => {
-            prevState.checkedItems.forEach((contactId, idx) => {
-                const checkedItemNotAppearInCurrentContactsList =
-                    prevState.contacts.findIndex(contact => contact.id === contactId) === -1;
-                if (checkedItemNotAppearInCurrentContactsList) {
-                    delete prevState.checkedItems[idx];
-                }
-            });
-            return {
-                checkedItems: prevState.checkedItems.filter(contactId => contactId)
-            };
-        });
-    }
+    // Not be used anymore after using React Router for changing Filter
+    // handleCheckedItems() {
+    //     this.setState(prevState => {
+    //         prevState.checkedItems.forEach((contactId, idx) => {
+    //             const checkedItemNotAppearInCurrentContactsList =
+    //                 prevState.contacts.findIndex(contact => contact.id === contactId) === -1;
+    //             if (checkedItemNotAppearInCurrentContactsList) {
+    //                 delete prevState.checkedItems[idx];
+    //             }
+    //         });
+    //         return {
+    //             checkedItems: prevState.checkedItems.filter(contactId => contactId)
+    //         };
+    //     });
+    // }
     filterBirthsInWeek() {
-        this.presentFilterState = 'week';
+        if (this.presentFilterState !== 'week') {
+            this.presentFilterState = 'week';
+            this.setState({ checkedItems: [] });
+        }
         this.refresh();
-        this.handleCheckedItems();
+        // this.handleCheckedItems();
+        this.props.history.push('/birthdays-in-week');
     }
     filterBirthsInMonth() {
-        this.presentFilterState = 'month';
+        if (this.presentFilterState !== 'month') {
+            this.presentFilterState = 'month';
+            this.setState({ checkedItems: [] });
+        }
         this.refresh();
-        this.handleCheckedItems();
+        // this.handleCheckedItems();
+        this.props.history.push('/birthdays-in-month');
     }
     displayAll() {
-        this.presentFilterState = 'all';
+        if (this.presentFilterState !== 'all') {
+            this.presentFilterState = 'all';
+            this.setState({ checkedItems: [] });
+        }
         this.refresh();
-        this.handleCheckedItems();
+        // this.handleCheckedItems();
+        this.props.history.push('/');
     }
     handlerAddContact() {
         this.openForm(-1);
@@ -314,7 +309,6 @@ class AddressBook extends Component {
         this.rmItem(contactId);
     }
     handlerDeleteMenu(e) {
-        const API = this.props.API;
         if (this.state.checkedItems.length > 0) {
             if (confirm('Are you want to delete these checked contacts?')) {
                 API.find(this.state.checkedItems, API.rmContact);
@@ -335,8 +329,7 @@ class AddressBook extends Component {
         this.setState(prevState => ({ checkedItems: prevState.checkedItems }));
     }
     render() {
-        const API = this.props.API,
-            contactItems = this.state.contacts.map((contact, idx) => (
+        const renderContactItems = contacts => contacts.map((contact, idx) => (
                 <CSSTransition key={contact.id}
                     classNames="fadeIn"
                     timeout={{ enter: 1000, exit: 800 }}>
@@ -348,20 +341,22 @@ class AddressBook extends Component {
                         onClickCheckbox={this.handlerAddCheckedItem} />
                 </CSSTransition>
             )),
+            contactItems = renderContactItems(this.state.contacts),
             notifications = this.state.notiList.map(notiObj => (
                 <NotiBar type={notiObj.notiType} msg={notiObj.notiMsg} key={notiObj.notiId} />
             ));
+
         return (
             <div>
-                <MainContent contactItems={contactItems} />
+                <Route exact path="/" render={() => (<MainContent>{contactItems}</MainContent>)} />
+                <Route path="/birthdays-in-week" render={() => (<MainContent>{contactItems}</MainContent>)} />
+                <Route path="/birthdays-in-month" render={() => (<MainContent>{contactItems}</MainContent>)} />
                 {this.state.showNoti && notifications}
                 <MenuBar
                     totalContacts={API.listLength()}
                     onClickDisplayAll={this.displayAll}
-                    onClickOnFilterMenu={this.openFilterSubNav}
                     onFilterBirthsInWeek={this.filterBirthsInWeek}
                     onFilterBirthsInMonth={this.filterBirthsInMonth}
-                    onClickOnBackupMenu={this.openBackupRestoreSubNav}
                     onClickAddMenu={this.handlerAddContact}
                     onClickRestore={this.rstrData}
                     onUploadFile={this.inptFile}
@@ -375,7 +370,8 @@ class AddressBook extends Component {
                     {...(this.state.contacts[this.state.contactIndex])}
                     onClose={this.closeContactDetails}
                     onEditContact={this.handlerEditContact}
-                    onRemoveContact={this.handlerRmContact} />}
+                    onRemoveContact={this.handlerRmContact} />
+                }
                 {this.state.showForm &&
                 <WorkingForm
                     isEditing={this.state.contactIndex > -1}
