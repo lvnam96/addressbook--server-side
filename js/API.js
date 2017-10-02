@@ -1,13 +1,4 @@
-'use strict';
-
-import React from 'react';
-import ReactDOM from 'react-dom';
-
-import AddressBook from './components/AddressBook';
-
-import './scss/style.scss';
-
-const ADDRESS_BOOK = (function () {
+export default (function () {
     let isModified = false,
         needToBeReSorted = false,
         API = {},
@@ -361,22 +352,3 @@ const ADDRESS_BOOK = (function () {
         init
     };
 }());
-
-ADDRESS_BOOK.init();
-
-document.addEventListener('DOMContentLoaded', () => {
-    const checkedList = [],
-        clsTab = (e) => {
-            e = e || window.event;
-            if (ADDRESS_BOOK.shouldBeSaved()) {
-                ADDRESS_BOOK.saveDataToLocalStorage();
-                ADDRESS_BOOK.dontSaveDataToLocalStorageAgain();
-            }
-            // if (e) { e.returnValue = 'Sure?'; }// For IE and Firefox prior to version 4
-            // return 'Sure?';// For Safari
-        };
-
-    ReactDOM.render(<AddressBook API={ADDRESS_BOOK} />, document.getElementsByClassName('body-wrapper')[0]);
-
-    window.addEventListener('beforeunload', clsTab, false);
-});
