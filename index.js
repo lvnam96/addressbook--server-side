@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     render(
-        <BrowserRouter>
+        <BrowserRouter basename="/addressBook">
             <Route path="/" component={AddressBook} />
         </BrowserRouter>,
         document.getElementsByClassName('body-wrapper')[0]
