@@ -16,6 +16,7 @@
 .form-container {
     width: 100%;
     background-color: #f0efee;
+    animation: showUp .2s ease-out both;
 }
 
 .form-header {
@@ -324,9 +325,9 @@
         max-width: 640px;
         width: 80%;
         margin: 0 auto;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
+        // position: absolute;
+        // top: 50%;
+        // left: 50%;
+        // transform: translate(-50%, -50%);
     }
 }

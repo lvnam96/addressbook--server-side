@@ -10,3 +10,11 @@
     backdrop-filter: blur(10px);
     overflow: auto;
 }
+
+@media (min-width: 700px) {
+    .overlay {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}

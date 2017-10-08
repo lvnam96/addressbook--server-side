@@ -1,32 +1,9 @@
-@keyframes showOnDesktop {
-    0% {
-        opacity: 0;
-        transform: scale(.5);
-    }
-
-    100% {
-        opacity: 1;
-        transform: scale(1) translateY(-50%);
-    }
-}
-
-@keyframes showOnMobile {
-    0% {
-        opacity: 0;
-        // transform: scale(.5) translateY(100%);
-    }
-
-    100% {
-        opacity: 1;
-        // transform: scale(1) translateY(0);
-    }
-}
-
 .contact-card {
     margin: 0 auto;
     background-color: #fff;
     font-size: 1rem;
-    animation: showOnMobile .2s ease-out both;
+    will-change: transform, opacity;
+    animation: showUp .2s ease-out both;
 
     > div {
 
@@ -37,9 +14,9 @@
         align-items: center;
         background-color: #f7f7f7;
         border-bottom: #ddd 1px solid;
-        position: fixed;
-        top: 0;
-        z-index: 10;
+        // position: fixed;
+        // top: 0;
+        // z-index: 10;
         width: 100%;
         font-size: 1em;
         // transform: translateY(-100%);// if transform is used in animation of .contact-card, the .contact-card__buttons will not be fixed on top of screen.
@@ -76,7 +53,7 @@
         flex-flow: row wrap;
         justify-content: center;
         background-color: #f7f7f7;
-        margin-top: 50px;
+        // margin-top: 50px;
         font-size: 1em;
         width: 100%;
         text-align: center;
@@ -225,12 +202,6 @@
 
 @media (min-width: 375px) {
     .contact-card__header {
-        display: flex;
-        flex-flow: row wrap;
-        background-color: #f7f7f7;
-        margin-top: 50px;
-        font-size: 1em;
-        width: 100%;
 
         > div {
             display: inline-block;
@@ -257,13 +228,9 @@
 
 @media (min-width: 700px) {
     .contact-card {
-        position: absolute;
-        top: 50%;
-        left: 0;
-        right: 0;
         max-width: 640px;
         width: 80%;
-        animation: showOnDesktop .2s ease-out both;
+        animation: showUp .2s ease-out both;
     }
 
     .contact-card__buttons {
