@@ -38,8 +38,6 @@ class AddressBook extends Component {
         this.displayAll             = this.displayAll.bind(this);
         this.filterBirthsInWeek     = this.filterBirthsInWeek.bind(this);
         this.filterBirthsInMonth    = this.filterBirthsInMonth.bind(this);
-        this.inptFile               = this.inptFile.bind(this);
-        this.bckpData               = this.bckpData.bind(this);
         this.showNoti               = this.showNoti.bind(this);
         this.delAll                 = this.delAll.bind(this);
         this.openForm               = this.openForm.bind(this);
@@ -145,72 +143,6 @@ class AddressBook extends Component {
 
             return { notiList: origNotiList };
         });
-    }
-
-    rstrData(e) {
-        if ('FileReader' in window) {
-            document.getElementById('inptFileBtn').click();
-        } else {
-            alert('Rất tiếc, trình duyệt của bạn không hỗ trợ HTML5 FileReader. Vì vậy, chúng tôi không thể khôi phục dữ liệu của bạn.');
-        }
-    }
-
-    inptFile(e) {
-        let fileToLoad = e.target.files[0];
-
-        if (fileToLoad) {
-            let reader = new FileReader();
-
-            reader.addEventListener('load', fileLoadedEvent => {
-                let textFromFileLoaded = fileLoadedEvent.target.result,
-                    dataParsedFromTextFile = JSON.parse(textFromFileLoaded);
-                API.replaceData(dataParsedFromTextFile);
-                API.saveDataToLocalStorage();
-                API.dataNeedToBeSorted();
-                this.displayAll();
-                this.showNoti('success', 'Your data is restored successfully!');
-            }, false);
-            reader.readAsText(fileToLoad, 'UTF-8');
-        }
-    }
-
-    bckpData(e) {
-        if ('Blob' in window) {
-            function destroyClickedElement(e) {
-                this.bodyElem.removeChild(e.target);
-            }
-
-            let fileName = prompt('Type the name for your backup file:', 'contacts_backupFile.txt');
-            fileName = (fileName === '' ? 'contacts_backupFile.txt' : fileName); 
-
-            if (fileName) {
-                let textToWrite = JSON.stringify(API.getContactsList()).replace(/\n/g, '\r\n');
-                let textFileAsBlob = new Blob([textToWrite], { type: 'text/plain' });
-                if ('msSaveOrOpenBlob' in navigator) {
-                    navigator.msSaveOrOpenBlob(textFileAsBlob, fileName);
-                } else {
-                    let downloadLink = document.createElement('a');
-                    downloadLink.download = fileName;
-                    downloadLink.innerHTML = 'Download File';
-                    if ('webkitURL' in window) {
-                    // Chrome allows the link to be clicked without actually adding it to the DOM.
-                        const polyURL = window.URL || window.webkitURL;
-                        downloadLink.href = polyURL.createObjectURL(textFileAsBlob);
-                    } else {
-                    // Firefox requires the link to be added to the DOM before it can be clicked.
-                        downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
-                        downloadLink.addEventListener('click', destroyClickedElement);
-                        downloadLink.style.display = 'none';
-                        this.bodyElem.appendChild(downloadLink);
-                    }
-                    downloadLink.click();
-                }
-                this.showNoti('success', 'We have exported your data. Save it to safe place!');
-            }
-
-        } else {
-            this.showNoti('alert', 'Sorry, your browser does not support HTML5 Blob. We can not export your data.');
-        }
     }
 
     // Not be used anymore after using React Router for changing Filter
@@ -339,7 +271,6 @@ class AddressBook extends Component {
                     timeout={{ enter: 1000, exit: 800 }}>
                     <ContactItem key={contact.id}
                         {...contact}
-                        onClickRemove={this.rmItem}
                         onClickOnItem={this.openContactDetails}
                         rmItem={this.rmItem}
                         openForm={this.openForm}
@@ -363,12 +294,8 @@ class AddressBook extends Component {
                     onFilterBirthsInWeek={this.filterBirthsInWeek}
                     onFilterBirthsInMonth={this.filterBirthsInMonth}
                     onClickAddMenu={this.openForm}
-                    onClickRestore={this.rstrData}
-                    onUploadFile={this.inptFile}
-                    onClickBackup={this.bckpData}
                     onClickDelAll={this.delAll}
-                    // onSetTimer={this.setTimer}
-                    // onClearTimer={this.clearTimer}
+                    showNoti={this.showNoti}
                     onClickDelete={this.handlerDeleteMenu}
                     numOfCheckedItems={this.state.checkedItems.length} />
                 {this.state.showContactDetails &&
@@ -385,8 +312,6 @@ class AddressBook extends Component {
                     editingContact={this.state.contacts[this.state.contactIndex]}
                     newContact={this.newPerson}
                     onClose={this.closeForm}
-                    // onSave={this.saveEditedContact}
-                    // onAdd={this.addNewContact}
                     refresh={this.refresh}
                     changeContactIndex={this.changeContactIndex}
                     showNoti={this.showNoti}
@@ -395,4 +320,5 @@ class AddressBook extends Component {
         );
     }
 }
+
 export default AddressBook;

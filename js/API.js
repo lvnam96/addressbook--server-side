@@ -1,9 +1,9 @@
 export default (function () {
     let isModified = false,
-        needToBeReSorted = false;
-    const contactsList = [],
+        needToBeReSorted = false,
+        contactsList = [];
 
-    time = (() => {
+    const time = (() => {
         const newDateObj = new Date(),
             isLeap = year => {
               if (year % 4 || (year % 100 === 0 && year % 400)) { return 0; }
@@ -315,27 +315,13 @@ export default (function () {
     editContact = (editedContact, idx) => {
         // if (typeof idx === 'undefined') {// currying func (partially applied func) pattern
         //     return (idx) => {
-        //         contactsList[idx].name = editedContact.name;
-        //         contactsList[idx].color = editedContact.color;
-        //         contactsList[idx].birth = editedContact.birth;
-        //         contactsList[idx].labels = editedContact.labels;
-        //         contactsList[idx].email = editedContact.email;
-        //         contactsList[idx].phone = editedContact.phone;
-        //         contactsList[idx].website = editedContact.website;
-        //         contactsList[idx].note = editedContact.note;
+        //         contactsList[idx] = {...editedContact};
         //         isModified = true;
         //         needToBeReSorted = true;
         //     };
         // }
-        // contactsList[idx].name = editedContact.name;
-        // contactsList[idx].color = editedContact.color;
-        // contactsList[idx].birth = editedContact.birth;
-        // contactsList[idx].labels = editedContact.labels;
-        // contactsList[idx].email = editedContact.email;
-        // contactsList[idx].phone = editedContact.phone;
-        // contactsList[idx].website = editedContact.website;
-        // contactsList[idx].note = editedContact.note;
         contactsList[idx] = {...editedContact};
+
         isModified = true;
         needToBeReSorted = true;
     },
@@ -367,7 +353,6 @@ export default (function () {
         shouldBeSaved,
         dontSaveDataToLocalStorageAgain,
         saveDataToLocalStorage,
-        rangeOfWeek,
         getBirthsInMonth,
         getBirthsInWeek,
         getBirthsToday,

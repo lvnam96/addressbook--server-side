@@ -45,9 +45,9 @@ ContactItem.propTypes = {
     id: PropTypes.string.isRequired,
     color: PropTypes.string.isRequired,
     onClickOnItem: PropTypes.func.isRequired,
-    onClickRemove: PropTypes.func.isRequired,
     onClickCheckbox: PropTypes.func.isRequired,
-    rmItem: PropTypes.func.isRequired
+    rmItem: PropTypes.func.isRequired,
+    openForm: PropTypes.func.isRequired
 };
 
 export default ContactItem;
