@@ -10,14 +10,13 @@ import './scss/style.scss';
 API.init();
 
 document.addEventListener('DOMContentLoaded', () => {
-    const clsTab = e => {
+    const clsTab = (e = window.event) => {
         if (API.shouldBeSaved()) {
             API.saveDataToLocalStorage();
             API.dontSaveDataToLocalStorageAgain();
         }
-        // e = e || window.event;
-        // if (e) { e.returnValue = 'Sure?'; }// For IE and Firefox prior to version 4
-        // return 'Sure?';// For Safari
+        if (e) { e.returnValue = 'Sure?'; }// For IE and Firefox prior to version 4
+        return 'Sure?';// For Safari
     };
 
     render(
