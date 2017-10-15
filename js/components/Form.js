@@ -26,22 +26,24 @@ class Form extends Component {
             website,
             phone
         };
+
         this.cboxFamily;
         this.cboxFriends;
         this.cboxCoWorker;
         this.firstNotSpecialCharPtrn = /[^\u0000-\u007F]|[0-9a-zA-Z]/g;
         this.spacePtrn = /\s/g;
-        this.handlerSaveForm = this.handlerSaveForm.bind(this);
-        this.changeColor = this.changeColor.bind(this);
-        this.handlerChangeName = this.handlerChangeName.bind(this);
-        this.handlerChangePhone = this.handlerChangePhone.bind(this);
-        this.handlerChangeBirth = this.handlerChangeBirth.bind(this);
-        this.handlerChangeWebsite = this.handlerChangeWebsite.bind(this);
-        this.handlerChangeEmail = this.handlerChangeEmail.bind(this);
-        this.handlerChangeNote = this.handlerChangeNote.bind(this);
-        this.preventCloseForm = this.preventCloseForm.bind(this);
-        this.resetForm = this.resetForm.bind(this);
+
+        this.handlerSaveForm        = this.handlerSaveForm.bind(this);
+        this.changeColor            = this.changeColor.bind(this);
+        this.handlerChangeName      = this.handlerChangeName.bind(this);
+        this.handlerChangePhone     = this.handlerChangePhone.bind(this);
+        this.handlerChangeBirth     = this.handlerChangeBirth.bind(this);
+        this.handlerChangeWebsite   = this.handlerChangeWebsite.bind(this);
+        this.handlerChangeEmail     = this.handlerChangeEmail.bind(this);
+        this.handlerChangeNote      = this.handlerChangeNote.bind(this);
+        this.resetForm              = this.resetForm.bind(this);
     }
+
     static get propTypes() {
         return {
             title: PropTypes.string.isRequired,
@@ -55,15 +57,18 @@ class Form extends Component {
             getRandomColor: PropTypes.func.isRequired
         };
     }
+
     addFilledClass(e) {
         e.target.parentNode.classList.add('form-body__input--filled');
     }
+
     checkInputFilled(e) {
         const inputElem = e.target;
         if (inputElem.value === '') {
             inputElem.parentNode.classList.remove('form-body__input--filled');
         }
     }
+
     checkInputsHaveValueThen(callback) {
         const infoKeys = Object.keys(this.state);
         for (let info of infoKeys) {
@@ -74,45 +79,56 @@ class Form extends Component {
                 continue;
             break;
             }
+
             if (this.state[info]) {
                 callback(info);
             }
         }
     }
+
     componentDidMount() {
         this.checkInputsHaveValueThen((info) => {
             document.getElementById(`inputs__${info}`).parentNode.classList.add('form-body__input--filled');
         });
     }
+
     handlerChangeName({ target: { value: name } }) {
         if (name !== ' ' && name.length < 25) {
             this.setState({ name });
         }
     }
+
     handlerChangePhone({ target: { value: phone } }) {
         if (phone[0] !== '0') {
             this.setState({ phone });
         }
     }
+
     handlerChangeBirth({ target: { value: birth } }) {
         this.setState({ birth });
     }
+
     handlerChangeWebsite({ target: { value: website } }) {
         this.setState({ website });
     }
+
     handlerChangeEmail(e) {
         const email = e.target.value.replace(this.spacePtrn, '');
         this.setState({ email });
     }
+
     handlerChangeNote({ target: { value: note } }) {
         this.setState({ note });
     }
+
     static fixedEncodeURIComponent(str) {
         return encodeURIComponent(str).replace(/[!'()*]/g, c => '%' + c.charCodeAt(0).toString(16));
     }
+
     static fixedEncodeURI(str) {
         return encodeURI(str).replace(/%5B/g, '[').replace(/%5D/g, ']');
     }
+
     resetForm() {
         this.setState({
             name: '',
@@ -123,12 +139,15 @@ class Form extends Component {
             website: '',
             phone: ''
         });
+
         this.checkInputsHaveValueThen((info) => {
             document.getElementById(`inputs__${info}`).parentNode.classList.remove('form-body__input--filled');
         });
     }
+
     handlerSaveForm(e) {
         e.preventDefault();
+
         let {
             name,
             id,
@@ -177,20 +196,18 @@ class Form extends Component {
 
         this.props.handlerSubmit(this.state);
     }
+
     changeColor(e) {
-        this.setState({
-            color: this.props.getRandomColor()
-        });
+        this.setState({ color: this.props.getRandomColor() });
     }
-    preventCloseForm(e) {
-        e.stopPropagation();
-    }
+
     render() {
         const firstLetterIdx = this.state.name.search(this.firstNotSpecialCharPtrn),
             firstLetter = this.state.name.trim() !== '' && firstLetterIdx !== -1 ? this.state.name[firstLetterIdx].toUpperCase() : '?';
+
         return (
             <div className='overlay' onClick={this.props.onClose}>
-                <div className='form-container' onClick={this.preventCloseForm}>
+                <div className='form-container' onClick={e => e.stopPropagation()}>
                     <form onSubmit={this.handlerSaveForm}>
                         <div className='form-header'>
                             <div className='form-header__title'>

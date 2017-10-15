@@ -9,7 +9,9 @@ const WorkingForm = props => {
             <EditContactForm {...props.editingContact}
                 onClose={props.onClose}
                 showNoti={props.showNoti}
-                handlerSubmit={props.onSave}
+                // handlerSubmit={props.onSave}
+                refresh={props.refresh}
+                changeContactIndex={props.changeContactIndex}
                 getRandomColor={props.getRandomColor} />
         );
     }
@@ -17,7 +19,8 @@ const WorkingForm = props => {
         <AddContactForm {...props.newContact}
             onClose={props.onClose}
             showNoti={props.showNoti}
-            handlerSubmit={props.onAdd}
+            refresh={props.refresh}
+            // handlerSubmit={props.onAdd}
             getRandomColor={props.getRandomColor} />
     );
 };
@@ -26,8 +29,8 @@ WorkingForm.propTypes = {
     isEditing: PropTypes.bool.isRequired,
     newContact: PropTypes.object.isRequired,
     onClose: PropTypes.func.isRequired,
-    onSave: PropTypes.func.isRequired,
-    onAdd: PropTypes.func.isRequired,
+    refresh: PropTypes.func.isRequired,
+    changeContactIndex: PropTypes.func.isRequired,
     showNoti: PropTypes.func.isRequired,
     getRandomColor: PropTypes.func.isRequired
 };
