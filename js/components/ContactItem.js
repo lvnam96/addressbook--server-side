@@ -11,9 +11,10 @@ const ContactItem = props => {
             if (confirm('Delete this contact? Are you sure?')) {
                 props.rmItem(props.id);
             }
-    };
+        };
+
     return (
-        <li className={"contact-list__item" + (props.hpbd ? ' contact-list__item--hpbd' : '')}
+        <li className={"contact-item" + (props.hpbd ? ' contact-item--hpbd' : '')}
             onClick={() => props.onClickOnItem(props.id)}
             style={props.hpbd ? {color: props.color} : undefined}>
             <div className="contact-item__avt" onClick={e => e.stopPropagation()}>
@@ -32,9 +33,9 @@ const ContactItem = props => {
             <div className="contact-item__phone">
                 <span>{props.phone && '+84' + props.phone}</span>
             </div>
-            <div className="contact-item__buttons">
-                <div onClick={handlerEditContactOnItem} title="Edit this contact"><i className="fa fa-pencil"></i></div>
-                <div onClick={handlerRmContactOnItem} title="Delete this contact"><i className="fa fa-user-times"></i></div>
+            <div className="contact-item__btns-container">
+                <div className="contact-item__btn" onClick={handlerEditContactOnItem} title="Edit this contact"><i className="fa fa-pencil"></i></div>
+                <div className="contact-item__btn" onClick={handlerRmContactOnItem} title="Delete this contact"><i className="fa fa-user-times"></i></div>
             </div>
         </li>
     );

@@ -1,3 +1,7 @@
+/**********************************\
+            #NOTI BAR
+\**********************************/
+
 .noti-bar {
     position: fixed;
     top: 0;
@@ -10,15 +14,34 @@
     display: flex;
     z-index: 999;
     animation: showhide 3s ease-in-out both;
+
+
+
+
+
+    /**********************************\
+            #ELEMENTS IN NOTI BAR
+    \**********************************/
+    &__ico {
+        margin-right: 20px;
+    }
+
+    &__msg {
+
+    }
+
+    &__placeholder {
+
+    }
 }
 
-.noti-bar__ico {
-    margin-right: 20px;
-}
 
-.noti-bar__msg {
 
-}
+
+
+/**********************************\
+        #MEDIA QUERIES
+\**********************************/
 
 @media (min-width: 600px) {
     .noti-bar {

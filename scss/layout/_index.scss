@@ -1,4 +1,7 @@
-// main section ---------------------
+/**********************************\
+        #PAGE'S MAIN SECTION
+\**********************************/
+
 .main {
     min-height: calc(100vh - 140px);
     margin-bottom: 140px;
@@ -8,7 +11,7 @@
     -webkit-overflow-scrolling: touch;// lazy scrolling in webkit
 }
 
-@media (min-width: 800px) {// when menu bar transform from horizontal to vertical
+@media (min-width: 850px) {// when main nav transform from horizontal to vertical
     .main {
         // width: calc(100% - 280px);// 280px is side-menu's max-width
         margin-left: 280px;

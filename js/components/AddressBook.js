@@ -6,7 +6,7 @@ import { Route } from 'react-router-dom';
 
 import ContactCard from './ContactCard';
 import ContactItem from './ContactItem';
-import MenuBar from './MenuBar';
+import MainNav from './MainNav';
 import NotiBar from './NotiBar';
 import MainContent from './MainContent';
 import WorkingForm from './WorkingForm';
@@ -288,7 +288,7 @@ class AddressBook extends Component {
                 <Route path="/birthdays-in-week" render={() => (<MainContent>{contactItems}</MainContent>)} />
                 <Route path="/birthdays-in-month" render={() => (<MainContent>{contactItems}</MainContent>)} />
                 {this.state.showNoti && notifications}
-                <MenuBar
+                <MainNav
                     totalContacts={API.listLength()}
                     onClickDisplayAll={this.displayAll}
                     onFilterBirthsInWeek={this.filterBirthsInWeek}

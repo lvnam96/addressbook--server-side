@@ -46,83 +46,83 @@ const ContactCard__Body = props => {
 
     return (
         <div className="contact-card__body">
-            <p>Contact Details</p>
-            <div className="contact-card__details">
-                {props.phone && (<div>
-                    <div className="contact-card__details__info">
+            <p className="contact-card__body-title">Contact Details</p>
+            <div className="contact-card__details-container">
+                {props.phone && (<div className="contact-card__details">
+                    <div className="contact-card__details-text">
                         <span><a href={"tel:+84" + props.phone} rel="nofollow">+84{props.phone}</a></span>
                     </div>
-                    <div className="contact-card__details__icon">
+                    <div className="contact-card__details-icon">
                         <div>
                             <i className="fa fa-phone"></i>
                         </div>
                     </div>
                 </div>)}
-                {props.birth && (<div>
-                    <div className="contact-card__details__info">
+                {props.birth && (<div className="contact-card__details">
+                    <div className="contact-card__details-text">
                         <span>{`${month} ${props.birth.split('-')[2]}, ${props.birth.split('-')[0]}`}</span>
                     </div>
-                    <div className="contact-card__details__icon">
+                    <div className="contact-card__details-icon">
                         <div>
                             <i className="fa fa-birthday-cake"></i>
                         </div>
                     </div>
                 </div>)}
-                {props.jobTitle && (<div>
-                    <div className="contact-card__details__info">
+                {props.jobTitle && (<div className="contact-card__details">
+                    <div className="contact-card__details-text">
                         <span>{props.jobTitle}</span>
                     </div>
-                    <div className="contact-card__details__icon">
+                    <div className="contact-card__details-icon">
                         <div>
                             <i className="fa fa-id-badge"></i>
                         </div>
                     </div>
                 </div>)}
-                {props.email && (<div>
-                    <div className="contact-card__details__info">
+                {props.email && (<div className="contact-card__details">
+                    <div className="contact-card__details-text">
                         <span><a href={"mailto:" + props.email}>{props.email}</a></span>
                     </div>
-                    <div className="contact-card__details__icon">
+                    <div className="contact-card__details-icon">
                         <div>
                             <i className="fa fa-envelope-o"></i>
                         </div>
                     </div>
                 </div>)}
-                {props.address && (<div>
-                    <div className="contact-card__details__info">
+                {props.address && (<div className="contact-card__details">
+                    <div className="contact-card__details-text">
                         <span>{props.address}</span>
                     </div>
-                    <div className="contact-card__details__icon">
+                    <div className="contact-card__details-icon">
                         <div>
                             <i className="fa fa-map-marker"></i>
                         </div>
                     </div>
                 </div>)}
-                {props.website && (<div>
-                    <div className="contact-card__details__info">
+                {props.website && (<div className="contact-card__details">
+                    <div className="contact-card__details-text">
                         <span><a href={props.website}>{props.website}</a></span>
                     </div>
-                    <div className="contact-card__details__icon">
+                    <div className="contact-card__details-icon">
                         <div>
                             <i className="fa fa-globe"></i>
                         </div>
                     </div>
                 </div>)}
-                {props.note && (<div>
-                    <div className="contact-card__details__info">
+                {props.note && (<div className="contact-card__details">
+                    <div className="contact-card__details-text">
                         <span>{props.note}</span>
                     </div>
-                    <div className="contact-card__details__icon">
+                    <div className="contact-card__details-icon">
                         <div>
                             <i className="fa fa-sticky-note-o"></i>
                         </div>
                     </div>
                 </div>)}
-                {props.relationship && (<div>
-                    <div className="contact-card__details__info">
+                {props.relationship && (<div className="contact-card__details">
+                    <div className="contact-card__details-text">
                         <span>{props.relationship}</span>
                     </div>
-                    <div className="contact-card__details__icon">
+                    <div className="contact-card__details-icon">
                         <div>
                             <i className="fa fa-users"></i>
                         </div>

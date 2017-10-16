@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import NavBtn from './NavBtn';
 
-const MenuBar = props => {
+const MainNav = props => {
     let delAllPressTimer;
 
     const bodyElem = document.body,
@@ -33,7 +33,7 @@ const MenuBar = props => {
             if ('FileReader' in window) {
                 document.getElementById('inptFileBtn').click();
             } else {
-                alert('Rất tiếc, trình duyệt của bạn không hỗ trợ HTML5 FileReader. Vì vậy, chúng tôi không thể khôi phục dữ liệu của bạn.');
+                alert('Sorry, your browser does not support this feature.');
             }
         },
         handlerUploadFile = e => {
@@ -66,44 +66,48 @@ const MenuBar = props => {
                 if (fileName) {
                     let textToWrite = JSON.stringify(API.getContactsList()).replace(/\n/g, '\r\n');
                     let textFileAsBlob = new Blob([textToWrite], { type: 'text/plain' });
+
                     if ('msSaveOrOpenBlob' in navigator) {
                         navigator.msSaveOrOpenBlob(textFileAsBlob, fileName);
+
                     } else {
                         let downloadLink = document.createElement('a');
                         downloadLink.download = fileName;
                         downloadLink.innerHTML = 'Download File';
-                        if ('webkitURL' in window) {
-                        // Chrome allows the link to be clicked without actually adding it to the DOM.
+
+                        if ('webkitURL' in window) {// Chrome allows the link to be clicked without actually adding it to the DOM.
                             const polyURL = window.URL || window.webkitURL;
                             downloadLink.href = polyURL.createObjectURL(textFileAsBlob);
-                        } else {
-                        // Firefox requires the link to be added to the DOM before it can be clicked.
+
+                        } else {// Firefox requires the link to be added to the DOM before it can be clicked.
                             downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
                             downloadLink.addEventListener('click', destroyClickedElement);
                             downloadLink.style.display = 'none';
                             bodyElem.appendChild(downloadLink);
                         }
+
                         downloadLink.click();
                     }
+
                     props.showNoti('success', 'We have exported your data. Save it to safe place!');
                 }
 
             } else {
-                props.showNoti('alert', 'Sorry, your browser does not support HTML5 Blob. We can not export your data.');
+                props.showNoti('alert', 'Sorry, your browser does not support this feature.');
             }
         };
 
     return (
         <nav className='sticky-nav'>
             <ul className='filter-sub-nav translatedDown200'>
-                <li title='Display contacts whose birthday is in current week' onClick={props.onFilterBirthsInWeek}>Current WEEK</li>
-                <li title='Display contacts whose birthday is in current month' onClick={props.onFilterBirthsInMonth}>Current MONTH</li>
+                <li className="filter-sub-nav__item" title='Display contacts whose birthday is in current week' onClick={props.onFilterBirthsInWeek}>Current WEEK</li>
+                <li className="filter-sub-nav__item" title='Display contacts whose birthday is in current month' onClick={props.onFilterBirthsInMonth}>Current MONTH</li>
             </ul>
             <input style={{display: 'none'}} type='file' id='inptFileBtn' accept='.txt'
                 onChange={handlerUploadFile} />
             <ul className='backup-restore-sub-nav translatedDown100'>
-                <li id='bckpDataBtn' onClick={handlerBackupData} title='Save current data into a text file'>Backup</li>
-                <li id='rstrDataBtn' onClick={handlerRestoreData} title='Replace current data by the new one in your backup file'>Restore</li>
+                <li className="filter-sub-nav__item" id='bckpDataBtn' onClick={handlerBackupData} title='Save current data into a text file'>Backup</li>
+                <li className="filter-sub-nav__item" id='rstrDataBtn' onClick={handlerRestoreData} title='Replace current data by the new one in your backup file'>Restore</li>
             </ul>
             <nav className='main-nav'>
                 <NavBtn label={`Contacts (${props.totalContacts})`} icon="fa-address-book-o" onClick={props.onClickDisplayAll} />
@@ -127,7 +131,7 @@ const MenuBar = props => {
     );
 };
 
-MenuBar.propTypes = {
+MainNav.propTypes = {
     onClickAddMenu: PropTypes.func.isRequired,
     onClickDelete: PropTypes.func.isRequired,
     showNoti: PropTypes.func.isRequired,
@@ -139,4 +143,4 @@ MenuBar.propTypes = {
     numOfCheckedItems: PropTypes.number.isRequired
 };
 
-export default MenuBar;
+export default MainNav;

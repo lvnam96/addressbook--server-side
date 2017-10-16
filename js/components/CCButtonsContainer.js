@@ -10,17 +10,18 @@ const ContactCard__ButtonsContainer = props => {
                 props.onRemoveContact(props.contactId);
                 props.onClose();
             }
-    };
+        };
+
     return (
-        <div className="contact-card__buttons">
-            <div className="contact-card__buttons__close" title="Close Contact Details" onClick={props.onClose}>
-                <i className="fa fa-arrow-left"></i>
+        <div className="contact-card__btns-container">
+            <div className="contact-card__btn contact-card__close-btn" title="Close Contact Details" onClick={props.onClose}>
+                <i className="contact-card__btn-ico fa fa-arrow-left"></i>
             </div>
-            <div className="contact-card__buttons__edit" title="Edit this contact" onClick={handlerClickEdit}>
-                <i className="fa fa-pencil"></i>
+            <div className="contact-card__btn contact-card__edit-btn" title="Edit this contact" onClick={handlerClickEdit}>
+                <i className="contact-card__btn-ico fa fa-pencil"></i>
             </div>
-            <div className="contact-card__buttons__remove" title="Delete this contact" onClick={handlerClickRemove}>
-                <i className="fa fa-user-times"></i>
+            <div className="contact-card__btn contact-card__remove-btn" title="Delete this contact" onClick={handlerClickRemove}>
+                <i className="contact-card__btn-ico fa fa-user-times"></i>
             </div>
         </div>
     );

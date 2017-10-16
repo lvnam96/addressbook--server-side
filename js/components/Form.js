@@ -59,13 +59,13 @@ class Form extends Component {
     }
 
     addFilledClass(e) {
-        e.target.parentNode.classList.add('form-body__input--filled');
+        e.target.parentNode.classList.add('JS-form__input-container--filled');
     }
 
     checkInputFilled(e) {
         const inputElem = e.target;
         if (inputElem.value === '') {
-            inputElem.parentNode.classList.remove('form-body__input--filled');
+            inputElem.parentNode.classList.remove('JS-form__input-container--filled');
         }
     }
 
@@ -87,8 +87,8 @@ class Form extends Component {
     }
 
     componentDidMount() {
-        this.checkInputsHaveValueThen((info) => {
-            document.getElementById(`inputs__${info}`).parentNode.classList.add('form-body__input--filled');
+        this.checkInputsHaveValueThen(info => {
+            document.getElementById(`inputs__${info}`).parentNode.classList.add('JS-form__input-container--filled');
         });
     }
 
@@ -112,8 +112,8 @@ class Form extends Component {
         this.setState({ website });
     }
 
-    handlerChangeEmail(e) {
-        const email = e.target.value.replace(this.spacePtrn, '');
+    handlerChangeEmail({ target: { value: email } }) {
+        email = email.replace(this.spacePtrn, '');
         this.setState({ email });
     }
 
@@ -140,8 +140,8 @@ class Form extends Component {
             phone: ''
         });
 
-        this.checkInputsHaveValueThen((info) => {
-            document.getElementById(`inputs__${info}`).parentNode.classList.remove('form-body__input--filled');
+        this.checkInputsHaveValueThen(info => {
+            document.getElementById(`inputs__${info}`).parentNode.classList.remove('JS-form__input-container--filled');
         });
     }
 
@@ -206,90 +206,90 @@ class Form extends Component {
             firstLetter = this.state.name.trim() !== '' && firstLetterIdx !== -1 ? this.state.name[firstLetterIdx].toUpperCase() : '?';
 
         return (
-            <div className='overlay' onClick={this.props.onClose}>
-                <div className='form-container' onClick={e => e.stopPropagation()}>
+            <div className="overlay" onClick={this.props.onClose}>
+                <div className="form-container" onClick={e => e.stopPropagation()}>
                     <form onSubmit={this.handlerSaveForm}>
-                        <div className='form-header'>
-                            <div className='form-header__title'>
-                                <h2>{this.props.title}</h2>
+                        <div className="form-header">
+                            <div className="form-title">
+                                <h2 className="form-title__text">{this.props.title}</h2>
                             </div>
-                            <div className='form-header__close-btn' onClick={this.props.onClose}>
-                                <div><i className='fa fa-times'></i></div>
+                            <div className="form__close-btn" onClick={this.props.onClose}>
+                                <div><i className="fa fa-times"></i></div>
                             </div>
                         </div>
-                        <div className='form-body'>
-                            <div className='form-body__avt'>
-                                <div className="form-body__avt__first-letter"
+                        <div className="form-body">
+                            <div className="form-avt">
+                                <div className="form-avt__first-letter"
                                     style={{backgroundColor: this.state.color}}
-                                    title='We have not support avatar yet! So... choose a random color for this contact!'
+                                    title="We have not support avatar yet! So... choose a random color for this contact!"
                                     ref={thisDiv => { this.avtDOM = thisDiv; }}
                                     onClick={this.changeColor}>
                                     {firstLetter}
                                 </div>
                             </div>
-                            <div className='form-body__inputs'>
-                                <div className='form-body__input form-body__inputs__name'>
-                                    <input type='text' id='inputs__name' required autoFocus
+                            <div className="form__inputs-container">
+                                <div className="form__input-container form__input-container--name">
+                                    <input type="text" id="inputs__name" required autoFocus
                                         value={this.state.name}
                                         onChange={this.handlerChangeName}
                                         onFocus={this.addFilledClass}
                                         onBlur={this.checkInputFilled}
                                         className="form__input-field"/>
-                                    <label htmlFor='inputs__name'><span>Name</span></label>
+                                    <label className="form__input-label" htmlFor="inputs__name"><span className="form__input-label__text">Name</span></label>
                                 </div>
-                                <div className='form-body__inputs__labels'>
-                                    <div className='form-body__inputs__labels__family'>
-                                        <input type='checkbox' id='checkbox__family'
+                                <div className="form__cb-container">
+                                    <div className="form__input-container--labels">
+                                        <input type="checkbox" id="form_cb-family"
                                             ref={thisDOM => this.cboxFamily = thisDOM}
-                                            defaultChecked={(this.state.labels.indexOf('family') > -1) ? true : false} />
-                                        <label className='checkbox__label' htmlFor='checkbox__family'></label>
-                                        <label htmlFor='checkbox__family'>Family</label>
+                                            defaultChecked={(this.state.labels.indexOf("family") > -1) ? true : false} />
+                                        <label className="form__cb-box" htmlFor="form_cb-family"></label>
+                                        <label className="form__cb-label" htmlFor="form_cb-family">Family</label>
                                     </div>
-                                    <div className='form-body__inputs__labels__coWorker'>
-                                        <input type='checkbox' id='checkbox__coWorker'
+                                    <div className="form__input-container--labels">
+                                        <input type="checkbox" id="form_cb-coWorker"
                                             ref={thisDOM => this.cboxCoWorker = thisDOM}
-                                            defaultChecked={(this.state.labels.indexOf('coWorker') > -1) ? true : false} />
-                                        <label className='checkbox__label' htmlFor='checkbox__coWorker'></label>
-                                        <label htmlFor='checkbox__coWorker'>Co-worker</label>
+                                            defaultChecked={(this.state.labels.indexOf("coWorker") > -1) ? true : false} />
+                                        <label className="form__cb-box" htmlFor="form_cb-coWorker"></label>
+                                        <label className="form__cb-label" htmlFor="form_cb-coWorker">Co-worker</label>
                                     </div>
-                                    <div className='form-body__inputs__labels__friends'>
-                                        <input type='checkbox' id='checkbox__friends'
+                                    <div className="form__input-container--labels">
+                                        <input type="checkbox" id="form_cb-friends"
                                             ref={thisDOM => this.cboxFriends = thisDOM}
-                                            defaultChecked={(this.state.labels.indexOf('friends') > -1) ? true : false} />
-                                        <label className='checkbox__label' htmlFor='checkbox__friends'></label>
-                                        <label htmlFor='checkbox__friends'>Friends</label>
+                                            defaultChecked={(this.state.labels.indexOf("friends") > -1) ? true : false} />
+                                        <label className="form__cb-box" htmlFor="form_cb-friends"></label>
+                                        <label className="form__cb-label" htmlFor="form_cb-friends">Friends</label>
                                     </div>
                                 </div>
-                                <div className='form-body__input form-body__inputs__phone'>
-                                    <input type='number' id='inputs__phone'
+                                <div className="form__input-container form__input-container--phone">
+                                    <input type="number" id="inputs__phone"
                                         value={this.state.phone}
                                         onChange={this.handlerChangePhone}
                                         onFocus={this.addFilledClass}
                                         onBlur={this.checkInputFilled}
                                         className="form__input-field"/>
-                                    <label htmlFor='inputs__phone'><span>Phone</span></label>
+                                    <label className="form__input-label" htmlFor="inputs__phone"><span className="form__input-label__text">Phone</span></label>
                                 </div>
-                                <div className='form-body__input form-body__inputs__birth'>
-                                    <input type='date' id='inputs__birth'
+                                <div className="form__input-container form__input-container--birth">
+                                    <input type="date" id="inputs__birth"
                                         value={this.state.birth}
                                         onChange={this.handlerChangeBirth}
                                         onFocus={this.addFilledClass}
                                         onBlur={this.checkInputFilled}
                                         className="form__input-field"/>
-                                    <label htmlFor='inputs__birth'><span>Birth</span></label>
+                                    <label className="form__input-label" htmlFor="inputs__birth"><span className="form__input-label__text">Birth</span></label>
                                 </div>
-                                <div className='form-body__input form-body__inputs__email'>
-                                    <input type='email' id='inputs__email'
+                                <div className="form__input-container form__input-container--email">
+                                    <input type="email" id="inputs__email"
                                         value={this.state.email}
                                         onChange={this.handlerChangeEmail}
                                         onFocus={this.addFilledClass}
                                         onBlur={this.checkInputFilled}
                                         className="form__input-field"
                                         placeholder="hello@garyle.me"/>
-                                    <label htmlFor='inputs__email'><span>Email</span></label>
+                                    <label className="form__input-label" htmlFor="inputs__email"><span className="form__input-label__text">Email</span></label>
                                 </div>
-                                <div className='form-body__input form-body__inputs__website'>
-                                    <input type='url' id='inputs__website'
+                                <div className="form__input-container form__input-container--website">
+                                    <input type="url" id="inputs__website"
                                         value={this.state.website}
                                         onChange={this.handlerChangeWebsite}
                                         onFocus={this.addFilledClass}
@@ -297,30 +297,30 @@ class Form extends Component {
                                         className="form__input-field"
                                         pattern="^https?:\/\/\S*"
                                         placeholder="https://facebook.com/lvnam96"
-                                        title="Website's link should start by 'http://' or 'https://'"/>
-                                    <label htmlFor='inputs__website'><span>Website</span></label>
+                                        title="Website's link should start by 'http://'' or 'https://'"/>
+                                    <label className="form__input-label" htmlFor="inputs__website"><span className="form__input-label__text">Website</span></label>
                                 </div>
-                                <div className='form-body__input form-body__inputs__note'>
-                                    <input type="text" id='inputs__note'
+                                <div className="form__input-container form__input-container--note">
+                                    <input type="text" id="inputs__note"
                                         value={this.state.note}
                                         onChange={this.handlerChangeNote}
                                         onFocus={this.addFilledClass}
                                         onBlur={this.checkInputFilled}
                                         className="form__input-field"/>
-                                    <label htmlFor='inputs__note'><span>Note</span></label>
+                                    <label className="form__input-label" htmlFor="inputs__note"><span className="form__input-label__text">Note</span></label>
                                 </div>
                             </div>
                         </div>
-                        <div className='form-footer'>
-                            <input type='reset' value='Reset'
-                                className='form-footer__reset-btn'
+                        <div className="form-footer">
+                            <input type="reset" value="Reset"
+                                className="form__btn form__btn--reset"
                                 onClick={this.resetForm}/>
-                            <input type='button' value='Cancel'
-                                className='form-footer__cancel-btn'
+                            <input type="button" value="Cancel"
+                                className="form__btn"
                                 onClick={this.props.onClose}/>
-                            <input type='submit'
-                                value={this.props.title === 'Edit Contact' ? 'Save' : 'Add'}
-                                className='form-footer__save-btn'
+                            <input type="button"
+                                value={this.props.title === "Edit Contact" ? "Save" : "Add"}
+                                className="form__btn"
                                 onClick={this.handlerSaveForm}/>
                         </div>
                     </form>

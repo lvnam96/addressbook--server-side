@@ -6,10 +6,11 @@ const NavBtn = props => {
         return (
             <label htmlFor={props.inputId} className={`main-nav__item${(' ' + props.moreClass) || ''}`} onClick={props.onClick}>
                 <i className={`fa ${props.icon}`}></i>
-                <span>{props.label}</span>
+                <span className="main-nav__item-label">{props.label}</span>
             </label>
         );
     }
+    
     return (
         <div className={`main-nav__item${(' ' + props.moreClass) || ''}`} onClick={props.onClick}
             onMouseDown={props.onMouseDown}
@@ -17,7 +18,7 @@ const NavBtn = props => {
             onTouchStart={props.onTouchStart}
             onTouchEnd={props.onTouchEnd}>
             <i className={`fa ${props.icon}`}></i>
-            <span>{props.label}</span>
+            <span className="main-nav__item-label">{props.label}</span>
         </div>
     );
 };

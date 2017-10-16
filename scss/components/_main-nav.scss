@@ -1,4 +1,6 @@
-// sticky navbar
+/**********************************\
+        #NAV CONTAINER
+\**********************************/
 .sticky-nav {
     position: fixed;
     bottom: 0;
@@ -6,11 +8,21 @@
     font-size: 1rem;
     z-index: 2;
     pointer-events: none;
-
-    * {
-        pointer-events: auto;
-    }
 }
+
+.filter-sub-nav,
+.backup-restore-sub-nav,
+.main-nav {
+    pointer-events: auto;
+}
+
+
+
+
+
+/**********************************\
+            #MAIN NAV
+\**********************************/
 
 .main-nav {
     display: flex;
@@ -30,6 +42,14 @@
     .month-btn {
         display: none;
     }
+
+
+
+
+
+    /**********************************\
+            #NAV ITEMS
+    \**********************************/
 
     &__item {
         flex: 1;
@@ -63,10 +83,10 @@
                 }
             }
         }
+    }
 
-        span {
-            display: none;
-        }
+    &__item-label {
+        display: none;
     }
 
     .fa {
@@ -76,32 +96,39 @@
     }
 }
 
-.filter-sub-nav {
-    @extend %sub-nav;
 
-    li {
-        @extend %sub-nav-li;
 
-        &:hover {
-            color: #c1c1c1;
-        }
-    }
 
-    &__item--present-state {
-        color: #fff !important;
-        font-weight: bold;
-    }
+
+/**********************************\
+  #SUB-NAV (ONLY DISPLAY ON MOBILE)
+\**********************************/
+
+.filter-sub-nav,
+.backup-restore-sub-nav {
+    display: flex;
+    flex-flow: row wrap;
+    top: 0;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background-color: #283048;
+    background: -webkit-linear-gradient(to right, #283048, #859398);
+    background: linear-gradient(to right, #283048, #859398);
+    transition: ease .8s;
 }
 
-.backup-restore-sub-nav {
-    @extend %sub-nav;
+.filter-sub-nav__item {
+    flex: 1 1 7.2em;
+    margin: 0;
+    padding: 1em 0;
+    color: #ddd;
+    font-size: 1em;
+    text-align: center;
+    cursor: pointer;
 
-    li {
-        @extend %sub-nav-li;
-
-        &:hover {
-            color: #c1c1c1;
-        }
+    &:hover {
+        color: #fff;
     }
 }
 
@@ -114,14 +141,13 @@
     transform: translateY(200%);
 }
 
-// .lighterTrash {
-//     color: rgba(253,33,73,.7) !important;
 
-//     &:hover,
-//     &:active {
-//         color: rgb(253,33,73) !important;
-//     }
-// }
+
+
+
+/**********************************\
+        #MEDIA QUERIES
+\**********************************/
 
 @media (min-width: 400px) {
     .main-nav .fa {
@@ -129,7 +155,7 @@
     }
 }
 
-@media (min-width: 800px) {
+@media (min-width: 850px) {
     .sticky-nav {
         position: fixed;
         left: 0;
@@ -160,12 +186,6 @@
             padding: 0;
             margin: 0;
 
-            span {
-                display: inline;
-                font-size: 16px;
-                line-height: 4em;
-            }
-
             .fa {
                 flex-basis: 60px;
                 margin-left: 10px;
@@ -176,6 +196,12 @@
             //     background-color: #2e192b;
             // }
         }
+
+        &__item-label {
+            display: inline;
+            font-size: 16px;
+            line-height: 4em;
+        }
     }
 
     .filter-sub-nav,
@@ -184,28 +210,19 @@
     }
 
     #bckp-rstr-toggle:checked ~ .backup-btn,
-    #bckp-rstr-toggle:checked ~ .restore-btn {
-        display: flex;
-    }
-
-    #bckp-rstr-toggle:checked + .main-nav__item > .fa {
-        transform: rotate(-180deg);
-    }
-
-    #bckp-rstr-toggle:checked + .main-nav__item > .fa:before {
-        content: '\f107';
-    }
-
+    #bckp-rstr-toggle:checked ~ .restore-btn,
     #sort-toggle:checked ~ .week-btn,
     #sort-toggle:checked ~ .month-btn {
         display: flex;
     }
 
+    #bckp-rstr-toggle:checked + .main-nav__item > .fa,
     #sort-toggle:checked + .main-nav__item > .fa {
         transform: rotate(-180deg);
     }
 
-    #sort-toggle:checked + .main-nav__item > .fa:before {
+    #bckp-rstr-toggle:checked + .main-nav__item > .fa::before,
+    #sort-toggle:checked + .main-nav__item > .fa::before {
         content: '\f107';
     }
 }
