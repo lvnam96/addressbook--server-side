@@ -15,7 +15,7 @@ class AddressBook extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            contacts: API.getContactsList(),
+            contacts: [],
             contactIndex: 0,
             showContactDetails: false,
             showForm: false,
@@ -49,6 +49,12 @@ class AddressBook extends Component {
         this.openContactDetails     = this.openContactDetails.bind(this);
         this.refresh                = this.refresh.bind(this);
         this.changeContactIndex     = this.changeContactIndex.bind(this);
+    }
+
+    componentWillMount() {
+        this.setState({
+            contacts: API.getContactsList()
+        });
     }
 
     componentDidMount() {
