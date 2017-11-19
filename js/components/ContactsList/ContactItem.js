@@ -2,17 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const ContactItem = props => {
-    const handlerEditContactOnItem = e => {
-            e.stopPropagation();
-            props.openForm(props.id);
-        },
-        handlerRmContactOnItem = e => {
-            e.stopPropagation();
-            if (confirm('Delete this contact? Are you sure?')) {
-                props.rmItem(props.id);
-            }
-        };
-
     return (
         <li className={"contact-item" + (props.hpbd ? ' contact-item--hpbd' : '')}
             onClick={() => props.onClickOnItem(props.id)}
@@ -34,8 +23,8 @@ const ContactItem = props => {
                 <span>{props.phone && '+84' + props.phone}</span>
             </div>
             <div className="contact-item__btns-container">
-                <div className="contact-item__btn" onClick={handlerEditContactOnItem} title="Edit this contact"><i className="fa fa-pencil"></i></div>
-                <div className="contact-item__btn" onClick={handlerRmContactOnItem} title="Delete this contact"><i className="fa fa-user-times"></i></div>
+                <div className="contact-item__btn" onClick={props.handlerEditContactOnItem} title="Edit this contact"><i className="fa fa-pencil"></i></div>
+                <div className="contact-item__btn" onClick={props.handlerRmContactOnItem} title="Delete this contact"><i className="fa fa-user-times"></i></div>
             </div>
         </li>
     );
@@ -45,9 +34,13 @@ ContactItem.propTypes = {
     name: PropTypes.string.isRequired,
     id: PropTypes.string.isRequired,
     color: PropTypes.string.isRequired,
+    birth: PropTypes.string,
+    phone: PropTypes.string,
     onClickOnItem: PropTypes.func.isRequired,
     onClickCheckbox: PropTypes.func.isRequired,
     rmItem: PropTypes.func.isRequired,
+    handlerEditContactOnItem: PropTypes.func.isRequired,
+    handlerRmContactOnItem: PropTypes.func.isRequired,
     openForm: PropTypes.func.isRequired
 };
 

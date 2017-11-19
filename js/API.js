@@ -1,49 +1,13 @@
-export default (function () {
-    let isModified = false,
-        needToBeReSorted = false,
-        contactsList = [];
+import { checkStorageAvailable } from './helpers/checkSupportedFeaturesHelper';
+import { timeCalculator } from './helpers/timeHelper';
 
-    const time = (() => {
-        const newDateObj = new Date(),
-            isLeap = year => {
-              if (year % 4 || (year % 100 === 0 && year % 400)) { return 0; }
-              else { return 1; }
-            },
-            howManyDaysInMonth = (month, year) => {// tính ngày trong tháng
-              return month === 2 ? (28 + isLeap(year)) : (31 - (month - 1) % 7 % 2);
-            },
-            myGetDay = () => {// trả về thứ trong tuần, ngày đầu trong tuần là thứ 2, 0-based
-                let day = newDateObj.getDay();// getDay() trả về thứ trong tuần, ngày đầu trong tuần là chủ nhật, 0-based
-                return day === 0 ? 6 : day - 1;
-            };
+let isModified = false,
+    needToBeReSorted = false,
+    contactsList = [];
 
-        return {
-          curDay: newDateObj.getDate(),// day in month
-          curDate: myGetDay(),// weekdays
-          curMonth: newDateObj.getMonth() + 1,// month
-          curYear: newDateObj.getFullYear(),// year
-          daysInMonth: howManyDaysInMonth
-        };
-    })(),
-
-    isStorageAvailable = (type => {
-        try {
-            let storage = window[type],
-                x = '__storage_test__';
-            storage.setItem(x, x);
-            storage.removeItem(x);
-            return true;
-        } catch(e) {
-            return e instanceof DOMException && (
-            e.code === 22 ||
-            e.code === 1014 ||
-            e.name === 'QuotaExceededError' ||
-            e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
-            storage.length !== 0;
-        }
-    })('localStorage');
-
-    const shouldBeSaved = () => {
+const time = timeCalculator(),
+    isStorageAvailable = checkStorageAvailable('localStorage'),
+    shouldBeSaved = () => {
         return isModified;
     },
 
@@ -115,7 +79,7 @@ export default (function () {
                     return dayInWeekArr[0].indexOf(birth) !== -1;
                 }).sort((a, b) => {
                     const birthA = parseInt(a.birth.split('-')[2], 10),
-                          birthB = parseInt(b.birth.split('-')[2], 10);
+                            birthB = parseInt(b.birth.split('-')[2], 10);
                     return birthA - birthB;
                 });
 
@@ -124,7 +88,7 @@ export default (function () {
                     return dayInWeekArr[1].indexOf(birth) !== -1;
                 }).sort((a, b) => {
                     const birthA = parseInt(a.birth.split('-')[2], 10),
-                          birthB = parseInt(b.birth.split('-')[2], 10);
+                            birthB = parseInt(b.birth.split('-')[2], 10);
                     return birthA - birthB;
                 });
 
@@ -135,7 +99,7 @@ export default (function () {
                     return dayInWeekArr[0].indexOf(birth) !== -1;
                 }).sort((a, b) => {
                     const birthA = parseInt(a.birth.split('-')[2], 10),
-                          birthB = parseInt(b.birth.split('-')[2], 10);
+                            birthB = parseInt(b.birth.split('-')[2], 10);
                     return birthA - birthB;
                 });
 
@@ -144,7 +108,7 @@ export default (function () {
                     return dayInWeekArr[1].indexOf(birth) !== -1;
                 }).sort((a, b) => {
                     const birthA = parseInt(a.birth.split('-')[2], 10),
-                          birthB = parseInt(b.birth.split('-')[2], 10);
+                            birthB = parseInt(b.birth.split('-')[2], 10);
                     return birthA - birthB;
                 });
 
@@ -159,14 +123,14 @@ export default (function () {
                 return dayInWeekArr.indexOf(birth) !== -1;
             }).sort((a, b) => {
                 const birthA = parseInt(a.birth.split('-')[2], 10),
-                      birthB = parseInt(b.birth.split('-')[2], 10);
+                        birthB = parseInt(b.birth.split('-')[2], 10);
                 return birthA - birthB;
             });
 
         }
     },
 
-    getBirthsToday = () => {
+    getListOfBirthsToday = () => {
         const today = time.curDay;
         return getBirthsInMonth().filter(contact => parseInt(contact.birth.split('-')[2], 10) === today);
     },
@@ -180,7 +144,7 @@ export default (function () {
         let birthsToday;
 
         if (needToBeReSorted) {
-            birthsToday = getBirthsToday();
+            birthsToday = getListOfBirthsToday();
             localStorage.birthsToday = JSON.stringify(birthsToday);
 
         } else if (localStorage.lastVisited === `${time.curDay}/${time.curMonth}`) {
@@ -188,14 +152,14 @@ export default (function () {
             birthsToday = JSON.parse(localStorage.birthsToday);
 
         } else {
-            birthsToday = getBirthsToday();
+            birthsToday = getListOfBirthsToday();
             localStorage.birthsToday = JSON.stringify(birthsToday);
             localStorage.lastVisited = `${time.curDay}/${time.curMonth}`;
         }
 
         contactsList.forEach(contact => {
-            contact.hpbd = birthsToday.findIndex((contactHaveBirthToday) => {
-                return contactHaveBirthToday.name === contact.name;
+            contact.hpbd = birthsToday.findIndex((contactHasBirthToday) => {
+                return contactHasBirthToday.name === contact.name;
             }) >= 0 ? true : false;
         });
     },
@@ -217,9 +181,13 @@ export default (function () {
         contactsList.sort((a, b) => {
             const x = a.name.toLowerCase(),
                 y = b.name.toLowerCase();
-            if (x < y) { return -1; }
-            if (x > y) { return 1; }
-            return 0;
+            if (x < y) {
+                return -1;
+            } else if (x > y) {
+                return 1;
+            } else {
+                return 0;
+            }
         });
     },
 
@@ -236,26 +204,6 @@ export default (function () {
 
     listLength = () => {
         return contactsList.length;
-    },
-
-    getRandomId = (string_length) => {
-        // https://gist.github.com/lvnam96/592fa2a61bfc7de728ea6785197dae13
-        let text = '';
-        const POSSIBLE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
-            POSSIBLE_SCOPE = POSSIBLE.length;
-
-        for (let i = 0; i < string_length; i += 1) {
-        text += POSSIBLE.charAt(Math.floor(Math.random() * POSSIBLE_SCOPE));
-        }
-
-        return text;
-    },
-
-    getRandomColor = () => {
-        let h = Math.floor(Math.random() * 360),
-            s = Math.floor(Math.random() * 100) + '%',
-            l = Math.floor(Math.random() * 60) + 20 + '%';
-        return `hsl(${h},${s},${l})`;
     },
 
     addContact = (newPersonObj) => {
@@ -338,40 +286,39 @@ export default (function () {
     },
 
     init = () => {
-        // get data from localStorage
-        if (isStorageAvailable && typeof localStorage.contactsList !== 'undefined') {
-            const localData = JSON.parse(localStorage.contactsList);
-            replaceData(localData);
-            // getBirthsToday();
-            filterBirthsToday();
+        // get data from localStorage if exist
+        if (isStorageAvailable) {
+            if (typeof localStorage.contactsList !== 'undefined') {
+                const localData = JSON.parse(localStorage.contactsList);
+                replaceData(localData);
+                // getListOfBirthsToday();
+                filterBirthsToday();
+            }
         } else {
             alert('Sorry, your browser does NOT support Local Storage.\nWe will not be able to save your data.');
         }
     };
 
-    return {
-        shouldBeSaved,
-        dontSaveDataToLocalStorageAgain,
-        saveDataToLocalStorage,
-        getBirthsInMonth,
-        getBirthsInWeek,
-        getBirthsToday,
-        getBirthsIncoming,
-        filterBirthsToday,
-        shouldBeSorted,
-        dataNeedToBeSorted,
-        dontSortAgain,
-        sortContactsList,
-        getContactsList,
-        listLength,
-        getRandomId,
-        getRandomColor,
-        addContact,
-        replaceData,
-        find,
-        editContact,
-        rmContact,
-        rmAllContacts,
-        init
-    };
-}());
+export default {
+    shouldBeSaved,
+    dontSaveDataToLocalStorageAgain,
+    saveDataToLocalStorage,
+    getBirthsInMonth,
+    getBirthsInWeek,
+    getListOfBirthsToday,
+    getBirthsIncoming,
+    filterBirthsToday,
+    shouldBeSorted,
+    dataNeedToBeSorted,
+    dontSortAgain,
+    sortContactsList,
+    getContactsList,
+    listLength,
+    addContact,
+    replaceData,
+    find,
+    editContact,
+    rmContact,
+    rmAllContacts,
+    init
+};

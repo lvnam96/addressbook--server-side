@@ -1,15 +1,17 @@
-import API from '../API';
+import API from './API';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { CSSTransition } from 'react-transition-group';
 import { Route } from 'react-router-dom';
 
-import ContactCard from './ContactCard';
-import ContactItem from './ContactItem';
-import MainNav from './MainNav';
-import NotiBar from './NotiBar';
-import MainContent from './MainContent';
-import WorkingForm from './WorkingForm';
+import { getRandomColor } from './helpers/utilsHelper';
+
+import ContactCard from './components/ContactCard/ContactCard';
+import ContactItemContainer from './components/ContactsList/containers/ContactItemContainer';
+import MainNavContainer from './components/MainNav/containers/MainNavContainer';
+import NotiBar from './components/NotiBar';
+import MainContent from './components/MainContent';
+import WorkingForm from './components/Form/WorkingForm';
 
 class AddressBook extends Component {
     constructor(props) {
@@ -17,9 +19,9 @@ class AddressBook extends Component {
         this.state = {
             contacts: [],
             contactIndex: 0,
-            showContactDetails: false,
-            showForm: false,
-            showNoti: true,
+            isShowCC: false,
+            isShowForm: false,
+            isShowNoti: true,
             notiList: [],
             checkedItems: []
         };
@@ -51,6 +53,25 @@ class AddressBook extends Component {
         this.changeContactIndex     = this.changeContactIndex.bind(this);
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        if (nextState.contacts !== this.state.contacts) {
+            return true;
+        }
+        if (nextState.isShowForm !== this.state.isShowForm) {
+            return true;
+        }
+        if (nextState.isShowCC !== this.state.isShowCC) {
+            return true;
+        }
+        if (nextState.checkedItems !== this.state.checkedItems) {
+            return true;
+        }
+        if (nextState.notiList !== this.state.notiList) {
+            return true;
+        }
+        return false;
+    }
+
     componentWillMount() {
         this.setState({
             contacts: API.getContactsList()
@@ -58,7 +79,7 @@ class AddressBook extends Component {
     }
 
     componentDidMount() {
-        const birthsToday = API.getBirthsToday();
+        const birthsToday = API.getListOfBirthsToday();
 
         if (birthsToday.length > 0) {
             let contacts = birthsToday[0].name;
@@ -140,14 +161,12 @@ class AddressBook extends Component {
                     notiType,
                     notiMsg,
                     notiId: Math.random()
-            };
+                };
 
             if (origNotiList.length === 2) {
                 origNotiList.shift();
             }
-            origNotiList.push(newNoti);
-
-            return { notiList: origNotiList };
+            return { notiList: [...origNotiList, newNoti] };
         });
     }
 
@@ -206,7 +225,7 @@ class AddressBook extends Component {
     openContactDetails(contactId) {
         this.setState({
             contactIndex: this.findContactIndex(contactId),
-            showContactDetails: true
+            isShowCC: true
         });
 
         this.bodyElem.classList.add('body--no-scroll');
@@ -214,7 +233,7 @@ class AddressBook extends Component {
 
     closeContactDetails() {
         this.setState({
-            showContactDetails: false
+            isShowCC: false
         });
 
         this.bodyElem.classList.remove('body--no-scroll');
@@ -224,13 +243,13 @@ class AddressBook extends Component {
         this.setState(prevState => {
             let contactIndex;
             if (contactId === -1) {
-                this.newPerson.color = API.getRandomColor();
+                this.newPerson.color = getRandomColor();
             } else {
                 contactIndex = this.findContactIndex(contactId);
             }
             return {
                 contactIndex,
-                showForm: true
+                isShowForm: true
             };
         });
 
@@ -238,9 +257,9 @@ class AddressBook extends Component {
     }
 
     closeForm() {
-        this.setState({ showForm: false });
+        this.setState({ isShowForm: false });
 
-        if (!this.state.showContactDetails) {
+        if (!this.state.isShowCC) {
             this.bodyElem.classList.remove('body--no-scroll');
         }
     }
@@ -262,12 +281,17 @@ class AddressBook extends Component {
         const itemIndex = this.state.checkedItems.indexOf(itemId);
 
         if (itemIndex >= 0) {
-            this.state.checkedItems.splice(itemIndex, 1);
+            this.setState(prevState => ({
+                checkedItems: [
+                    ...prevState.checkedItems.slice(0, itemIndex),
+                    ...prevState.checkedItems.slice(itemIndex + 1)
+                ]
+            }));
         } else {
-            this.state.checkedItems.push(itemId);
+            this.setState(prevState => ({
+                checkedItems: [...prevState.checkedItems, itemId]
+            }));
         }
-
-        this.setState(prevState => ({ checkedItems: prevState.checkedItems }));
     }
 
     render() {
@@ -275,7 +299,8 @@ class AddressBook extends Component {
                 <CSSTransition key={contact.id}
                     classNames="fadeIn"
                     timeout={{ enter: 1000, exit: 800 }}>
-                    <ContactItem key={contact.id}
+                    <ContactItemContainer
+                        key={contact.id}
                         {...contact}
                         onClickOnItem={this.openContactDetails}
                         rmItem={this.rmItem}
@@ -293,8 +318,8 @@ class AddressBook extends Component {
                 <Route exact path="/" render={() => (<MainContent>{contactItems}</MainContent>)} />
                 <Route path="/birthdays-in-week" render={() => (<MainContent>{contactItems}</MainContent>)} />
                 <Route path="/birthdays-in-month" render={() => (<MainContent>{contactItems}</MainContent>)} />
-                {this.state.showNoti && notifications}
-                <MainNav
+                {this.state.isShowNoti && notifications}
+                <MainNavContainer
                     totalContacts={API.listLength()}
                     onClickDisplayAll={this.displayAll}
                     onFilterBirthsInWeek={this.filterBirthsInWeek}
@@ -304,24 +329,24 @@ class AddressBook extends Component {
                     showNoti={this.showNoti}
                     onClickDelete={this.handlerDeleteMenu}
                     numOfCheckedItems={this.state.checkedItems.length} />
-                {this.state.showContactDetails &&
-                <ContactCard
-                    contactIndex={this.state.contactIndex}
-                    {...(this.state.contacts[this.state.contactIndex])}
-                    onClose={this.closeContactDetails}
-                    onEditContact={this.openForm}
-                    onRemoveContact={this.rmItem} />
+                {this.state.isShowCC &&
+                    <ContactCard
+                        contactIndex={this.state.contactIndex}
+                        {...(this.state.contacts[this.state.contactIndex]) }
+                        onClose={this.closeContactDetails}
+                        onEditContact={this.openForm}
+                        onRemoveContact={this.rmItem} />
                 }
-                {this.state.showForm &&
-                <WorkingForm
-                    isEditing={this.state.contactIndex > -1}
-                    editingContact={this.state.contacts[this.state.contactIndex]}
-                    newContact={this.newPerson}
-                    onClose={this.closeForm}
-                    refresh={this.refresh}
-                    changeContactIndex={this.changeContactIndex}
-                    showNoti={this.showNoti}
-                    getRandomColor={API.getRandomColor} />}
+                {this.state.isShowForm &&
+                    <WorkingForm
+                        isEditing={this.state.contactIndex > -1}
+                        editingContact={this.state.contacts[this.state.contactIndex]}
+                        newContact={this.newPerson}
+                        onClose={this.closeForm}
+                        refresh={this.refresh}
+                        changeContactIndex={this.changeContactIndex}
+                        showNoti={this.showNoti} />
+                }
             </div>
         );
     }

@@ -3,7 +3,7 @@
 \**********************************/
 
 .fadeIn-enter {
-    transform: translateX(100%);
+    transform: translate3d(100%,0,0);
 
     &.fadeIn-enter-active {
         animation: slide 1s;
@@ -11,10 +11,10 @@
 }
 
 .fadeIn-exit {
-    transform: translate(0%);
+    transform: translate3d(0,0,0);
 
     &.fadeIn-exit-active {
-        transform: translate(100%, 0%);
+        transform: translate3d(100%,0,0);
         transition: transform .8s cubic-bezier(.35,-.58,.37,.89);
     }
 }

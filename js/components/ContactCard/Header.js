@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import Tag from './Tag';
+
 const ContactCard__Header = props => (
     <div className="contact-card__header">
         <div className="contact-card__avt">
@@ -11,12 +13,12 @@ const ContactCard__Header = props => (
             <div className="contact-card__tags-container">
                 {props.labels.map(label => {
                     switch (label) {
-                    case 'family':
-                        return (<span className="contact-card__tag contact-card__tag--family" key={1}>Family</span>);
-                    case 'coWorker':
-                        return (<span className="contact-card__tag contact-card__tag--co-worker" key={2}>Coworkers</span>);
-                    case 'friends':
-                        return (<span className="contact-card__tag contact-card__tag--friends" key={3}>Friends</span>);
+                        case 'family':
+                            return (<Tag key="1" type='family' text='Family'/>);
+                        case 'coWorker':
+                            return (<Tag key="2" type='co-worker' text='Coworkers' />);
+                        case 'friends':
+                            return (<Tag key="3" type='friends' text='Friends' />);
                     }
                 })}
             </div>

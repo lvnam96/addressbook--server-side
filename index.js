@@ -3,14 +3,14 @@ import React from 'react';
 import { render } from 'react-dom';
 import { BrowserRouter, Route } from 'react-router-dom';
 
-import AddressBook from './js/components/AddressBook';
+import AddressBook from './js/AddressBook';
 
 import './scss/style.scss';
 
 API.init();
 
 document.addEventListener('DOMContentLoaded', () => {
-    const clsTab = (e = window.event) => {
+    const saveDataBeforeCloseTab = (e = window.event) => {
         if (API.shouldBeSaved()) {
             API.saveDataToLocalStorage();
             API.dontSaveDataToLocalStorageAgain();
@@ -26,5 +26,5 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementsByClassName('body-wrapper')[0]
     );
 
-    window.addEventListener('beforeunload', clsTab, false);
+    window.addEventListener('beforeunload', saveDataBeforeCloseTab, false);
 });

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import ContactsList from './ContactsList';
+import ContactsList from './ContactsList/ContactsList';
 
 const MainContent = props => (
     <main className="main">
