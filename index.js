@@ -1,7 +1,6 @@
 import API from './js/API';
 import React from 'react';
 import { render } from 'react-dom';
-import { BrowserRouter, Route } from 'react-router-dom';
 
 import AddressBook from './js/AddressBook';
 
@@ -20,9 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     render(
-        <BrowserRouter basename="/addressBook">
-            <Route path="/" component={AddressBook} />
-        </BrowserRouter>,
+        <AddressBook />,
         document.getElementsByClassName('body-wrapper')[0]
     );
 

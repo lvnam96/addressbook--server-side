@@ -1,13 +1,10 @@
 import API from './API';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { CSSTransition } from 'react-transition-group';
-import { Route } from 'react-router-dom';
 
 import { getRandomColor } from './helpers/utilsHelper';
 
 import ContactCard from './components/ContactCard/ContactCard';
-import ContactItemContainer from './components/ContactsList/containers/ContactItemContainer';
 import MainNavContainer from './components/MainNav/containers/MainNavContainer';
 import NotiBar from './components/NotiBar';
 import MainContent from './components/MainContent';
@@ -194,8 +191,6 @@ class AddressBook extends Component {
 
         this.refresh();
         // this.handleCheckedItems();
-
-        this.props.history.push('/birthdays-in-week');
     }
 
     filterBirthsInMonth() {
@@ -206,8 +201,6 @@ class AddressBook extends Component {
 
         this.refresh();
         // this.handleCheckedItems();
-
-        this.props.history.push('/birthdays-in-month');
     }
 
     displayAll() {
@@ -218,8 +211,6 @@ class AddressBook extends Component {
 
         this.refresh();
         // this.handleCheckedItems();
-
-        this.props.history.push('/');
     }
 
     openContactDetails(contactId) {
@@ -295,29 +286,17 @@ class AddressBook extends Component {
     }
 
     render() {
-        const renderContactItems = contacts => contacts.map((contact, idx) => (
-                <CSSTransition key={contact.id}
-                    classNames="fadeIn"
-                    timeout={{ enter: 1000, exit: 800 }}>
-                    <ContactItemContainer
-                        key={contact.id}
-                        {...contact}
-                        onClickOnItem={this.openContactDetails}
-                        rmItem={this.rmItem}
-                        openForm={this.openForm}
-                        onClickCheckbox={this.handlerAddCheckedItem} />
-                </CSSTransition>
-            )),
-            contactItems = renderContactItems(this.state.contacts),
-            notifications = this.state.notiList.map(notiObj => (
+        const notifications = this.state.notiList.map(notiObj => (
                 <NotiBar type={notiObj.notiType} msg={notiObj.notiMsg} key={notiObj.notiId} />
             ));
-
         return (
             <div>
-                <Route exact path="/" render={() => (<MainContent>{contactItems}</MainContent>)} />
-                <Route path="/birthdays-in-week" render={() => (<MainContent>{contactItems}</MainContent>)} />
-                <Route path="/birthdays-in-month" render={() => (<MainContent>{contactItems}</MainContent>)} />
+                <MainContent
+                    contactsList={this.state.contacts}
+                    openContactCard={this.openContactCard}
+                    rmItem={this.rmItem}
+                    openForm={this.openForm}
+                    addItemToCheckedList={this.addItemToCheckedList} />
                 {this.state.isShowNoti && notifications}
                 <MainNavContainer
                     totalContacts={API.listLength()}
