@@ -13,7 +13,7 @@ class MainNavContainer extends Component {
         super(props);
         this.handlerAddNewContact = this.handlerAddNewContact.bind(this);
         this.setTimer = this.setTimer.bind(this);
-        this.handlerBackupData = this.handlerBackupData.bind(this);
+        this.handlerUploadFile = this.handlerUploadFile.bind(this);
         this.handlerBackupData = this.handlerBackupData.bind(this);
     }
 
