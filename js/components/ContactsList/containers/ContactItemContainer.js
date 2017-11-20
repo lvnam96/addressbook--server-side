@@ -6,8 +6,10 @@ import ContactItem from '../ContactItem';
 class ContactItemContainer extends Component {
     constructor(props) {
         super(props);
-        this.handlerEditContactOnItem = this.handlerEditContactOnItem.bind(this);
-        this.handlerRmContactOnItem = this.handlerRmContactOnItem.bind(this);
+        this.handlerClickEditBtn = this.handlerClickEditBtn.bind(this);
+        this.handlerClickRemoveBtn = this.handlerClickRemoveBtn.bind(this);
+        this.handlerClickOnItem = this.handlerClickOnItem.bind(this);
+        this.handlerClickCheckbox = this.handlerClickCheckbox.bind(this);
     }
 
     static get propTypes() {
@@ -17,8 +19,8 @@ class ContactItemContainer extends Component {
             color: PropTypes.string.isRequired,
             birth: PropTypes.string,
             phone: PropTypes.string,
-            onClickOnItem: PropTypes.func.isRequired,
-            onClickCheckbox: PropTypes.func.isRequired,
+            openContactCard: PropTypes.func.isRequired,
+            addItemToCheckedList: PropTypes.func.isRequired,
             rmItem: PropTypes.func.isRequired,
             openForm: PropTypes.func.isRequired
         };
@@ -36,24 +38,34 @@ class ContactItemContainer extends Component {
         return false;
     }
 
-    handlerEditContactOnItem(e) {
+    handlerClickEditBtn(e) {
         e.stopPropagation();
         this.props.openForm(this.props.id);
     }
 
-    handlerRmContactOnItem(e) {
+    handlerClickRemoveBtn(e) {
         e.stopPropagation();
         if (confirm('Delete this contact? Are you sure?')) {
             this.props.rmItem(this.props.id);
         }
     }
 
+    handlerClickOnItem(e) {
+        this.props.openContactCard(this.props.id);
+    }
+
+    handlerClickCheckbox(e) {
+        this.props.addItemToCheckedList(this.props.id);
+    }
+
     render() {
         return (
             <ContactItem
                 {...this.props}
-                handlerEditContactOnItem={this.handlerEditContactOnItem}
-                handlerRmContactOnItem={this.handlerRmContactOnItem} />
+                handlerClickEditBtn={this.handlerClickEditBtn}
+                handlerClickRemoveBtn={this.handlerClickRemoveBtn}
+                handlerClickOnItem={this.handlerClickOnItem}
+                handlerClickCheckbox={this.handlerClickCheckbox} />
         );
     }
 }

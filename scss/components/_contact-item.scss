@@ -1,29 +1,4 @@
 /**********************************\
-           #ITEM ANIMATION
-\**********************************/
-
-.fadeIn-enter {
-    transform: translate3d(100%,0,0);
-
-    &.fadeIn-enter-active {
-        animation: slide 1s;
-    }
-}
-
-.fadeIn-exit {
-    transform: translate3d(0,0,0);
-
-    &.fadeIn-exit-active {
-        transform: translate3d(100%,0,0);
-        transition: transform .8s cubic-bezier(.35,-.58,.37,.89);
-    }
-}
-
-
-
-
-
-/**********************************\
            #CONTACT ITEM
 \**********************************/
 

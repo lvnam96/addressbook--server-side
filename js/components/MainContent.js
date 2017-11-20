@@ -8,14 +8,21 @@ const MainContent = props => (
         <header className="page-header">
             <h1 className="page-title">Address Book</h1>
         </header>
-        <ContactsList>
-            {props.children}
-        </ContactsList>
+        <ContactsList
+            data={props.contactsList}
+            openContactCard={props.openContactCard}
+            rmItem={props.rmItem}
+            openForm={props.openForm}
+            addItemToCheckedList={props.addItemToCheckedList} />
     </main>
 );
 
 MainContent.propTypes = {
-    children: PropTypes.arrayOf(PropTypes.element).isRequired
+    openContactCard: PropTypes.func.isRequired,
+    rmItem: PropTypes.func.isRequired,
+    openForm: PropTypes.func.isRequired,
+    addItemToCheckedList: PropTypes.func.isRequired,
+    contactsList: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
 export default MainContent;

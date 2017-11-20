@@ -41,11 +41,11 @@ class AddressBook extends Component {
         this.delAll                 = this.delAll.bind(this);
         this.openForm               = this.openForm.bind(this);
         this.closeForm              = this.closeForm.bind(this);
-        this.closeContactDetails    = this.closeContactDetails.bind(this);
+        this.closeContactCard       = this.closeContactCard.bind(this);
         this.rmItem                 = this.rmItem.bind(this);
         this.handlerDeleteMenu      = this.handlerDeleteMenu.bind(this);
-        this.handlerAddCheckedItem  = this.handlerAddCheckedItem.bind(this);
-        this.openContactDetails     = this.openContactDetails.bind(this);
+        this.addItemToCheckedList   = this.addItemToCheckedList.bind(this);
+        this.openContactCard        = this.openContactCard.bind(this);
         this.refresh                = this.refresh.bind(this);
         this.changeContactIndex     = this.changeContactIndex.bind(this);
     }
@@ -213,7 +213,7 @@ class AddressBook extends Component {
         // this.handleCheckedItems();
     }
 
-    openContactDetails(contactId) {
+    openContactCard(contactId) {
         this.setState({
             contactIndex: this.findContactIndex(contactId),
             isShowCC: true
@@ -222,7 +222,7 @@ class AddressBook extends Component {
         this.bodyElem.classList.add('body--no-scroll');
     }
 
-    closeContactDetails() {
+    closeContactCard() {
         this.setState({
             isShowCC: false
         });
@@ -268,7 +268,7 @@ class AddressBook extends Component {
         }
     }
 
-    handlerAddCheckedItem(itemId) {
+    addItemToCheckedList(itemId) {
         const itemIndex = this.state.checkedItems.indexOf(itemId);
 
         if (itemIndex >= 0) {
@@ -312,7 +312,7 @@ class AddressBook extends Component {
                     <ContactCard
                         contactIndex={this.state.contactIndex}
                         {...(this.state.contacts[this.state.contactIndex]) }
-                        onClose={this.closeContactDetails}
+                        onClose={this.closeContactCard}
                         onEditContact={this.openForm}
                         onRemoveContact={this.rmItem} />
                 }
