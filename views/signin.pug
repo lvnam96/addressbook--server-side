@@ -1,0 +1,14 @@
+extends layout
+
+block content
+	if isFailed
+		em Sign in failed! Please login again.
+	else
+		
+	form(action="/signin", method="post")
+		label Username:
+			input(type="text", name="user")
+		br
+		label Password:
+			input(type="password", name="pass")
+		button(type="submit") Sign in
