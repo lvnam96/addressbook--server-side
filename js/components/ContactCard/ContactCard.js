@@ -6,12 +6,17 @@ import Header from './Header';
 import Body from './Body';
 
 class ContactCard extends Component {
-    constructor(props) {
-        super(props);
-    }
-
-    static get propTypes() {
+    static propTypes() {
         return {
+            name: PropTypes.string.isRequired,
+            labels: PropTypes.string,
+            color: PropTypes.string.isRequired,
+            phone: PropTypes.string,
+            birth: PropTypes.string,
+            email: PropTypes.string,
+            address: PropTypes.string,
+            website: PropTypes.string,
+            note: PropTypes.string,
             contactIndex: PropTypes.number.isRequired,
             onClose: PropTypes.func.isRequired,
             onEditContact: PropTypes.func.isRequired,
@@ -20,10 +25,7 @@ class ContactCard extends Component {
     }
 
     shouldComponentUpdate(nextProps) {
-        if (nextProps.contactIndex !== this.props.contactIndex) {
-            return true;
-        }
-        if (
+        if (nextProps.contactIndex !== this.props.contactIndex ||
             nextProps.contactIndex !== this.props.name ||
             nextProps.contactIndex !== this.props.labels ||
             nextProps.contactIndex !== this.props.color ||

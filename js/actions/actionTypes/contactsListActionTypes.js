@@ -1,0 +1,9 @@
+export const ADD = 'ADD_CONTACT';
+export const EDIT = 'EDIT_CONTACT';
+export const MARK = 'MARK_CONTACT';
+export const UNMARK = 'UNMARK_CONTACT';
+export const TOGGLE_MARKER = 'TOGGLE_MARKER';
+export const REMOVE = 'REMOVE_CONTACT';
+export const MULTI_REMOVE = 'REMOVE_MARKED_CONTACTS';
+export const REMOVE_ALL = 'REMOVE_ALL_CONTACTS';
+export const REPLACE_ALL = 'REPLACE_ALL_CONTACTS';

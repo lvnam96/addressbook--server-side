@@ -61,7 +61,7 @@ class FormContainer extends Component {
             id: PropTypes.string.isRequired,
             color: PropTypes.string.isRequired,
             labels: PropTypes.arrayOf(PropTypes.string).isRequired,
-            onClose: PropTypes.func.isRequired,
+            closeForm: PropTypes.func.isRequired,
             handlerSubmit: PropTypes.func.isRequired,
             showNoti: PropTypes.func.isRequired
         };

@@ -1,24 +1,32 @@
-import API from '../../../API';
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
+
+import * as ls from '../../../services/localStorageService';
 
 import MainNav from '../MainNav';
 
-let delAllPressTimer;
+let delAllPressTimer,
+    isLongPressActivated;// there still a bug with this trick
 
 const bodyElem = document.body;
 
 class MainNavContainer extends Component {
     constructor(props) {
         super(props);
+        this.delBtnDOM;
+
         this.handlerAddNewContact = this.handlerAddNewContact.bind(this);
         this.setTimer = this.setTimer.bind(this);
+        this.clearTimer = this.clearTimer.bind(this);
         this.handlerUploadFile = this.handlerUploadFile.bind(this);
         this.handlerBackupData = this.handlerBackupData.bind(this);
+        this.getRefOfDelBtn = this.getRefOfDelBtn.bind(this);
     }
 
     static get propTypes() {
         return {
+            replaceData: PropTypes.func.isRequired,
             onClickAddMenu: PropTypes.func.isRequired,
             onClickDelete: PropTypes.func.isRequired,
             showNoti: PropTypes.func.isRequired,
@@ -59,11 +67,29 @@ class MainNavContainer extends Component {
         this.props.onClickAddMenu(-1);
     }
 
+    getRefOfDelBtn(dom) {
+        this.delBtnDOM = dom;
+    }
+
     setTimer(e) {
-        delAllPressTimer = setTimeout(this.props.onClickDelAll, 600);
+        const handleLongPress = () => {
+            this.props.onClickDelAll();
+            isLongPressActivated = true;
+        };
+        delAllPressTimer = setTimeout(handleLongPress, 600);
     }
 
     clearTimer(e) {
+        if (isLongPressActivated) {
+            const captureClick = function (e) {
+                e.stopPropagation();
+                // cleanup
+                this.removeEventListener('click', captureClick, true);
+                isLongPressActivated = false;
+            };
+            ReactDOM.findDOMNode(this.delBtnDOM).parentNode.addEventListener('click', captureClick, true);// listener for the capture phase instead of the bubbling phase
+        }
+
         clearTimeout(delAllPressTimer);
     }
 
@@ -84,9 +110,9 @@ class MainNavContainer extends Component {
             reader.addEventListener('load', fileLoadedEvent => {
                 let textFromFileLoaded = fileLoadedEvent.target.result,
                     dataParsedFromTextFile = JSON.parse(textFromFileLoaded);
-                API.replaceData(dataParsedFromTextFile);
-                API.saveDataToLocalStorage();
-                API.dataNeedToBeSorted();
+                this.props.replaceData(dataParsedFromTextFile);
+                ls.save(dataParsedFromTextFile);
+                // API.dataNeedToBeSorted();
                 this.props.onClickDisplayAll();
                 this.props.showNoti('success', 'Your data is restored successfully!');
             }, false);
@@ -137,6 +163,14 @@ class MainNavContainer extends Component {
         }
     }
 
+    // handleMouseup(e) {
+    //     e.parentNode.addEventListener('click', function (e) {
+    //             e.stopPropagation();
+    //             this.removeEventListener('click', captureClick, true); // cleanup
+    //         }, true // <-- This registeres this listener for the capture phase instead of the bubbling phase
+    //     );
+    // }
+
     render() {
         return (
             <MainNav
@@ -145,6 +179,7 @@ class MainNavContainer extends Component {
                 openFilterSubNav={this.openFilterSubNav}
                 setTimer={this.setTimer}
                 clearTimer={this.clearTimer}
+                getRefOfDelBtn={this.getRefOfDelBtn}
                 handlerRestoreData={this.handlerRestoreData}
                 handlerUploadFile={this.handlerUploadFile}
                 handlerBackupData={this.handlerBackupData}

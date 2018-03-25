@@ -1,25 +1,29 @@
-import { checkStorageAvailable } from './helpers/checkSupportedFeaturesHelper';
-import { timeCalculator } from './helpers/timeHelper';
-
+const http = require('http');
+const fs = require('fs');
+const path = require('path');
+const checkStorageAvailable = require('./helpers/checkSupportedFeaturesHelper');
+const timeObj = require('./helpers/timeHelper');
+// let timeObj = {},
+//     checkStorageAvailable = () => {};
 let isModified = false,
     needToBeReSorted = false,
-    contactsList = [];
+    contactsList = JSON.parse(fs.readFileSync('./js/data.json', 'UTF-8')) || [];
 
-const time = timeCalculator(),
+const time = timeObj,
     isStorageAvailable = checkStorageAvailable('localStorage'),
-    shouldBeSaved = () => {
+    ____shouldBeSaved = () => {
         return isModified;
     },
 
-    dontSaveDataToLocalStorageAgain = () => {
+    ____dontSaveDataToLocalStorageAgain = () => {
         isModified = false;
     },
 
-    saveDataToLocalStorage = () => {
+    ____saveDataToLocalStorage = () => {
         localStorage.contactsList = JSON.stringify(contactsList);
     },
 
-    rangeOfWeek = (today = time.curDay, toDate = time.curDate) => {
+    ____rangeOfWeek = (today = time.curDay, toDate = time.curDate) => {
         //Calculate range (array) of days in current week
         const result = [],
             // toDate = testDateNum > -1 ? testDateNum : time.curDate,
@@ -53,7 +57,7 @@ const time = timeCalculator(),
         return result;
     },
 
-    getBirthsInMonth = (month = time.curMonth) => {
+    ____getBirthsInMonth = (month = time.curMonth) => {
         return contactsList.filter((contact) => parseInt(contact.birth.split('-')[1], 10) === month).sort((a, b) => {
             let birthA = parseInt(a.birth.split('-')[2], 10),
                 birthB = parseInt(b.birth.split('-')[2], 10);
@@ -61,7 +65,7 @@ const time = timeCalculator(),
         });
     },
 
-    getBirthsInWeek = (dayInWeekArr = rangeOfWeek()) => {
+    ____getBirthsInWeek = (dayInWeekArr = rangeOfWeek()) => {
         const curDay = time.curDay,
             curMonth = time.curMonth,
             curYear = time.curYear,
@@ -130,7 +134,7 @@ const time = timeCalculator(),
         }
     },
 
-    getListOfBirthsToday = () => {
+    ____getListOfBirthsToday = () => {
         const today = time.curDay;
         return getBirthsInMonth().filter(contact => parseInt(contact.birth.split('-')[2], 10) === today);
     },
@@ -139,7 +143,7 @@ const time = timeCalculator(),
 
     },
 
-    filterBirthsToday = () => {
+    ____filterBirthsToday = () => {
         // re-update happy-birthday list
         let birthsToday;
 
@@ -176,7 +180,7 @@ const time = timeCalculator(),
         needToBeReSorted = false;
     },
 
-    sortContactsList = () => {
+    ____sortContactsList = () => {
         // sort by name
         contactsList.sort((a, b) => {
             const x = a.name.toLowerCase(),
@@ -191,7 +195,7 @@ const time = timeCalculator(),
         });
     },
 
-    getContactsList = () => {
+    ____getContactsList = () => {
         // it might be no need to sort, cause refresh() method in React app is handling this
         if (needToBeReSorted) {
             sortContactsList();
@@ -202,21 +206,21 @@ const time = timeCalculator(),
         return contactsList;
     },
 
-    listLength = () => {
+    ____listLength = () => {
         return contactsList.length;
     },
 
-    addContact = (newPersonObj) => {
-        contactsList.push(newPersonObj);
+    ____addContact = (newPersonObj) => {
+        contactsList = [...contactsList, newPersonObj];
         isModified = true;
         needToBeReSorted = true;
     },
 
-    replaceData = (newData = contactsList) => {
+    ____replaceData = (newData = contactsList) => {
         contactsList = newData;
     },
 
-    find = (IDList, callbackFunc, callbackObj) => {
+    ____find = (IDList, callbackFunc, callbackObj) => {
         let len = contactsList.length;
 
         if (Array.isArray(IDList)) {
@@ -260,7 +264,7 @@ const time = timeCalculator(),
         }
     },
 
-    editContact = (editedContact, idx) => {
+    ____editContact = (editedContact, idx) => {
         // if (typeof idx === 'undefined') {// currying func (partially applied func) pattern
         //     return (idx) => {
         //         contactsList[idx] = {...editedContact};
@@ -268,24 +272,33 @@ const time = timeCalculator(),
         //         needToBeReSorted = true;
         //     };
         // }
-        contactsList[idx] = {...editedContact};
+        // contactsList[idx] = {...editedContact};
+        if (typeof idx !== 'number') {
+            throw new Error('index arg is not type of number');
+        }
+
+        contactsList = [
+            ...contactsList.slice(0, idx),
+            { ...editedContact },
+            ...contactsList.slice(idx + 1)
+        ];
 
         isModified = true;
         needToBeReSorted = true;
     },
 
-    rmContact = (idx) => {
+    ____rmContact = (idx) => {
         // contactsList.splice(idx, 1);// không dùng được cách này nữa vì cần phải giữ thứ tự cho các chỉ số index của các contact trong array data (giúp cho callback của API.find() hoạt động đúng item khi remove nhiều item bằng callback).
         delete contactsList[idx];
         isModified = true;
     },
 
-    rmAllContacts = () => {
+    ____rmAllContacts = () => {
         contactsList = [];
         isModified = true;
     },
 
-    init = () => {
+    ____init = () => {
         // get data from localStorage if exist
         if (isStorageAvailable) {
             if (typeof localStorage.contactsList !== 'undefined') {
@@ -299,26 +312,53 @@ const time = timeCalculator(),
         }
     };
 
-export default {
-    shouldBeSaved,
-    dontSaveDataToLocalStorageAgain,
-    saveDataToLocalStorage,
-    getBirthsInMonth,
-    getBirthsInWeek,
-    getListOfBirthsToday,
+const API = {
+    shouldBeSaved: ____shouldBeSaved,
+    dontSaveDataToLocalStorageAgain: ____dontSaveDataToLocalStorageAgain,
+    saveDataToLocalStorage: ____saveDataToLocalStorage,
+    getBirthsInMonth: ____getBirthsInMonth,
+    getBirthsInWeek: ____getBirthsInWeek,
+    getListOfBirthsToday: ____getListOfBirthsToday,
     getBirthsIncoming,
-    filterBirthsToday,
+    filterBirthsToday: ____filterBirthsToday,
     shouldBeSorted,
     dataNeedToBeSorted,
     dontSortAgain,
-    sortContactsList,
-    getContactsList,
-    listLength,
-    addContact,
-    replaceData,
-    find,
-    editContact,
-    rmContact,
-    rmAllContacts,
-    init
+    sortContactsList: ____sortContactsList,
+    getContactsList: ____getContactsList,
+    listLength: ____listLength,
+    addContact: ____addContact,
+    replaceData: ____replaceData,
+    find: ____find,
+    editContact: ____editContact,
+    rmContact: ____rmContact,
+    rmAllContacts: ____rmAllContacts,
+    init: ____init
 };
+
+const HTML404 = `<!DOCTYPE html>
+<html>
+<head><title>404 Page</title></head>
+<body><h2>Your request is not found on our server</h2></body>
+</html>`;
+
+const server = http.createServer((req, res) => {
+    console.log(`${req.method} request for ${req.url}`);
+
+    if (req.url === '/api/addressbook/contacts/') {
+        if (req.method.toLowerCase() === 'get') {
+            res.writeHead(200, { 'Content-Type': 'text/json' });
+            res.end(JSON.stringify(API.getContactsList()));
+        } else if (req.method.toLowerCase() === 'post') {
+            
+        } else if (req.method.toLowerCase() === 'delete') {
+
+        } else {
+            res.end('Dafug???');
+        }
+    } else {
+        res.writeHead(404, {'Content-Type': 'text/html'});
+        res.end(HTML404);
+    }
+
+}).listen(3000);

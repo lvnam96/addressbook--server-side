@@ -9,7 +9,7 @@ class ContactItemContainer extends Component {
         this.handlerClickEditBtn = this.handlerClickEditBtn.bind(this);
         this.handlerClickRemoveBtn = this.handlerClickRemoveBtn.bind(this);
         this.handlerClickOnItem = this.handlerClickOnItem.bind(this);
-        this.handlerClickCheckbox = this.handlerClickCheckbox.bind(this);
+        // this.handlerClickCheckbox = this.handlerClickCheckbox.bind(this);
     }
 
     static get propTypes() {
@@ -20,7 +20,7 @@ class ContactItemContainer extends Component {
             birth: PropTypes.string,
             phone: PropTypes.string,
             openContactCard: PropTypes.func.isRequired,
-            addItemToCheckedList: PropTypes.func.isRequired,
+            handlerClickCheckbox: PropTypes.func.isRequired,
             rmItem: PropTypes.func.isRequired,
             openForm: PropTypes.func.isRequired
         };
@@ -29,6 +29,7 @@ class ContactItemContainer extends Component {
     shouldComponentUpdate(nextProps) {
         if (
             nextProps.name !== this.props.name ||
+            nextProps.isMarked !== this.props.isMarked ||
             nextProps.color !== this.props.color ||
             nextProps.birth !== this.props.birth ||
             nextProps.phone !== this.props.phone
@@ -54,9 +55,9 @@ class ContactItemContainer extends Component {
         this.props.openContactCard(this.props.id);
     }
 
-    handlerClickCheckbox(e) {
-        this.props.addItemToCheckedList(this.props.id);
-    }
+    // handlerClickCheckbox(e) {
+    //     this.props.toggleMarkedItem(this.props.data);
+    // }
 
     render() {
         return (
@@ -65,7 +66,7 @@ class ContactItemContainer extends Component {
                 handlerClickEditBtn={this.handlerClickEditBtn}
                 handlerClickRemoveBtn={this.handlerClickRemoveBtn}
                 handlerClickOnItem={this.handlerClickOnItem}
-                handlerClickCheckbox={this.handlerClickCheckbox} />
+                handlerClickCheckbox={this.props.handlerClickCheckbox} />
         );
     }
 }

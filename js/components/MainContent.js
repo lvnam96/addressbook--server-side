@@ -13,7 +13,7 @@ const MainContent = props => (
             openContactCard={props.openContactCard}
             rmItem={props.rmItem}
             openForm={props.openForm}
-            addItemToCheckedList={props.addItemToCheckedList} />
+            toggleMarkedItem={props.toggleMarkedItem} />
     </main>
 );
 
@@ -21,7 +21,7 @@ MainContent.propTypes = {
     openContactCard: PropTypes.func.isRequired,
     rmItem: PropTypes.func.isRequired,
     openForm: PropTypes.func.isRequired,
-    addItemToCheckedList: PropTypes.func.isRequired,
+    toggleMarkedItem: PropTypes.func.isRequired,
     contactsList: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 

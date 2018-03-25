@@ -36,7 +36,7 @@ export const convertBirthday = birthStr => {
     return `${month} ${day}, ${year}`;
 };
 
-export const timeCalculator = () => {
+export const timeObj = (() => {
     const newDateObj = new Date(),
         isLeap = year => {
             if (year % 4 || (year % 100 === 0 && year % 400)) { return 0; }
@@ -57,4 +57,40 @@ export const timeCalculator = () => {
         curYear: newDateObj.getFullYear(),// year
         daysInMonth: howManyDaysInMonth
     };
+})();
+
+const t = timeObj;
+
+export const rangeOfWeek = (today = t.curDay, toDate = t.curDate) => {
+    //Calculate range (array) of days in current week
+    const result = [],
+        // toDate = testDateNum > -1 ? testDateNum : t.curDate,
+        thisMonth = t.curMonth,
+        thisYear = t.curYear,
+        daysInMonth = t.daysInMonth,
+        numberOfDaysInLastMonth = thisMonth === 1 ? daysInMonth(12, thisYear - 1) : daysInMonth(thisMonth - 1, thisYear),
+        numberOfDaysInThisMonth = daysInMonth(thisMonth, thisYear),
+        dayInNextMonth = thisMonth === 12 ? daysInMonth(1, thisYear + 1) : daysInMonth(thisMonth + 1, thisYear),
+        firstDayInWeek = today - toDate + ((today - toDate < 1) ? numberOfDaysInLastMonth : 0),
+        lastDayInWeek = today + 7 - toDate - 1 - ((today + 7 - toDate - 1 > numberOfDaysInThisMonth) ? numberOfDaysInThisMonth : 0);
+    // lastDayInWeek = firstDayInWeek + 6 - ((firstDayInWeek + 6 > numberOfDaysInThisMonth) ? numberOfDaysInThisMonth : 0);
+
+    if (firstDayInWeek > lastDayInWeek) {
+        const condition = today > 15 ? numberOfDaysInThisMonth : numberOfDaysInLastMonth,
+            lastDaysOfEndingMonth = [],
+            firstDaysOfIncomingMonth = [];
+        for (let i = firstDayInWeek; i <= condition; i++) {
+            lastDaysOfEndingMonth.push(i);
+        }
+        for (let j = 1; j <= lastDayInWeek; j++) {
+            firstDaysOfIncomingMonth.push(j);
+        }
+        result.push(lastDaysOfEndingMonth, firstDaysOfIncomingMonth);
+    } else {
+        for (let i = firstDayInWeek; i <= lastDayInWeek; i++) {
+            result.push(i);
+        }
+    }
+
+    return result;
 };

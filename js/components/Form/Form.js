@@ -11,10 +11,10 @@ const Form = props => {
         firstLetter = props.name.trim() !== '' && firstLetterIdx !== -1 ? props.name[firstLetterIdx].toUpperCase() : '?';
 
     return (
-        <div className="overlay" onClick={props.onClose}>
+        <div className="overlay" onClick={props.closeForm}>
             <div className="form-container" onClick={e => e.stopPropagation()}>
                 <form onSubmit={props.handlerSaveForm}>
-                    <Header title={props.title} handlerCloseBtn={props.onClose} />
+                    <Header title={props.title} handlerCloseBtn={props.closeForm} />
                     <div className="form-body">
                         <Avt color={props.color}
                             changeColor={props.changeColor}
@@ -109,7 +109,7 @@ const Form = props => {
                             onClick={props.resetForm}/>
                         <input type="button" value="Cancel"
                             className="form__btn"
-                            onClick={props.onClose}/>
+                            onClick={props.closeForm}/>
                         <input type="button"
                             value={props.title === "Edit Contact" ? "Save" : "Add"}
                             className="form__btn"
@@ -131,6 +131,7 @@ Form.propTypes = {
     email: PropTypes.string,
     website: PropTypes.string,
     phone: PropTypes.string,
+    closeForm: PropTypes.func.isRequired,
     handlerSaveForm: PropTypes.func.isRequired,
     changeColor: PropTypes.func.isRequired,
     handlerChangeInput: PropTypes.func.isRequired,

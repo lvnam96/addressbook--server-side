@@ -6,10 +6,8 @@ const ContactItem = props => (
         onClick={props.handlerClickOnItem}
         style={props.hpbd ? {color: props.color} : undefined}>
         <div className="contact-item__avt" onClick={e => e.stopPropagation()}>
-            <input className="contact-item__checkbox" type="checkbox" id={props.id}/>
-            <label className="contact-item__checkbox-label"
-                htmlFor={props.id}
-                onClick={props.handlerClickCheckbox}></label>
+            <input className="contact-item__checkbox" type="checkbox" id={props.id} checked={props.isMarked} onChange={props.handlerClickCheckbox} />
+            <label className="contact-item__checkbox-label" htmlFor={props.id}></label>
             <div className="contact-item__avt__first-letter" style={{backgroundColor: props.color}}>{props.name[0].toUpperCase()}</div>
         </div>
         <div className="contact-item__name">
