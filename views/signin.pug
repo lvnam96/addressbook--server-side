@@ -1,12 +1,19 @@
 extends layout
 
 block content
-	if isFailed
-		em Sign in failed! Please login again.
-	form(action="/signin", method="post")
-		label Username:
-			input(type="text", name="user")
-		br
-		label Password:
-			input(type="password", name="pass")
-		button(type="submit") Sign in
+    if isFailed
+        em Sign in failed! Please login again.
+    form(action="/signin", method="post")
+        label Username:
+            br
+            input(type="text", name="uname")
+        br
+        br
+        label Password:
+            br
+            input(type="password", name="passwd")
+        br
+        br
+        button.btn.btn-large(type="submit") Sign in
+    p Don't have an account? 
+        a.btn.btn-small(href="/signup") Sign up now
