@@ -1,9 +1,10 @@
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const path = require('path');
 
 module.exports = {
-    entry: ['babel-polyfill', './index.js'],
+    entry: ['babel-polyfill', './src/index.js'],
     output: {
-        // path: '',
+        path: path.join(__dirname, 'dist'),
         filename: 'bundle.js'
     },
     devtool: 'source-map',

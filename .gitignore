@@ -4,10 +4,7 @@ img/
 css/
 fav/
 browserconfig.xml
-bundle.js
-bundle.js.map
-style.css
-style.css.map
+dist/
 manifest.json
 .eslintrc
 package-lock.json
