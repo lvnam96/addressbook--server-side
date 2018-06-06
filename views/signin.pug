@@ -3,17 +3,22 @@ extends layout
 block content
     if isFailed
         em Sign in failed! Please login again.
-    form(action="/signin", method="post")
-        label Username:
+    div(style="max-width: 500px;margin-left: auto;margin-right: auto;")
+        form(action="/signin", method="post")
+            label Username:
+                br
+                input(type="text", name="uname", autocomplete="username", placeholder="noone", value=returnedUser ? returnedUser : '')
             br
-            input(type="text", name="uname")
-        br
-        br
-        label Password:
             br
-            input(type="password", name="passwd")
-        br
-        br
-        button.btn.btn-large(type="submit") Sign in
-    p Don't have an account? 
-        a.btn.btn-small(href="/signup") Sign up now
+            label Password:
+                br
+                if returnedUser
+                    input(type="password", name="passwd", autocomplete="current-password", autofocus)
+                else
+                    input(type="password", name="passwd", autocomplete="current-password")
+            br
+            br
+            button.btn.btn-large(type="submit") Sign in
+
+        p Don't have an account? 
+            a.btn.btn-small(href="/signup") Sign up now

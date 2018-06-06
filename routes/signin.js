@@ -1,31 +1,26 @@
 const express = require('express');
 const router = express.Router();
+const passport = require('passport');
+const auth = require('../services/auth');
 
 // '/signin' route
 
-router.get('/', (req, res, next) => {
-    if (req.cookies.isSignedIn === 'true') {
-        if (req.query.signout === 'true') {
-            res.clearCookie('isSignedIn');
-        }
-        res.redirect('/');
-    } else {
-        res.render('signin', {
-    		title: 'Login | Address Book'
-    	});
+router.get('/', auth.restrictUserMiddleware(), (req, res, next) => {
+    const query = req.query;
+    if (query.returnedUser) {
+        return res.render('signin', {
+            title: 'Sign In | Address Book',
+            returnedUser: query.returnedUser
+        });
     }
+    res.render('signin', {
+        title: 'Sign In | Address Book'
+    });
 });
 
-router.post('/', (req, res, next) => {
-	if (req.body.user === '1' && req.body.pass === '2') {
-        res.cookie('isSignedIn', true);
-		res.redirect('/');
-	} else {
-        res.render('signin', {
-    		title: 'Login | Address Book',
-            isFailed: true
-    	});
-	}
-});
+router.post('/', auth.restrictUserMiddleware(), passport.authenticate('local', {
+    successRedirect: '/',
+    failureRedirect: "/signin"
+}));
 
 module.exports = router;

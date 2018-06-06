@@ -2,33 +2,42 @@ extends layout
 
 block content
     div(style="max-width: 500px;margin-left: auto;margin-right: auto;")
+        if errMsg
+            span.text-alert= errMsg
         form(action="/signup", method="post")
             label Username:
-                input(type="text", name="uname" value="lvnam96")
+                input(type="text", name="uname", placeholder="noone")
             br
             br
             label Password:
-                input(type="password", name="passwd" value="123")
+                input(type="password", name="passwd", placeholder="d73nW&#F#Q")
             br
             br
-            label Have an Facebook account? 
-            input.btn.btn-small(type="button", value="Connect")
+            label Retype password:
+                input(type="password", name="retype-passwd", placeholder="d73nW&#F#Q")
             br
             br
-            label Birthday:
-                input(type="date", name="birth" value="1996-11-27")
-            br
-            br
-            label Email:
-                input(type="email", name="email" value="lvnam96@gmail.com")
-            br
-            br
-            label Phone:
-                input(type="number", name="phone" value="123456789")
-            br
-            br
-            label Display name:
-                input(type="text", name="dispname" value="Gary")
-            br
-            br
+            //- label Have an Facebook account? 
+            //- input.btn.btn-small(type="button", value="Connect")
+            //- br
+            //- br
+            //- label Birthday:
+            //-     input(type="date", name="birth")
+            //- br
+            //- br
+            //- label Email:
+            //-     input(type="email", name="email", placeholder="hello@nowhere.com")
+            //- br
+            //- br
+            //- label Phone:
+            //-     input(type="number", name="phone", placeholder="+84123456789")
+            //- br
+            //- br
+            //- label Display name:
+            //-     input(type="text", name="dispname", placeholder="No One")
+            //- br
+            //- br
             button.btn.btn-large(type="submit") Sign up
+
+        p Have an account already? 
+            a.btn.btn-small(href="/signin") Sign in now

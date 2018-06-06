@@ -1,17 +1,15 @@
 var express = require('express');
 var router = express.Router();
+const passport = require('passport');
+const auth = require('../services/auth');
 
 // '/' route
 
-router.get('/', function(req, res, next) {
-    if (req.cookies.isSignedIn === 'true') {
-        res.render('index', {
-            title: 'Express',
-            isSignedIn: true
-        });
-    } else {
-        res.redirect('/signin');
-    }
+router.get('/', auth.restrictNonUserMiddleware(), (req, res, next) => {
+    res.render('index', {
+        title: 'Address Book',
+        isSignedIn: true
+    });
 });
 
 module.exports = router;
