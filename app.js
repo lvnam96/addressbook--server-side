@@ -65,6 +65,10 @@ app.use('/', index);
 app.use('/users', users);
 app.use('/signin', signin);
 app.use('/signup', signup);
+app.get('/signout', (req, res, next) => {
+    req.logout();
+    res.redirect('/signin');
+});
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
