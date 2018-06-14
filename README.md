@@ -11,11 +11,67 @@
 
 ### How to start development:
 
+##### 1. Prepare the database
+
+Change your database credential information at `./db/pool.js` (from line 2 to line 8):
+
+```js
+dbInfo = {
+    user: 'garyle',// your postgresql user
+    host: 'localhost',// most of the time it will be localhost. If you use docker, please check their document
+    database: 'adrsbook',// the database that your postgresql user account has rights to manage
+    password: 'bdd8OC0qgd',// postgresql user account's password
+    port: 5432// port number that your postgresql server is listening
+},
+```
+
+##### 2. Create those tables with their schemas:
+
+```sql
+CREATE TABLE IF NOT EXISTS account (
+    id UUID PRIMARY KEY NOT NULL,
+    username VARCHAR(20) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    facebook_id VARCHAR(255) UNIQUE,
+    birth DATE check (birth < CURRENT_DATE),
+    email VARCHAR(355) UNIQUE CHECK (email LIKE '%@%'),
+    phone VARCHAR(15),
+    nicename VARCHAR(25),
+    created_on TIMESTAMP NOT NULL,
+    last_login TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS addressbook (
+    id SERIAL PRIMARY KEY NOT NULL,
+    account_id INT REFERENCES account (id),
+    name VARCHAR(25),
+    color VARCHAR(25) CHECK (color LIKE 'rgb(%)' AND color LIKE 'rgba(%)' AND color LIKE '#%')
+);
+
+CREATE TABLE IF NOT EXISTS contact (
+    id serial PRIMARY KEY NOT NULL,
+    addressbook_id INT REFERENCES addressbook (id),
+    account_id INT REFERENCES account (id),
+    birth DATE check (birth < CURRENT_DATE),
+    email VARCHAR(355),
+    phone VARCHAR(15),
+    note TEXT,
+    name VARCHAR(25),
+    avatar_url VARCHAR(355)
+);
+```
+
+##### 3. Folow `connect-pg-simple`'s [installation guide](https://www.npmjs.com/package/connect-pg-simple#installation)
+
+##### 4. Start the development server
+
 ```
 npm start
 ```
 
-### How to deploy the server:
+If you make it right, your console will log: `Database is connected!` after you run one of these command to run the development server: `npm start` or:
+
+##### How to deploy the server:
 
 ```
 npm run deploy
