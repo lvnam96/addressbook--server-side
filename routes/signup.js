@@ -13,11 +13,11 @@ router.get('/', auth.restrictUserMiddleware(), (req, res, next) => {
 });
 
 router.post('/', auth.restrictUserMiddleware(), (req, res, next) => {
-    if (req.body.uname.match(/[^A-Za-z0-9]/gi) === null) {// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null
+    if (req.body.uname.match(/[^a-z0-9]/gm) !== null) {// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null
         return res.render('signup', {
             errMsg: 'Username can only contains alphabet lowercase letters & numbers.'
         });
-    };
+    }
     req.body.uname = req.body.uname.toLowerCase();
     User.register(req.body, (err, userObj) => {
         if (err) {
