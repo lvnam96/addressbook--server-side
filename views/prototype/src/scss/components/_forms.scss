@@ -1,0 +1,33 @@
+.input-wrapper {
+    position: relative;
+
+    &::after {
+        content: ' ';
+        background-color: $color--dark-black;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 1px;
+        width: 100%;
+        transform: scale(0, 1);
+        transform-origin: left;
+        @include simpleTransition(transform);
+        z-index: 1;
+    }
+
+    &:hover::after {
+        transform: scale(1, 1);
+    }
+
+    // overwrite bootstrap's default style
+    > input {
+        border-radius: 0;
+        border: 0;
+        border-bottom: 1px solid $color--gray;
+
+        &:focus {
+            border-color: $color--dark-black;
+            box-shadow: none;
+        }
+    }
+}

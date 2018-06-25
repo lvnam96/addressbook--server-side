@@ -1,0 +1,227 @@
+html {
+    box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
+}
+
+body {
+    font: 16px/1.5 'Source Sans Pro', 'Roboto', 'Helvetica Neue', Helvetica, Tahoma, sans-serif;
+    font-size: 1rem;
+    line-height: inherit;
+    background: $bg-color;
+    color: $text-color;
+}
+
+// clearfix hack
+.cf::before,
+.cf::after {
+    content: ' ';
+    display: table;
+}
+
+.cf::after {
+    clear: both;
+}
+
+// Udacity: Responsive web design
+img,
+embed,
+object,
+video {
+    max-width: 100%;
+}
+
+button {// at least 40px, Bootstrap4's button's default height is 38px
+    // min-width: 48px;
+    // min-height: 48px;
+}
+
+textarea {// used in Bootstrap4
+    // resize: vertical;
+    // overflow: auto;
+}
+
+// Modules will scale with document
+article,
+section,
+nav,
+aside,
+header,
+footer {
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+// Type will scale with modules
+p {// remember to set the paragraph-column's width to 28-33em
+    font-size: 1em;// default font size
+    line-height: 1.5;
+    // margin-top: 1.125em;// paragraph spacing
+    // margin-bottom: 1.125em;
+}
+
+// dl, ul, ol {
+//     margin-top: 1.125em;// paragraph spacing
+//     margin-bottom: 1.125em;
+// }
+
+p, ul, ol, input, textarea {
+    font-family: 'Source Sans Pro', serif;
+}
+
+li,
+q,
+blockquote {
+    font-size: 1em;
+}
+
+abbr {// use it for uppercase acronym: CSS, JS,...
+    letter-spacing: -.05em;
+}
+
+blockquote {
+    margin: 2em;
+    cite {
+        display: block;
+        text-align: right;
+    }
+}
+
+// http://htmldog.com/references/html/tags/sub/
+// https://i.stack.imgur.com/Ousrm.gif
+sup, sub {
+    font-size: .5em;
+}
+
+sup {
+    vertical-align: super;
+
+    &.math {
+        vertical-align: .8em;
+    }
+}
+
+sub {
+    vertical-align: sub;
+}
+
+// change browser's default settings
+// h1, h2, h3, h4, h5, h6 {
+//     font-weight: normal;
+// }
+
+a {
+    color: currentColor;
+    text-decoration: none;
+
+    &:hover {
+        color: currentColor;
+        text-decoration: none;
+    }
+
+    &:focus {
+        outline: none;
+    }
+
+    &.normal-link {
+        text-decoration: underline;
+        color: $color--blue;
+
+        &:hover {
+            text-decoration: none;
+        }
+    }
+
+    &.text-link {
+        color: currentColor;
+        position: relative;
+        cursor: pointer;
+        // text-decoration: none;
+
+        &::after {
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            content: ' ';
+            width: 100%;
+            height: 2px;
+            background-color: $color--blue;
+            transform-origin: center;
+            transition: transform .2s ease;
+        }
+
+        &:hover {
+            // text-decoration: none;
+        }
+
+        &:hover::after {
+            transform: scale(0, 1);
+        }
+    }
+}
+
+.delText {// replace <s> by <span class="delText">
+    text-decoration: line-through;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.title {
+    margin: 0;
+    font-size: 50px;
+}
+
+.subtitle {
+    position: relative;
+    margin: 0;
+    font-size: 1rem;
+    height: 30px;
+
+    &::before {
+        content: '';
+        width: 100%;
+        background-color: #fff;
+        height: 1px;
+        position: absolute;
+        bottom: calc(50% - 1px);
+        left: 10px;
+        z-index: 1;
+    }
+
+    > span {
+        position: absolute;
+        background-color: #fff;
+        display: inline-block;
+        padding: 0 10px;
+        color: #666;
+        z-index: 2;
+    }
+}
+
+.break-word {// from CSS-Trick, equal to .text-truncate in Bootstrap4
+    // These are technically the same, but use both
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    -ms-word-break: break-all;
+    // This is the dangerous one in WebKit, as it breaks things wherever
+    word-break: break-all;
+    // Instead use this non-standard one:
+    word-break: break-word;
+    // Adds a hyphen where the word breaks, if supported (No Blink)
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+}
+
+.ellipsis {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}

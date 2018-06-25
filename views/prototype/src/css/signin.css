@@ -1,0 +1,28 @@
+/*********************\
+# COLORS
+\*********************/
+/*********************\
+# RESPONSIVE POINTS & SIZE
+\*********************/
+.body-wrapper > .row {
+  min-height: 100vh; }
+
+.signin-form__seperator {
+  position: relative; }
+  .signin-form__seperator .divider {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: -1; }
+  .signin-form__seperator__text {
+    background-color: #fffffe;
+    font-style: italic; }
+
+.signin-form__signup-link {
+  text-transform: uppercase;
+  font-weight: 900;
+  transition: .2s ease;
+  transition-property: letter-spacing; }
+  .signin-form__signup-link:hover {
+    letter-spacing: 2px; }

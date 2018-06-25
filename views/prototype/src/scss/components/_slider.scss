@@ -1,0 +1,20 @@
+$slider-arrow-size: 40px;
+.slider-prev {
+
+    &::before {
+        color: $color--gray;
+        font-family: 'Font Awesome\ 5 Free';
+        content: '\f104';
+        font-size: $slider-arrow-size;
+    }
+}
+
+.slider-next {
+
+    &::before {
+        color: $color--gray;
+        font-family: 'Font Awesome\ 5 Free';
+        content: '\f105';
+        font-size: $slider-arrow-size;
+    }
+}

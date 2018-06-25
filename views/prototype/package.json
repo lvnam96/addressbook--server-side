@@ -1,0 +1,38 @@
+{
+  "name": "up4d-rebuild",
+  "version": "2.0.0-b",
+  "description": "New website built upon Wordpress",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "gulp",
+    "watch": "gulp watch",
+    "start": "gulp browser-sync"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "author": "nam.le.up4d",
+  "license": "ISC",
+  "bugs": {
+    "url": ""
+  },
+  "homepage": "https://up4distribution.ch",
+  "devDependencies": {
+    "autoprefixer": "^7.2.6",
+    "browser-sync": "^2.24.4",
+    "cssnano": "^3.10.0",
+    "gulp": "^3.9.1",
+    "gulp-postcss": "^7.0.1",
+    "gulp-sass": "^3.2.1",
+    "gulp-uglify": "^3.0.0",
+    "uglify-es": "^3.3.10"
+  },
+  "dependencies": {
+    "bootstrap": "^4.1.1",
+    "event-emitter": "^0.3.5",
+    "normalize.css": "^8.0.0",
+    "slick-carousel": "^1.8.1"
+  }
+}

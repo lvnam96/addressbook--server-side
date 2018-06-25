@@ -1,0 +1,36 @@
+/*********************\
+# COLORS
+\*********************/
+$color--blue: #0f7dbc;//#82d4e1;
+$color--light-blue: #28a8e0;
+$color--green: #5edd76;//#82e47d;
+$color--red: #F0535C;//#ed2024;
+
+$color--white: #fffffe;
+$color--light-gray: #e6e7e8;
+$color--gray: #cacaca;
+$color--light-black: #666;
+$color--black: #414042;
+$color--dark-black: #212121;
+
+$primary-color: $color--blue;
+$accent-color: $color--green;
+$secondary-color: $color--green;
+$light-color: $color--light-gray;
+$bg-color: $color--white;
+$text-color: $color--light-black;
+
+
+
+
+
+/*********************\
+# RESPONSIVE POINTS & SIZE
+\*********************/
+$page-max-width: 75rem;// 1200px
+$mobile: 36rem;// 512px small
+$tablet: 48rem;// 768px medium
+$desktop: 62rem;// 992px large
+$lg-desktop: $page-max-width;// 1200px extra large
+$content-padding-mobile: 10px;
+$content-padding-tablet: 20px;

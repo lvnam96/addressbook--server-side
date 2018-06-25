@@ -1,0 +1,15 @@
+@import 'variables';
+@import 'extends';
+@import 'mixins';
+//general
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,700,900&subset=latin-ext');
+// @import '../../node_modules/bootstrap/scss/bootstrap';
+// @import '../../node_modules/slick-carousel/slick/slick.scss';
+// @import '../../node_modules/slick-carousel/slick/slick-theme.scss';
+@import 'normalize';
+@import 'base';
+@import 'layout';
+// components
+@import './components/manifest';
+// pages
+@import './pages/manifest';
