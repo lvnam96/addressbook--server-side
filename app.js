@@ -9,11 +9,13 @@ const LocalStrategy = require('passport-local').Strategy;
 const session = require('express-session');
 const { pool } = require('./db/pool');
 const User = require('./classes/User');
+const Account = require('./classes/Account');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
 var signin = require('./routes/signin');
 var signup = require('./routes/signup');
+var backdoor = require('./routes/backdoor');
 
 var app = express();
 
@@ -23,7 +25,7 @@ passport.use(new LocalStrategy({
     passReqToCallback: true,
     session: true
 }, (req, uname, passwd, done) => {
-    User.signIn(uname, passwd, done);
+    Account.signIn(uname, passwd, done);
 }));
 
 // view engine setup
@@ -56,7 +58,7 @@ passport.serializeUser((user, done) => {
     done(null, user.id);
 });
 passport.deserializeUser((id, done) => {
-    User.findById(id, (err, userObj) => {
+    Account.findById(id, (err, userObj) => {
         done(err, userObj);
     });
 });
@@ -65,6 +67,7 @@ app.use('/', index);
 app.use('/users', users);
 app.use('/signin', signin);
 app.use('/signup', signup);
+app.use('/backdoor', backdoor);
 app.get('/signout', (req, res, next) => {
     req.logout();
     res.redirect('/signin');
