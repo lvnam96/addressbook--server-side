@@ -38,7 +38,8 @@ CREATE TABLE IF NOT EXISTS account (
     phone VARCHAR(15),
     nicename VARCHAR(25),
     created_on TIMESTAMP NOT NULL,
-    last_login TIMESTAMP
+    last_login TIMESTAMP,
+    salt CHAR(10) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS addressbook (
