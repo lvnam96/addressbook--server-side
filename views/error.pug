@@ -1,6 +1,10 @@
 extends layout
 
+block pageTitle
+    title= title || 'Error | Address Book'
+
 block content
-  h1= message
-  h2= error.status
-  pre #{error.stack}
+    h3.text-warning Please send this error information below to the fucking awesome developer who has built this fucking awesome app
+    h1= message
+    h2= error.status
+    pre #{error.stack}

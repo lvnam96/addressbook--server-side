@@ -1,24 +1,34 @@
 extends layout
 
-block content
-    if isFailed
-        em Sign in failed! Please login again.
-    div(style="max-width: 500px;margin-left: auto;margin-right: auto;")
-        form(action="/signin", method="post")
-            label Username:
-                br
-                input(type="text", name="uname", autocomplete="username", placeholder="noone", value=returnedUser ? returnedUser : '')
-            br
-            br
-            label Password:
-                br
-                if returnedUser
-                    input(type="password", name="passwd", autocomplete="current-password", autofocus)
-                else
-                    input(type="password", name="passwd", autocomplete="current-password")
-            br
-            br
-            button.btn.btn-large(type="submit") Sign in
+block pageTitle
+    title= title || 'Sign In | Address Book'
 
-        p Don't have an account? 
-            a.btn.btn-small(href="/signup") Sign up now
+block content
+    .body-wrapper.container-fluid
+        .row
+            .col-lg-8.col-md-6.order-md-1(style="background: linear-gradient(-45deg, #7c7c7c, #212121);")
+                svg
+            .col-lg-4.col-md-6.order-md-0.d-flex.flex-wrap.align-items-center.justify-content-center
+                .w-100.px-2.px-md-3.px-xl-4(style="max-width: 400px;")
+                    .signin-form-wrapper
+                    .text-center.mt-3.mb-4.signin-form__seperator
+                        hr.divider.w-50.p-0.m-0
+                        .d-inline-block.px-2.py-1.signin-form__seperator__text
+                            span or
+                    p.text-center
+                        button.btn.btn-dark.rounded-0.btn-block Sign in with Google
+                    .text-center Don't have an account?
+                        br
+                        a(href="/signup", class="signin-form__signup-link") Sign Up
+
+block closeHead
+    link(href="/Signin.css", rel="stylesheet")
+    link(href="/signup", rel="dns-prefetch")
+    link(href="/signup", rel="prefetch", as="script")
+    link(href="/Signup.css", rel="preload", as="style")
+    link(href="/Signin.js", rel="preload", as="script")
+    link(href="/app.css", rel="preload", as="style")
+    link(href="/app.js", rel="preload", as="script")
+
+block closeBody
+    script(src="/Signin.js")

@@ -1,0 +1,16 @@
+.body-wrapper {
+    background-color: transparent;
+}
+
+@media (min-width: $mobile) {
+    .reset-padding-container {
+        padding-left: 0;
+        padding-right: 0;
+    }
+}
+
+@media (min-width: $tablet) {}
+
+@media (min-width: $desktop) {}
+
+@media (min-width: $lg-desktop) {}

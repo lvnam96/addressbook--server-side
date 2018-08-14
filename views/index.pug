@@ -1,8 +1,21 @@
 extends layout
 
+block pageTitle
+    title= title || 'Address Book'
+
 block content
-    h1= title
-    p Welcome to #{title}
-    if isSignedIn
-        a(href="/signout")
-            button.btn Sign out
+    //- if htmlWebpackPlugin
+    //-     h1= htmlWebpackPlugin.options.title
+    //- else
+    //-     h1= title
+    //- p Welcome to the most fucking awesome AddressBook app
+    //- p Made with #[pre <3] 
+    .body-wrapper
+    a(href="/signout")
+        button.btn.btn-outline-primary.btn-sm.rounded-0 Sign out
+
+block closeHead
+    link(href="/App.css", rel="stylesheet")
+
+block closeBody
+    script(src="/App.js")
