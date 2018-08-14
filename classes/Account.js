@@ -13,14 +13,13 @@ class Account {
         this.email = data.email;
         this.last_login = data.last_login;
         this.created_on = data.created_on;
-        // this.salt = data.salt;
+        this._salt = data.salt;
     }
 
     get id () {
         return this._id;
     }
 
-    // do NOT allow to change ID
     set id (x) { return; }
 
     get uname () {
@@ -47,6 +46,12 @@ class Account {
     get passwd () {
         return this._passwd;
     }
+
+    get salt () {
+        return this._salt;
+    }
+
+    set salt (x) { return; }
 
     static isUnameUsed (uname, cb) {
         return db.acc.isUnameUsed(uname, (err, bool) => {
