@@ -1,4 +1,4 @@
-import React from 'react';
+// import React from 'react';
 import PropTypes from 'prop-types';
 
 const Input = props => {
@@ -34,7 +34,7 @@ const Input = props => {
 };
 
 Input.propTypes = {
-    
+
 };
 
 export default Input;

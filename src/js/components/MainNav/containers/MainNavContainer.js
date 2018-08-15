@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
+// import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
+import store from '../../../store';
 
 import * as ls from '../../../services/localStorageService';
 
@@ -11,7 +12,7 @@ let delAllPressTimer,
 
 const bodyElem = document.body;
 
-class MainNavContainer extends Component {
+class MainNavContainer extends React.Component {
     constructor(props) {
         super(props);
         this.delBtnDOM;
@@ -112,7 +113,6 @@ class MainNavContainer extends Component {
                     dataParsedFromTextFile = JSON.parse(textFromFileLoaded);
                 this.props.replaceData(dataParsedFromTextFile);
                 ls.save(dataParsedFromTextFile);
-                // API.dataNeedToBeSorted();
                 this.props.onClickDisplayAll();
                 this.props.showNoti('success', 'Your data is restored successfully!');
             }, false);
@@ -130,7 +130,7 @@ class MainNavContainer extends Component {
             fileName = (fileName === '' ? 'contacts_backupFile.txt' : fileName);
 
             if (fileName) {
-                let textToWrite = JSON.stringify(API.getContactsList()).replace(/\n/g, '\r\n');
+                let textToWrite = JSON.stringify(store.getState().contacts).replace(/\n/g, '\r\n');
                 let textFileAsBlob = new Blob([textToWrite], { type: 'text/plain' });
 
                 if ('msSaveOrOpenBlob' in navigator) {

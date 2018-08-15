@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+// import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-class NavBtn extends Component {
+class NavBtn extends React.Component {
     constructor(props) {
         super(props);
     }

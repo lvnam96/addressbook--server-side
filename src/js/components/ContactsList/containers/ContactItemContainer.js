@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+// import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import ContactItem from '../ContactItem';
 
-class ContactItemContainer extends Component {
+class ContactItemContainer extends React.Component {
     constructor(props) {
         super(props);
         this.handlerClickEditBtn = this.handlerClickEditBtn.bind(this);

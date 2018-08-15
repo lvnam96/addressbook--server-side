@@ -1,7 +1,7 @@
-import React, { PureComponent } from 'react';
+// import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
-class FormHeader extends PureComponent {
+class FormHeader extends React.PureComponent {
     static get propTypes() {
         return {
             title: PropTypes.string.isRequired,

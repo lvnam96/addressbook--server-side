@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+// import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import { getRandomColor } from '../../../helpers/utilsHelper';
@@ -18,7 +18,7 @@ const spacePtrn = /\s/g,
         }
     };
 
-class FormContainer extends Component {
+class FormContainer extends React.Component {
     constructor(props) {
         super(props);
         const {

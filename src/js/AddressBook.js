@@ -1,5 +1,5 @@
 // import API from './API';
-import React, { Component } from 'react';
+// import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -25,7 +25,7 @@ const bodyElem = document.body,
         labels: [],
     };
 
-class AddressBook extends Component {
+class AddressBook extends React.Component {
     constructor(props) {
         super(props);
         this.boundActions = {
@@ -97,7 +97,7 @@ class AddressBook extends Component {
 
     // componentWillReceiveProps(nextProps) {
     //     if (nextProps.contacts !== this.props.contacts) {
-            
+
     //     }
     // }
 
@@ -273,8 +273,8 @@ class AddressBook extends Component {
                 contactIndex: this.findContactIndex(contactId),
                 isShowForm: false
             }
-            :
-            { isShowForm: false }
+        :
+        { isShowForm: false }
         ));
     }
 
@@ -308,9 +308,9 @@ class AddressBook extends Component {
 
     render() {
         const notifications = this.props.notiList.map(notiObj => (
-                <NotiBar type={notiObj.notiType} msg={notiObj.notiMsg} key={notiObj.notiId} />
-            ));
-            this.checkedItemsCounter = this.props.contacts.filter(contact => contact.isMarked).length;
+            <NotiBar type={notiObj.notiType} msg={notiObj.notiMsg} key={notiObj.notiId} />
+        ));
+        this.checkedItemsCounter = this.props.contacts.filter(contact => contact.isMarked).length;
 
         let filteredContacts;
         switch (this.props.filterState) {

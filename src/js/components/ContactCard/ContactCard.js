@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+// import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import ButtonsContainer from './ButtonsContainer';
 import Header from './Header';
 import Body from './Body';
 
-class ContactCard extends Component {
+class ContactCard extends React.Component {
     static propTypes() {
         return {
             name: PropTypes.string.isRequired,

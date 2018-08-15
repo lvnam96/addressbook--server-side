@@ -1,6 +1,6 @@
-import "babel-polyfill";
-import React from 'react';
-import { render } from 'react-dom';
+// import "babel-polyfill";
+// import React from 'react';
+// import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import store from './js/store';
 
@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return 'Sure?';// For Safari
     };
 
-    render(
+    ReactDOM.render(
         <Provider store={store}>
             <AddressBook />
         </Provider>,
@@ -29,3 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.addEventListener('beforeunload', saveDataBeforeCloseTab, false);
 });
+
+if (process.env.NODE_ENV !== 'production') {
+    module.hot.accept();
+}

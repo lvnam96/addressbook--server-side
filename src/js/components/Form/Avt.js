@@ -1,7 +1,7 @@
-import React, { PureComponent } from 'react';
+// import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
-class FormAvt extends PureComponent {
+class FormAvt extends React.PureComponent {
     static get propTypes() {
         return {
             color: PropTypes.string.isRequired,
