@@ -8,7 +8,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const productionMode = process.env.NODE_ENV === 'production';
 
 module.exports = {
-    mode: 'production',//https://webpack.js.org/configuration/#use-different-config-file
+    mode: 'production',
     entry: {
         core: './core/js/index.js',
         App: './entrypoints/main/src/index.js',
@@ -18,6 +18,10 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, '../public'),
         filename: '[name].js'// use entry property names, e.g: Signin.js
+    },
+    externals: {// don't include these packages/modules in node_modules but use CDN, still have to import in each file
+        'react': 'React',
+        'react-dom': 'ReactDOM'
     },
     module: {
         rules: [
@@ -29,10 +33,13 @@ module.exports = {
                 //     path.resolve(__dirname, './entrypoints/signup')
                 //     // path.resolve(__dirname, 'entrypoints/**')
                 // ],
-                options: {
-                    presets: ['env', 'react'],
-                    plugins: ['react-hot-loader/babel']
-                },
+                // options: {
+                //     presets: ['env', 'react'],
+                //     plugins: [
+                //         'react-hot-loader/babel',
+                //         'transform-object-rest-spread'
+                //     ]
+                // },
                 loader: 'babel-loader'
             },
             {
@@ -150,41 +157,17 @@ module.exports = {
             }
         ]
     },
+    devtool: 'source-map',// use 'source-map' for production
+    resolve: {
+        extensions: ['.js'],
+        alias: {
+            'adbk': path.resolve(__dirname, './entrypoints/main/src/js/classes/adbk')  // <-- When you build or restart dev-server, you'll get an error if the path to your utils.js file is incorrect.
+        }
+    },
     plugins: [
         new CleanWebpackPlugin(['../public/*.*'], {
             allowExternal: true
         }),
-        // new HtmlWebpackPlugin({
-        //     filename: 'index.html',
-        //     template: './index.pug',
-        //     chunks: ['core', 'App'],
-        //     // favicon: '../public/favicon.ico',
-        //     // minify: true,
-        //     // hash: true,
-        //     title: 'Address Book',
-        //     isSignedIn: true,
-        //     prod: false
-        // }),
-        // new HtmlWebpackPlugin({
-        //     filename: 'signin.html',
-        //     template: './signin.pug',
-        //     chunks: ['core', 'Signin'],
-        //     // favicon: '../public/favicon.ico',
-        //     // minify: true,
-        //     // hash: true,
-        //     title: 'Sign In',
-        //     prod: true
-        // }),
-        // new HtmlWebpackPlugin({
-        //     filename: 'signup.html',
-        //     template: './signup.pug',
-        //     chunks: ['core', 'Signup'],
-        //     // favicon: '../public/favicon.ico',
-        //     // minify: true,
-        //     // hash: true,
-        //     title: 'Sign Up',
-        //     prod: true
-        // }),
         new MiniCssExtractPlugin({// Thus you can import your Sass modules from `node_modules`.
                                   // Just prepend them with `~` to tell webpack that this is not a relative import
             // chunkFilename: "[id].css",
@@ -203,12 +186,25 @@ module.exports = {
                 sourceMap: true
             }
         }),
-        new webpack.HotModuleReplacementPlugin(),
+        new webpack.ProvidePlugin({
+            'adbk': ['adbk', 'default']
+        }),
         new webpack.DefinePlugin({
-            __DEV__: JSON.stringify(JSON.parse(process.env.BUILD_DEV || 'true')),
+            __DEV__: JSON.stringify(JSON.parse(process.env.BUILD_DEV || 'false')),
+            __PROD__: JSON.stringify(JSON.parse(process.env.BUILD_PROD || 'true')),
             __PRERELEASE__: JSON.stringify(JSON.parse(process.env.BUILD_PRERELEASE || 'false'))
         }),
+        new webpack.EnvironmentPlugin({
+            NODE_ENV: 'production',
+            HOT_RELOAD: false,
+            DEBUG: false
+        }),
     ],
+    performance: {
+        // hints: 'error',
+        // maxEntrypointSize: 400000,
+        // maxAssetSize: 100000
+    },
     optimization: {
         splitChunks: {
             // chunks: 'all'

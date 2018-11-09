@@ -119,7 +119,7 @@ class SignUpFormContainer extends React.Component {
     }
 
     checkUnameAvail (uname) {
-        return axios.get('/backdoor/isUnameUsed', {
+        return axios.get('/backdoor/is-uname-used', {
             params: { uname }
         });
     }
