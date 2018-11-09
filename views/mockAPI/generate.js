@@ -9,6 +9,6 @@ jsf.extend('chance', () => (new require('chance')()));
 jsf.resolve(schema).then(sample => {
     fs.writeFile(__dirname + '/db.json', JSON.stringify(sample), (err) => {
         if (err) return console.error(err);
-        console.log('Random datas for mock API are created');
+        console.log('Random data JSON file for mock API is created');
     });
 }).catch(console.error);
