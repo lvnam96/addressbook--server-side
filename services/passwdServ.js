@@ -1,9 +1,6 @@
 const bcrypt = require('bcryptjs');
+const globalPepper = '*#)FsaS#$()sf(Sa';
 const saltRounds = 10;
-
-// I won't use async/await version of bcrypt
-// because of the hash & comparing time, the main reason
-// makes bcrypt safer when being brute-force attacked
 
 function getHash (saltedRawPasswd, cb) {
     return bcrypt.hash(saltedRawPasswd, saltRounds, (err, hash) => {

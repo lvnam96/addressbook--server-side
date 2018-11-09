@@ -1,42 +1,11 @@
-const { pool, query: dbQuery } = require('./pool');
+const { pool, query } = require('./pool');
+const { addAdrsbook, addAccountAdrsbookRelationship } = require('./data');
 const passwdServ = require('../services/passwdServ');
+const { random: { getRandomStr, getRandomColor }, dbUtils: { mapUserData } } = require('../helpers/index');
+const waterfall = require('async/waterfall');
 
-// const chance = require('chance');
-// chance.string({ length: 10 });
-//https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
-const randomStr = (string_length) => {
-    let text = "";
-    const POSSIBLE = "!@#$%^&*()_+-=?|:ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
-          POSSIBLE_SCOPE = POSSIBLE.length;
-
-    for (let i = 0; i < string_length; i += 1) {
-        text += POSSIBLE.charAt(Math.floor(Math.random() * POSSIBLE_SCOPE));
-    }
-
-    return text;
-};
-
-// map data from account table in database
-// to obj with right props which class User needs
-function mapData (userDataFromDB) {
-    const { id, username, password, email, facebook_id, birth, phone, nicename, created_on, last_login, salt } = userDataFromDB;
-    return {
-        id,
-        uname: username,
-        passwd: password,
-        fbid: facebook_id,
-        email,
-        nicename,
-        birth,
-        phone,
-        created_on,
-        last_login,
-        salt
-    };
-}
-
-function regNewAcc (userData, cb) {
-    const randStr = randomStr(10);
+function createNewAccount (userData, cb) {
+    const randStr = getRandomStr(10);
     passwdServ.getHash(userData.passwd + randStr, hashedPasswd => {
         const queryStr = `INSERT INTO account (
             username,
@@ -51,7 +20,7 @@ function regNewAcc (userData, cb) {
             salt
         ) VALUES (
             $1, $2, $3, $4, $5, $6, $7, $8, $9, $10
-        ) RETURNING *`,
+        ) RETURNING *;`,
             queryPara = [
                 userData.uname,
                 hashedPasswd,
@@ -64,19 +33,46 @@ function regNewAcc (userData, cb) {
                 undefined,
                 randStr
             ];
-        dbQuery(queryStr, queryPara, (err, res) => {
-            cb(err, mapData(res.rows[0]));
+        // return query(queryStr, queryPara);
+        query(queryStr, queryPara, (err, res) => {
+            cb(err, res.rows[0]);
         });
     });
 }
 
+function regNewAcc (userData, callback) {
+    waterfall([
+        (cb) => {
+            createNewAccount(userData, (err, rawData) => {
+                cb(err, mapUserData(rawData));
+            });
+        },
+        (user, cb) => {
+            addAdrsbook({
+                name: 'Your Address Book',
+                color: getRandomColor()
+            }, (err, res) => {
+                cb(err, {
+                    user,
+                    adrsbook: res.rows[0]
+                });
+            });
+        },
+        (data, cb) => {
+            addAccountAdrsbookRelationship(data.user.id, data.adrsbook.id, (err, res) => {
+                cb(err, data);
+            });
+        }
+    ], (err, data) => {
+        callback(err, data.user);
+    });
+}
+
 function isUnameUsed (uname, cb) {
-    console.log(uname);
-    dbQuery(
+    query(
         'SELECT username FROM account WHERE username = $1',
         [uname],
         (err, res) => {
-            console.log(res);
             const result = res.rows.length > 0 && res.rows[0] !== undefined;
             cb(err, result);
         }
@@ -84,32 +80,32 @@ function isUnameUsed (uname, cb) {
 }
 
 function changeUname (id, newUname, cb) {
-    dbQuery(
-        'UPDATE account SET username = $1 WHERE id = $2',
+    query(
+        'UPDATE account SET username = $1 WHERE id = $2 RETURNING *',
         [newUname, id],
         (err, res) => {
             if (err) console.error(err);
-            cb(mapData(res.rows[0]));
+            cb(mapUserData(res.rows[0]));
         }
     );
 }
 
 function changePasswd (id, newPasswd, cb) {
-    const randStr = randomStr(10);
+    const randStr = getRandomStr(10);
     passwdServ.getHash(newPasswd + randStr, hashedPasswd => {
-        dbQuery(
-            'UPDATE account SET password = $1, salt = $2 WHERE id = $3',
+        query(
+            'UPDATE account SET password = $1, salt = $2 WHERE id = $3 RETURNING *',
             [hashedPasswd, randStr, id],
             (err, res) => {
-                cb(err, mapData(res.rows[0]));
+                cb(err, mapUserData(res.rows[0]));
             }
         );
     });
 }
 
 function findById (id, cb) {
-    dbQuery(
-        `SELECT * FROM account WHERE id = $1`,
+    query(
+        'SELECT * FROM account WHERE id = $1',
         [id],
         (err, res) => {
             if (err) {
@@ -120,15 +116,16 @@ function findById (id, cb) {
             if (!res.rows[0]) {
                 return cb(new Error(`User ID ${id} is not found!`));
             }
-            return cb(null, mapData(res.rows[0]));
+            return cb(null, mapUserData(res.rows[0]));
         }
     );
 }
 
 function findByUname (uname, cb) {
     pool.query(
-        `SELECT * FROM account WHERE username = $1`,
-        [uname],
+        // 'SELECT * FROM account WHERE username = $1',
+        'UPDATE account SET last_login = $2 WHERE username = $1 RETURNING *',
+        [uname, new Date()],
         (err, res) => {
             if (err) {
                 // please do something on UI to let user know about
@@ -138,7 +135,7 @@ function findByUname (uname, cb) {
             if (!res.rows[0]) {
                 return cb(new Error(`Username ${uname} is not found!`));
             }
-            return cb(null, mapData(res.rows[0]));
+            return cb(null, mapUserData(res.rows[0]));
         }
     );
 }
