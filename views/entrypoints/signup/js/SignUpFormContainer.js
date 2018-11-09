@@ -1,9 +1,12 @@
+import React from 'react';
 import axios from 'axios';
 import jsSHA from "jssha";
 import debounce from 'lodash/debounce';
 import Timeout from '../../../core/js/models/Timeout';
 
 import SignUpForm from './SignUpForm';
+
+import '../scss/styles.scss';
 
 // basic implementation from Underscore.js
 // Used for checking uname available

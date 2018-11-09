@@ -1,0 +1,17 @@
+{
+    "env": {
+        "production": {
+            "presets": ["env", "react"],
+            "plugins": [
+                "transform-object-rest-spread"
+            ]
+        },
+        "development": {
+            "presets": ["env", "react"],
+            "plugins": [
+                "react-hot-loader/babel",
+                ["transform-object-rest-spread", { "useBuiltIns": true }]
+            ]
+        }
+    }
+}

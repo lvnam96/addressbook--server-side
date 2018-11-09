@@ -1,11 +1,11 @@
 import SignInFormContainer from './js/SignInFormContainer';
 // import registerServiceWorker from './registerServiceWorker';
 
-import './scss/styles.scss';
+// import './scss/styles.scss';
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    ReactDOM.render(
+    ReactDOM.hydrate(
         <SignInFormContainer />,
         document.getElementsByClassName('signin-form-wrapper')[0]
     );

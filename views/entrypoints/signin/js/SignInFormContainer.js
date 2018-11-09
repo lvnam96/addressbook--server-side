@@ -1,9 +1,12 @@
+import React from 'react';
 import axios from 'axios';
 import jsSHA from "jssha";
 import debounce from 'lodash/debounce';
 import Timeout from '../../../core/js/models/Timeout';
 
 import SignInForm from './SignInForm';
+
+import '../scss/styles.scss';
 
 class SignInFormContainer extends React.Component {
     constructor (props) {

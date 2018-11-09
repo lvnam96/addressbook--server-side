@@ -10,7 +10,7 @@ block content
                 svg
             .col-lg-4.col-md-6.order-md-0.d-flex.flex-wrap.align-items-center.justify-content-center
                 .w-100.px-2.px-md-3.px-xl-4(style="max-width: 400px;")
-                    .signin-form-wrapper
+                    .signin-form-wrapper!= ssr
                     .text-center.mt-3.mb-4.signin-form__seperator
                         hr.divider.w-50.p-0.m-0
                         .d-inline-block.px-2.py-1.signin-form__seperator__text
@@ -27,8 +27,8 @@ block closeHead
     link(href="/signup", rel="prefetch", as="script")
     link(href="/Signup.css", rel="preload", as="style")
     link(href="/Signin.js", rel="preload", as="script")
-    link(href="/app.css", rel="preload", as="style")
-    link(href="/app.js", rel="preload", as="script")
+    link(href="/App.css", rel="preload", as="style")
+    link(href="/App.js", rel="preload", as="script")
 
 block closeBody
     script(src="/Signin.js")
