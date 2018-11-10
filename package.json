@@ -27,14 +27,13 @@
     "lodash": "^4.17.10",
     "normalize.css": "^8.0.0",
     "prop-types": "^15.6.0",
-    "react": "^16.1.1",
-    "react-dom": "^16.1.1",
     "react-redux": "^5.0.6",
     "react-virtualized": "^9.20.1",
-    "redux": "^3.7.2"
+    "redux": "^4.0.0",
+    "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
-    "autoprefixer": "^9.1.1",
+    "autoprefixer": "^9.1.5",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.0.2",
     "babel-loader": "^7.1.2",
@@ -61,14 +60,20 @@
     "postcss-scss": "^2.0.0",
     "pug": "^2.0.3",
     "pug-loader": "^2.4.0",
+    "react": "^16.5.0",
+    "react-dom": "^16.5.0",
     "react-hot-loader": "^4.3.4",
-    "resolve-url-loader": "^2.3.0",
+    "resolve-url-loader": "^2.3.1",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.22.1",
     "url-loader": "^1.1.0",
-    "webpack": "^4.16.5",
+    "webpack": "^4.17.2",
     "webpack-cli": "^3.1.0",
-    "webpack-dev-server": "^3.1.5"
+    "webpack-dev-server": "^3.1.8"
+  },
+  "peerDependencies": {
+    "react": "^16.5.0",
+    "react-dom": "^16.5.0"
   },
   "description": ""
 }
