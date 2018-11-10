@@ -9,4 +9,4 @@ export const shouldBeSaved = () => {
     save = (data) => {
         localStorage.contactsList = JSON.stringify(data);
     },
-    loadData = () => JSON.parse(localStorage.contactsList);
+    loadData = () => (localStorage.contactsList ? JSON.parse(localStorage.contactsList) : null);

@@ -1,6 +1,7 @@
-// import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
+import Popup from '../HOCs/Popup';
 import ButtonsContainer from './ButtonsContainer';
 import Header from './Header';
 import Body from './Body';
@@ -8,33 +9,26 @@ import Body from './Body';
 class ContactCard extends React.Component {
     static propTypes() {
         return {
-            name: PropTypes.string.isRequired,
-            labels: PropTypes.string,
-            color: PropTypes.string.isRequired,
-            phone: PropTypes.string,
-            birth: PropTypes.string,
-            email: PropTypes.string,
-            address: PropTypes.string,
-            website: PropTypes.string,
-            note: PropTypes.string,
+            contact: PropTypes.instanceOf(adbk.classes.Contact).isRequired,
             contactIndex: PropTypes.number.isRequired,
             onClose: PropTypes.func.isRequired,
             onEditContact: PropTypes.func.isRequired,
+            openModalDialog: PropTypes.func.isRequired,
             onRemoveContact: PropTypes.func.isRequired
         };
     }
 
     shouldComponentUpdate(nextProps) {
         if (nextProps.contactIndex !== this.props.contactIndex ||
-            nextProps.contactIndex !== this.props.name ||
-            nextProps.contactIndex !== this.props.labels ||
-            nextProps.contactIndex !== this.props.color ||
-            nextProps.contactIndex !== this.props.phone ||
-            nextProps.contactIndex !== this.props.birth ||
-            nextProps.contactIndex !== this.props.email ||
-            nextProps.contactIndex !== this.props.address ||
-            nextProps.contactIndex !== this.props.website ||
-            nextProps.contactIndex !== this.props.note
+            nextProps.contact.name !== this.props.name ||
+            nextProps.contact.labels !== this.props.labels ||
+            nextProps.contact.color !== this.props.color ||
+            nextProps.contact.phone !== this.props.phone ||
+            nextProps.contact.birth !== this.props.birth ||
+            nextProps.contact.email !== this.props.email ||
+            nextProps.contact.address !== this.props.address ||
+            nextProps.contact.website !== this.props.website ||
+            nextProps.contact.note !== this.props.note
         ) {
             return true;
         }
@@ -43,13 +37,19 @@ class ContactCard extends React.Component {
 
     render() {
         return (
-            <div className="overlay" onClick={this.props.onClose}>
-                <div className="contact-card" onClick={e => e.stopPropagation()}>
-                    <ButtonsContainer contactId={this.props.id} contactIndex={this.props.contactIndex} onClose={this.props.onClose} onEditContact={this.props.onEditContact} onRemoveContact={this.props.onRemoveContact} />
-                    <Header name={this.props.name} labels={this.props.labels} color={this.props.color} />
-                    <Body phone={this.props.phone} birth={this.props.birth} email={this.props.email} address={this.props.address} website={this.props.website} note={this.props.note} />
+            <Popup onCloseHandler={this.props.onClose}>
+                <div className="contact-card">
+                    <ButtonsContainer
+                        contactId={this.props.contact.id}
+                        contactIndex={this.props.contactIndex}
+                        onClose={this.props.onClose}
+                        onEditContact={this.props.onEditContact}
+                        openModalDialog={this.props.openModalDialog}
+                        onRemoveContact={this.props.onRemoveContact} />
+                    <Header contact={this.props.contact} />
+                    <Body contact={this.props.contact} />
                 </div>
-            </div>
+            </Popup>
         );
     }
 }

@@ -1,4 +1,4 @@
-// import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import ContactItem from '../ContactItem';
@@ -9,30 +9,28 @@ class ContactItemContainer extends React.Component {
         this.handlerClickEditBtn = this.handlerClickEditBtn.bind(this);
         this.handlerClickRemoveBtn = this.handlerClickRemoveBtn.bind(this);
         this.handlerClickOnItem = this.handlerClickOnItem.bind(this);
-        // this.handlerClickCheckbox = this.handlerClickCheckbox.bind(this);
+        this.handlerClickCheckbox = this.handlerClickCheckbox.bind(this);
     }
 
     static get propTypes() {
         return {
-            name: PropTypes.string.isRequired,
-            id: PropTypes.string.isRequired,
-            color: PropTypes.string.isRequired,
-            birth: PropTypes.string,
-            phone: PropTypes.string,
+            contact: PropTypes.instanceOf(adbk.classes.Contact).isRequired,
             openContactCard: PropTypes.func.isRequired,
-            handlerClickCheckbox: PropTypes.func.isRequired,
+            toggleMarkedItem: PropTypes.func.isRequired,
             rmItem: PropTypes.func.isRequired,
+            openModalDialog: PropTypes.func.isRequired,
             openForm: PropTypes.func.isRequired
         };
     }
 
     shouldComponentUpdate(nextProps) {
         if (
-            nextProps.name !== this.props.name ||
-            nextProps.isMarked !== this.props.isMarked ||
-            nextProps.color !== this.props.color ||
-            nextProps.birth !== this.props.birth ||
-            nextProps.phone !== this.props.phone
+            nextProps.contact !== this.props.contact ||
+            nextProps.contact.name !== this.props.name ||
+            nextProps.contact.isMarked !== this.props.isMarked ||
+            nextProps.contact.color !== this.props.color ||
+            nextProps.contact.birth !== this.props.birth ||
+            nextProps.contact.phone !== this.props.phone
         ) {
             return true;
         }
@@ -41,32 +39,36 @@ class ContactItemContainer extends React.Component {
 
     handlerClickEditBtn(e) {
         e.stopPropagation();
-        this.props.openForm(this.props.id);
+        this.props.openForm(this.props.contact.id);
     }
 
     handlerClickRemoveBtn(e) {
         e.stopPropagation();
-        if (confirm('Delete this contact? Are you sure?')) {
-            this.props.rmItem(this.props.id);
-        }
+        this.props.openModalDialog({
+            header: 'Delete this contact? Are you sure?'
+        }, (res) => {
+            if (res) {
+                this.props.rmItem(this.props.contact.id);
+            }
+        });
     }
 
     handlerClickOnItem(e) {
-        this.props.openContactCard(this.props.id);
+        this.props.openContactCard(this.props.contact.id);
     }
 
-    // handlerClickCheckbox(e) {
-    //     this.props.toggleMarkedItem(this.props.data);
-    // }
+    handlerClickCheckbox(e) {
+        this.props.toggleMarkedItem(this.props.contact);
+    }
 
     render() {
         return (
             <ContactItem
-                {...this.props}
+                contact={this.props.contact}
                 handlerClickEditBtn={this.handlerClickEditBtn}
                 handlerClickRemoveBtn={this.handlerClickRemoveBtn}
                 handlerClickOnItem={this.handlerClickOnItem}
-                handlerClickCheckbox={this.props.handlerClickCheckbox} />
+                handlerClickCheckbox={this.handlerClickCheckbox} />
         );
     }
 }

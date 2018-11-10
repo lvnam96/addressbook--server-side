@@ -1,4 +1,4 @@
-// import React from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import NavBtn from './NavBtn';
@@ -18,7 +18,7 @@ const MainNav = props => (
         <nav className='main-nav'>
             <NavBtn
                 label={`Contacts (${props.totalContacts})`}
-                icon="fa-address-book-o"
+                icon="fas fa-address-book"
                 onClick={props.onClickDisplayAll} />
             <input type='checkbox' id='sort-toggle' style={{display: 'none'}} />
             <NavBtn
@@ -26,23 +26,23 @@ const MainNav = props => (
                 inputId="sort-toggle"
                 title='Display contacts whose birthday is in current week/month'
                 label="Filter by births in..."
-                icon="fa-birthday-cake"
+                icon="fas fa-birthday-cake"
                 onClick={props.openFilterSubNav} />
             <NavBtn
                 moreClass="week-btn"
                 label="... current week"
-                icon="fa-calendar-minus-o"
+                icon="far fa-calendar-minus"
                 onClick={props.onFilterBirthsInWeek} />
             <NavBtn
                 moreClass="month-btn"
                 label="... current month"
-                icon="fa-calendar"
+                icon="far fa-calendar-alt"
                 onClick={props.onFilterBirthsInMonth} />
             <NavBtn
                 moreClass={"trash-btn" + (props.numOfCheckedItems > 0 ? ' lighter' : '')}
                 title="Long-press this button to delete all contacts"
                 label={`Delete ${props.numOfCheckedItems > 0 ? 'checked' : 'all'} contacts`}
-                icon="fa-trash-o"
+                icon="fas fa-trash"
                 ref={props.getRefOfDelBtn}
                 onMouseDown={props.setTimer}
                 onMouseUp={props.clearTimer}
@@ -54,21 +54,21 @@ const MainNav = props => (
                 isDropdownBtn={true}
                 inputId="bckp-rstr-toggle"
                 label="Backup / Restore"
-                icon="fa-floppy-o"
+                icon="fas fa-save"
                 onClick={props.openBackupRestoreSubNav} />
             <NavBtn
                 moreClass="backup-btn"
                 label="Backup"
-                icon="fa-download"
+                icon="fas fa-download"
                 onClick={props.handlerBackupData} />
             <NavBtn
                 moreClass="restore-btn"
                 label="Restore"
-                icon="fa-upload"
+                icon="fas fa-upload"
                 onClick={props.handlerRestoreData} />
             <NavBtn
                 label="Add new contact"
-                icon="fa-plus"
+                icon="fas fa-plus-circle"
                 onClick={props.handlerAddNewContact} />
         </nav>
     </nav>

@@ -1,7 +1,8 @@
-// import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import { getRandomColor } from '../../../helpers/utilsHelper';
+import { convertDateObjToHTMLInputVal } from '../../../helpers/timeHelper';
 
 import { fixedEncodeURIComponent, fixedEncodeURI } from '../../../helpers/encodeHelper';
 
@@ -16,32 +17,33 @@ const spacePtrn = /\s/g,
         if (inputElem.value === '') {
             inputElem.parentNode.classList.remove('JS-form__input-container--filled');
         }
+    },
+    emptyContact = {// default empty contact's values
+        name: '',
+        labels: [],
+        birth: '',
+        note: '',
+        email: '',
+        website: '',
+        phone: ''
     };
 
 class FormContainer extends React.Component {
     constructor(props) {
         super(props);
-        const {
-            name,
-            id,
-            color,
-            labels,
-            birth = '',
-            note = '',
-            email = '',
-            website = '',
-            phone = ''
-        } = this.props;
+        const contact = this.props.contact;
         this.state = {
-            name,
-            id,
-            color,
-            labels,
-            birth,
-            note,
-            email,
-            website,
-            phone
+            contact: {
+                name: contact.name || emptyContact.name,
+                id: contact.id || emptyContact.id,
+                color: contact.color || emptyContact.color,
+                labels: (contact.labels && Array.from(contact.labels)) || emptyContact.labels,
+                birth: (contact.birth && convertDateObjToHTMLInputVal(contact.birth)) || emptyContact.birth,
+                note: contact.note || emptyContact.note,
+                email: contact.email || emptyContact.email,
+                website: contact.website || emptyContact.website,
+                phone: contact.phone || emptyContact.phone
+            }
         };
 
         this.cboxFamily;
@@ -57,22 +59,14 @@ class FormContainer extends React.Component {
     static get propTypes() {
         return {
             title: PropTypes.string.isRequired,
-            name: PropTypes.string.isRequired,
-            id: PropTypes.string.isRequired,
-            color: PropTypes.string.isRequired,
-            labels: PropTypes.arrayOf(PropTypes.string).isRequired,
+            contact: PropTypes.instanceOf(adbk.classes.Contact).isRequired,
             closeForm: PropTypes.func.isRequired,
             handlerSubmit: PropTypes.func.isRequired,
             showNoti: PropTypes.func.isRequired
         };
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        if (nextState !== this.state) {
-            return true;
-        }
-        return false;
-    }
+    // shouldComponentUpdate(nextProps, nextState) {}
 
     componentDidMount() {
         this.checkInputsHaveValueThen(info => {
@@ -81,17 +75,16 @@ class FormContainer extends React.Component {
     }
 
     checkInputsHaveValueThen(callback) {
-        const infoKeys = Object.keys(this.state);
+        const infoKeys = Object.keys(this.state.contact);
         for (let info of infoKeys) {
             switch (info) {
                 case 'labels':
                 case 'id':
                 case 'color':
                     continue;
-                    break;
             }
 
-            if (this.state[info]) {
+            if (this.state.contact[info]) {
                 callback(info);
             }
         }
@@ -102,42 +95,84 @@ class FormContainer extends React.Component {
         switch (e.target.id) {
             case 'inputs__name':
                 if (inputText !== ' ' && inputText.length < 25) {
-                    this.setState({ name: inputText });
+                    this.setState((prevState) => {
+                        return {
+                            contact: {
+                                ...prevState.contact,
+                                name: inputText
+                            }
+                        };
+                    });
                 }
                 break;
             case 'inputs__phone':
                 if (inputText[0] !== '0') {
-                    this.setState({ phone: inputText });
+                    this.setState((prevState) => {
+                        return {
+                            contact: {
+                                ...prevState.contact,
+                                phone: inputText
+                            }
+                        };
+                    });
                 }
                 break;
             case 'inputs__birth':
-                this.setState({ birth: inputText });
+                // console.log(inputText);// YYYY-MM-DD
+                this.setState((prevState) => {
+                    return {
+                        contact: {
+                            ...prevState.contact,
+                            birth: inputText
+                        }
+                    };
+                });
                 break;
             case 'inputs__email':
                 inputText = inputText.replace(spacePtrn, '');
-                this.setState({ email: inputText });
+                this.setState((prevState) => {
+                    return {
+                        contact: {
+                            ...prevState.contact,
+                            email: inputText
+                        }
+                    };
+                });
                 break;
             case 'inputs__website':
-                this.setState({ website: inputText });
+                this.setState((prevState) => {
+                    return {
+                        contact: {
+                            ...prevState.contact,
+                            website: inputText
+                        }
+                    };
+                });
                 break;
             case 'inputs__note':
-                this.setState({ note: inputText });
+                this.setState((prevState) => {
+                    return {
+                        contact: {
+                            ...prevState.contact,
+                            note: inputText
+                        }
+                    };
+                });
                 break;
             default:
-            console.log('Uncatched change. Input\'s id:', e.target.id);
+                console.error('Uncatched change. Input\'s id:', e.target.id);
                 break;
         }
     }
 
     resetForm() {
-        this.setState({
-            name: '',
-            labels: [],
-            birth: '',
-            note: '',
-            email: '',
-            website: '',
-            phone: ''
+        this.setState((prevState) => {
+            return {
+                contact: {
+                    ...emptyContact,
+                    color: prevState.color
+                }
+            };
         });
 
         this.checkInputsHaveValueThen(info => {
@@ -158,30 +193,30 @@ class FormContainer extends React.Component {
             email,
             website,
             phone
-        } = this.state;
+        } = this.state.contact;
 
-        name = name.trim();
+        name = typeof name === 'string' && name.trim();
         if (name === '') {
             this.props.showNoti('error', 'Please type a name');
             return;
         } else {
-            this.state.name = name;
+            this.state.contact.name = name;
         }
 
-        this.state.website = (website => {
-            website = website.trim();
-            if (website.length) {
-                const hasURLSyntax = website.search(/^https?:\/\/\S+/g) === 0 ? true : false,
-                    hasOnlyProtocol = website.search(/^https?:\/\/$|^h?ttps?:\/\/$|^ht?tps?:\/\/$|^http?s?:\/\/$/g) === 0 ? true : false;
+        this.state.contact.website = (ws => {
+            ws = typeof ws === 'string' ? ws.trim() : '';
+            if (ws.length) {
+                const hasURLSyntax = ws.search(/^https?:\/\/\S+/g) === 0 ? true : false,
+                    hasOnlyProtocol = ws.search(/^https?:\/\/$|^h?ttps?:\/\/$|^ht?tps?:\/\/$|^http?s?:\/\/$/g) === 0 ? true : false;
                 if (hasURLSyntax) {
-                    return fixedEncodeURI(website);
+                    return fixedEncodeURI(ws);
                 } else if (hasOnlyProtocol) {
                     return '';
                 } else {
-                    return "http://" + fixedEncodeURIComponent(website);
+                    return "http://" + fixedEncodeURIComponent(ws);
                 }
             } else {
-                return website;
+                return ws;
             }
         })(website);
 
@@ -190,28 +225,42 @@ class FormContainer extends React.Component {
         if (this.cboxFamily.checked) { newLabels.push('family'); }
         if (this.cboxCoWorker.checked) { newLabels.push('coWorker'); }
         if (this.cboxFriends.checked) { newLabels.push('friends'); }
-        this.state.labels = newLabels;
+        this.state.contact.labels = newLabels;
+        // const labelSet = new Set();
+        // labelSet.add('family');
+        // labelSet.add('coWorker');
+        // labelSet.add('friends');
+        // this.state.labels = labelSet;
 
-        this.state.note = note.trim();
+        this.state.contact.note = typeof note === 'string' ? note.trim() : '';
 
-        this.props.handlerSubmit(this.state);
+        this.props.handlerSubmit(this.state.contact);
     }
 
     changeColor(e) {
-        this.setState({ color: getRandomColor() });
+        this.setState((prevState) => {
+            return {
+                contact: {
+                    ...prevState.contact,
+                    color: getRandomColor()
+                }
+            };
+        });
     }
 
     render () {
         return (
             <Form
-                {...this.props}
-                {...this.state}
+                // {...this.props}
+                title={this.props.title}
+                contact={this.state.contact}
                 checkInputFilled={checkInputFilled}
                 addFilledClass={addFilledClass}
                 handlerSaveForm={this.handlerSaveForm}
                 changeColor={this.changeColor}
                 handlerChangeInput={this.handlerChangeInput}
                 resetForm={this.resetForm}
+                closeForm={this.props.closeForm}
                 refCBoxFamily={thisDOM => this.cboxFamily = thisDOM}
                 refCBoxCoWorker={thisDOM => this.cboxCoWorker = thisDOM}
                 refCBoxFriend={thisDOM => this.cboxFriends = thisDOM} />

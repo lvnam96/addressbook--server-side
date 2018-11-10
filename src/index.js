@@ -1,35 +1,44 @@
 // import "babel-polyfill";
-// import React from 'react';
-// import { render } from 'react-dom';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import store from './js/store';
 
-import * as ls from './js/services/localStorageService';
+import { save as saveToLocalStorage } from './js/services/localStorageService';
+import { checkStorageAvailable } from './js/helpers/checkSupportedFeaturesHelper';
 
-import AddressBook from './js/AddressBook';
+import App from './js/App';
 
 import './scss/style.scss';
 
 document.addEventListener('DOMContentLoaded', () => {
+    adbk.init((adbk) => {
+        ReactDOM.render(
+            <Provider store={adbk.redux.store}>
+                <App />
+            </Provider>,
+            document.getElementsByClassName('body-wrapper')[0]
+        );
+    });
+
     const saveDataBeforeCloseTab = (e = window.event) => {
         // if (ls.shouldBeSaved()) {
-            ls.save(store.getState().contacts);
+            saveToLocalStorage(adbk.redux.store.getState().contacts);
             // ls.dontSaveAgain();
         // }
-        if (e) { e.returnValue = 'Sure?'; }// For IE and Firefox prior to version 4
-        return 'Sure?';// For Safari
+        // if (e) { e.returnValue = 'Sure?'; }// For IE and Firefox prior to version 4
+        // return 'Sure?';// For Safari
     };
-
-    ReactDOM.render(
-        <Provider store={store}>
-            <AddressBook />
-        </Provider>,
-        document.getElementsByClassName('body-wrapper')[0]
-    );
-
     window.addEventListener('beforeunload', saveDataBeforeCloseTab, false);
 });
 
+if (!checkStorageAvailable('localStorage')) {
+    alert('Sorry, your browser does NOT support Local Storage.\nWe will not be able to save your data.');
+}
+
 if (process.env.NODE_ENV !== 'production') {
-    module.hot.accept();
+    window.adbk = adbk;// make adbk global
+
+    if (module.hot) {
+        module.hot.accept();
+    }
 }

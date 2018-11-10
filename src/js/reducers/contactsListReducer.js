@@ -1,48 +1,51 @@
 import * as ActionTypes from '../actions/actionTypes/contactsListActionTypes';
 import { find } from '../helpers/findHelper';
+import Contact from '../classes/Contact';
 
-const contactsListReducer = (state = [], action) => {
+const initialState = [];
+const contactsListReducer = (state = initialState, action) => {
     let index;
 
     switch (action.type) {
         case ActionTypes.ADD:
-            return [...state, action.data];
+            return [...state, new Contact(action.contact)];
         case ActionTypes.EDIT:
-            index = find(action.id, state);
+            index = find(action.contact.id, state);
+            console.log(new Contact(action.contact))
             return [
                 ...state.slice(0, index),
-                action.data,
+                new Contact(action.contact),
                 ...state.slice(index + 1)
             ];
             return [...state, action.data];
         case ActionTypes.MARK:
-            index = find(action.id, state);
+            index = find(action.contact.id, state);
             return [
                 ...state.slice(0, index),
-                {
-                    ...action.data,
+                new Contact({
+                    ...action.contact,
                     isMarked: true
-                },
+                }),
                 ...state.slice(index + 1)
             ];
         case ActionTypes.UNMARK:
-            index = find(action.id, state);
+            index = find(action.contact.id, state);
             return [
                 ...state.slice(0, index),
-                {
-                    ...action.data,
+                new Contact({
+                    ...action.contact,
                     isMarked: false
-                },
+                }),
                 ...state.slice(index + 1)
             ];
         case ActionTypes.TOGGLE_MARKER:
-            index = find(action.id, state);
+            index = find(action.contact.id, state);
             return [
                 ...state.slice(0, index),
-                {
-                    ...action.data,
-                    isMarked: !action.data.isMarked
-                },
+                new Contact({
+                    ...action.contact,
+                    isMarked: !action.contact.isMarked
+                }),
                 ...state.slice(index + 1)
             ];
         case ActionTypes.REMOVE:

@@ -9,7 +9,7 @@
     will-change: transform, opacity;
 
     &:hover {
-        background-color: #e0e0e0;
+        background-color: rgba(251, 251, 251, .82);
 
         // .contact-item__buttons > div {
         //     visibility: visible;
@@ -174,7 +174,7 @@
         display: inline-block;
 
         &:hover {
-            background-color: #ccc;
+            background-color: #fff;
         }
     }
 
@@ -193,7 +193,7 @@
 
 @media (hover) {
     .contact-item:hover {
-        background-color: #e0e0e0;
+        background-color: rgba(247, 247, 247, 0.8);
 
         .contact-item__checkbox-label {
             display: block;

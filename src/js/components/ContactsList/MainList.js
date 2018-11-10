@@ -1,11 +1,12 @@
-// import React from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { WindowScroller, AutoSizer, List } from 'react-virtualized';
 
 import ContactItemContainer from './containers/ContactItemContainer';
+import Contact from '../../classes/Contact';// SHOULD THIS COMPONENT KNOW ABOUT THE EXISTING OF MY CLASSES???
 
-const ContactsList = props => {
-    function rowRenderer({
+const MainList = props => {
+    function rowRenderer ({
         index,
         isScrolling,
         isVisible,
@@ -13,22 +14,24 @@ const ContactsList = props => {
         parent,
         style
     }) {
-        // If content is complex, consider rendering a lighter-weight placeholder while scrolling.
-        // const content = isScrolling
-        //     ? '...'
-        //     : <User/>;
-        const contact = props.data[index];
+        const contactData = props.data[index],
+            contact = new Contact(contactData),
 
-        const handlerClickCheckbox = e => props.toggleMarkedItem(contact);
-        return (
-            <div key={contact.id} style={style}>
+            // If content is complex, consider rendering a lighter-weight placeholder while scrolling.
+            // content = isScrolling ? '...' : (
+            item = (
                 <ContactItemContainer
-                    {...contact}
+                    contact={contact}
                     openContactCard={props.openContactCard}
                     rmItem={props.rmItem}
                     openForm={props.openForm}
-                    toggleMarkedItem={props.toggleMarkedItem}
-                    handlerClickCheckbox={handlerClickCheckbox} />
+                    openModalDialog={props.openModalDialog}
+                    toggleMarkedItem={props.toggleMarkedItem} />
+            );
+
+        return (
+            <div key={contact.id} style={style}>
+                {item}
             </div>
         );
     }
@@ -59,12 +62,13 @@ const ContactsList = props => {
     );
 };
 
-ContactsList.propTypes = {
+MainList.propTypes = {
     openContactCard: PropTypes.func.isRequired,
     rmItem: PropTypes.func.isRequired,
     openForm: PropTypes.func.isRequired,
+    openModalDialog: PropTypes.func.isRequired,
     toggleMarkedItem: PropTypes.func.isRequired,
     data: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
-export default ContactsList;
+export default MainList;
