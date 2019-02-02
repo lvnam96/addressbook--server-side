@@ -1,30 +1,25 @@
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
+const express = require('express');
+const path = require('path');
+const favicon = require('serve-favicon');
+const logger = require('morgan');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const session = require('express-session');
 const { pool } = require('./db/pool');
-const User = require('./classes/User');
+const adbk = require('./classes/adbk');
 
-var index = require('./routes/index');
-var users = require('./routes/users');
-var signin = require('./routes/signin');
-var signup = require('./routes/signup');
+const router = require('./routes/index');
 
-var app = express();
+const app = express();
 
 passport.use(new LocalStrategy({
     usernameField: 'uname',
     passwordField: 'passwd',
     passReqToCallback: true,
     session: true
-}, (req, uname, passwd, done) => {
-    User.signIn(uname, passwd, done);
-}));
+}, adbk.user.signIn));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -39,8 +34,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 const cookiesConfig = { maxAge: 30 * 24 * 60 * 60 * 1000 };// 30 days
 if (app.get('env') === 'production') {
-  app.set('trust proxy', 1);// trust first proxy
-  cookiesConfig.secure = true;// serve secure cookies
+    app.set('trust proxy', 1);// trust first proxy
+    cookiesConfig.secure = true;// serve secure cookies
 }
 app.use(session({
     store: new (require('connect-pg-simple')(session))({ pool }),
@@ -55,37 +50,29 @@ app.use(passport.session());
 passport.serializeUser((user, done) => {
     done(null, user.id);
 });
-passport.deserializeUser((id, done) => {
-    User.findById(id, (err, userObj) => {
-        done(err, userObj);
-    });
-});
+passport.deserializeUser(adbk.user.findById);
 
-app.use('/', index);
-app.use('/users', users);
-app.use('/signin', signin);
-app.use('/signup', signup);
-app.get('/signout', (req, res, next) => {
-    req.logout();
-    res.redirect('/signin');
-});
+app.use('/', router);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+    const err = new Error('Not Found');
+    err.status = 404;
+    next(err);
 });
 
 // error handler
 app.use((err, req, res, next) => {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = err;
+    // use this when finish developing:
+    // res.locals.error = req.app.get('NODE_ENV') === 'development' ? err : {};
+    // TO-DO: check Sentry for error reporting in production
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+    // render the error page
+    res.status(err.status || 500);
+    res.render('error');
 });
 
 module.exports = app;

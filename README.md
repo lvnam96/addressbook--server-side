@@ -1,4 +1,8 @@
-> This is server-side implementation of my [pet project](https://github.com/lvnam96/addressBook).
+> This is server-side implementation of my [pet project](https://github.com/lvnam96/addressBook)
+
+AddressBook
+===
+[![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](https://github.com/standard/standard)
 
 ### Tech stack:
 
@@ -28,35 +32,49 @@ dbInfo = {
 ##### 2. Create those tables with their schemas:
 
 ```sql
+--install extension uuid generator
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 CREATE TABLE IF NOT EXISTS account (
-    id UUID PRIMARY KEY NOT NULL,
+    id UUID PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
     username VARCHAR(20) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     facebook_id VARCHAR(255) UNIQUE,
-    birth DATE check (birth < CURRENT_DATE),
+    birth DATE CHECK (birth < CURRENT_DATE),
     email VARCHAR(355) UNIQUE CHECK (email LIKE '%@%'),
     phone VARCHAR(15),
     nicename VARCHAR(25),
     created_on TIMESTAMP NOT NULL,
-    last_login TIMESTAMP
+    last_login TIMESTAMP,
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    salt CHAR(10) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS addressbook (
-    id SERIAL PRIMARY KEY NOT NULL,
-    account_id INT REFERENCES account (id),
+    id UUID PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
+    -- account_id UUID REFERENCES account (id),
     name VARCHAR(25),
-    color VARCHAR(25) CHECK (color LIKE 'rgb(%)' AND color LIKE 'rgba(%)' AND color LIKE '#%')
+    color VARCHAR(30) CHECK (color LIKE 'rgb(%)' OR color LIKE 'rgba(%)' OR color LIKE '#%' OR color LIKE 'hsl(%)')
+);
+
+--prepare for future feature: share addressbook to other users
+CREATE TABLE account_addressbook (
+    account_id UUID REFERENCES account (id),
+    addressbook_id UUID REFERENCES addressbook (id)
 );
 
 CREATE TABLE IF NOT EXISTS contact (
-    id serial PRIMARY KEY NOT NULL,
-    addressbook_id INT REFERENCES addressbook (id),
-    account_id INT REFERENCES account (id),
-    birth DATE check (birth < CURRENT_DATE),
+    id UUID PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
+    addressbook_id UUID REFERENCES addressbook (id),
+    account_id UUID REFERENCES account (id),
+    birth DATE CHECK (birth < CURRENT_DATE),
     email VARCHAR(355),
     phone VARCHAR(15),
     note TEXT,
-    name VARCHAR(25),
+    name VARCHAR(30) NOT NULL,
+    color VARCHAR(30) CHECK (color LIKE 'rgb(%)' OR color LIKE 'rgba(%)' OR color LIKE '#%' OR color LIKE 'hsl(%)'),
+    website VARCHAR(355) CHECK (website LIKE 'http://%' OR website LIKE 'https://%'),
+    labels VARCHAR(300),
     avatar_url VARCHAR(355)
 );
 ```

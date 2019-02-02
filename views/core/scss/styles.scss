@@ -1,0 +1,20 @@
+@import '_variables.scss';
+@import '_extends.scss';
+@import '_mixins.scss';
+//general
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,700,900&subset=latin-ext');
+
+$fa-font-path: '~@fortawesome/fontawesome-free/webfonts'!default;
+@import '~@fortawesome/fontawesome-free/scss/fontawesome.scss';
+@import '~@fortawesome/fontawesome-free/scss/brands.scss';
+@import '~@fortawesome/fontawesome-free/scss/regular.scss';
+@import '~@fortawesome/fontawesome-free/scss/solid.scss';
+@import '~bootstrap/scss/bootstrap.scss';// @import '../../node_modules/bootstrap/scss/bootstrap.scss';
+// @import '../../node_modules/slick-carousel/slick/slick.scss';
+// @import '../../node_modules/slick-carousel/slick/slick-theme.scss';
+@import '_base.scss';
+@import '_layout.scss';
+// components
+@import './components/_index.scss';
+// pages
+// @import './pages/manifest';

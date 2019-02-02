@@ -1,121 +1,77 @@
 const serv = require('../services/');
 const db = require('../db/');
-const { pool } = db.poolInitiator;
+const Account = require('./Account');
+const Addressbook = require('./Addressbook');
+const ContactsList = require('./ContactsList');
 
-module.exports = class User {
+class User extends Account {
     constructor (data) {
-        this._id = data.id;
-        this._uname = data.uname;
-        this._passwd = data.passwd;
-        this.fbid = data.fbid;
-        this.email = data.email;
-        this.nicename = data.nicename;
-        this.birth = data.birth;
-        this.phone = data.phone;
-        this.last_login = data.last_login;
-        this.created_on = data.created_on;
+        super(data);
+        this._adrsbook;
+        this.isActive = data.isActive || data.is_active || true;
+        this.nicename = data.nicename || null;
+        this.birth = data.birth || null;
+        this.phone = data.phone || null;
+        this._isSerializable = this._isSerializable || new Set();
+        for (let keyname of [
+            'isActive', 'nicename', 'birth', 'phone'
+        ]) {
+            this._isSerializable = this._isSerializable.add(keyname);
+        }
     }
 
-    get id () {
-        return this._id;
+    toDB () {
+        const jsoned = this.toJSON();
+        jsoned.username = jsoned.uname;
+        jsoned.password = jsoned.passwd;
+        jsoned.facebook_id = jsoned.fbId;
+        jsoned.last_login = jsoned.lastLogin;
+        jsoned.created_on = jsoned.createdOn;
+        jsoned.is_active = jsoned.isActive;
+        return jsoned;
     }
 
-    // do NOT allow to change ID
-    set id (x) { return; }
-
-    get uname () {
-        return this._uname;
+    static fromJSON (json) {
+        return super.fromJSON(json);
     }
 
-    // do NOT allow to change username at the moment
-    // set uname (newUname) {
-    //     if (db.acc.isUnameUsed(newUname)) {
-    //         throw new Error(`Username ${newUname} exists. Please choose another one.`);
-    //     } else {
-    //         db.acc.changeUname(this._id, newUname, user => {
-    //
-    //         });
-    //     }
+    static fromDB (data) {
+        return super.fromDB(data);
+    }
+
+    get adrsbook () {
+        return this._adrsbook;
+    }
+
+    init () {
+        return this.loadData().then(data => {
+            this._adrsbook = data.adrsbook
+        }).catch();
+    }
+
+    // loadAllContacts (cb) {// load all contacts of all adrsbook of current user
+    //     return db.data.getAllContacts(this.id, cb);
     // }
-
-    // set passwd (newPasswd) {
-    //     db.acc.changePasswd(this._id, newPasswd, res => {
-    //
-    //     });
-    // }
-
-    get passwd () {
-        return this._passwd;
-    }
-
-    static signOut () {
-
-    }
 
     static signIn (uname, rawPasswd, cb) {
-        User.findByUname(uname, (err, userObj) => {
-            if (err) {
-                return cb(err);
-            }
-
-            const wrongErr = new Error('Wrong username/password');
-            serv.passwd.isRawMatchHashedPasswd(rawPasswd, userObj.passwd, isMatched => {
-                if (isMatched) {
-                    return cb(null, userObj);
-                }
-                console.error(wrongErr);
-                return cb(null, false);
-            });
-        });
+        super.signIn(uname, rawPasswd, cb);
     }
 
-    static signUp () {
-        return this;
+    static isUnameUsed (uname, cb) {
+        super.isUnameUsed(uname, cb);
     }
 
     static findById (id, cb) {
-        db.acc.findById(id, (err, userDataConvertedFromDB) => (
-            err ?
-            cb(err)
-            :
-            cb(null, new User(userDataConvertedFromDB))
-        ));
+        super.findById(id, cb);
     }
 
     static findByUname (uname, cb) {
-        db.acc.findByUname(uname, (err, userDataConvertedFromDB) => (
-            err ?
-            cb(err)
-            :
-            cb(null, new User(userDataConvertedFromDB))
-        ));
-        pool.query(`SELECT * FROM account WHERE username = $1`, [uname])
-            .then(res => {
-                if (!res.rows[0]) {
-                    return cb(new Error(`Username ${uname} is not found!`));
-                }
-                const { id, username, password, email, facebook_id, birth, phone, nicename, created_on, last_login } = res.rows[0];
-                return cb(null, new User({
-                    id,
-                    uname: username,
-                    passwd: password,
-                    fbid: facebook_id,
-                    email,
-                    nicename,
-                    birth,
-                    created_on,
-                    last_login
-                }));
-            })
-            .catch(err => console.error(err));
+        super.findByUname(uname, cb);
     }
 
-    static register (data, cb) {
-        db.acc.regNewAcc(data, (err, userDataConvertedFromDB) => (
-            err ?
-            cb(err)
-            :
-            cb(null, new User(userDataConvertedFromDB))
-        ));
+    static signUp (data, cb) {
+        return super.signUp(data, cb);
     }
-};
+}
+
+module.exports = User;

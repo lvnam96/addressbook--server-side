@@ -1,12 +1,14 @@
 {
   "name": "addressbook--server-side",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www",
-    "deploy": "node ./bin/www"
+    "ssr-build": "cd ./views && npm run ssr-build",
+    "start": "cd ./views && npm run build-dev && npm run build-ssr && nodemon ./bin/www",
+    "deploy": "npm run ssr-build && node ./bin/www"
   },
   "dependencies": {
+    "async": "^2.6.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "~1.18.2",
     "connect-pg-simple": "^4.2.1",
@@ -20,10 +22,22 @@
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "pg": "^7.4.3",
+    "pg-promise": "^8.4.6",
     "pug": "^2.0.3",
+    "react": "^16.6.0",
+    "react-dom": "^16.6.0",
     "serve-favicon": "^2.5.0"
   },
   "devDependencies": {
-    "nodemon": "^1.17.4"
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.3.0",
+    "eslint-plugin-babel": "^5.2.1",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.1.1",
+    "eslint-plugin-node": "^8.0.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-react": "^7.11.0",
+    "nodemon": "^1.17.4",
+    "webpack-node-externals": "^1.7.2"
   }
 }
