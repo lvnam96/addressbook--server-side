@@ -34,7 +34,7 @@ module.exports = {
         rules: [
             {
                 test: /\.(js|jsx)$/,
-                exclude: [/(node_modules|bower_components)/, './prototype/'],
+                exclude: /(node_modules|bower_components|prototype)/,
                 // include: [
                 //     path.resolve(__dirname, './entrypoints/signin'),
                 //     path.resolve(__dirname, './entrypoints/signup')
@@ -128,7 +128,7 @@ module.exports = {
             },
             {
                 test: /\.pug$/,
-                exclude: ['./node_modules/'],
+                exclude: path.resolve(__dirname, './node_modules/'),
                 options: {
                     self: false,
                 },
@@ -165,8 +165,10 @@ module.exports = {
         }
     },
     plugins: [
-        // new CleanWebpackPlugin(['../public/*.*'], {
-        //     allowExternal: true
+        // new CleanWebpackPlugin({
+        //     dry: true,
+        //     cleanOnceBeforeBuildPatterns: ['../public/*.*'],
+        //     dangerouslyAllowCleanPatternsOutsideProject: true
         // }),
         // new MiniCssExtractPlugin({// Thus you can import your Sass modules from `node_modules`.
         //                           // Just prepend them with `~` to tell webpack that this is not a relative import
@@ -195,6 +197,11 @@ module.exports = {
             __DEV__: JSON.stringify(JSON.parse(process.env.BUILD_DEV || 'false')),
             __PROD__: JSON.stringify(JSON.parse(process.env.BUILD_PROD || 'true')),
             __PRERELEASE__: JSON.stringify(JSON.parse(process.env.BUILD_PRERELEASE || 'false'))
+        }),
+        new webpack.EnvironmentPlugin({
+            NODE_ENV: 'production',
+            HOT_RELOAD: false,
+            DEBUG: false
         }),
     ],
     performance: {

@@ -1,9 +1,8 @@
 const path = require('path');
 const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const productionMode = process.env.NODE_ENV === 'production';
 
@@ -27,20 +26,17 @@ module.exports = {
         rules: [
             {
                 test: /\.(js|jsx)$/,
-                exclude: [/(node_modules|bower_components)/, './prototype/'],
+                exclude: /(node_modules|bower_components|prototype)/,
                 // include: [
                 //     path.resolve(__dirname, './entrypoints/signin'),
                 //     path.resolve(__dirname, './entrypoints/signup')
                 //     // path.resolve(__dirname, 'entrypoints/**')
                 // ],
-                // options: {
-                //     presets: ['env', 'react'],
-                //     plugins: [
-                //         'react-hot-loader/babel',
-                //         'transform-object-rest-spread'
-                //     ]
-                // },
-                loader: 'babel-loader'
+                options: {
+                    envName: process.env.BABEL_ENV || process.env.NODE_ENV || 'production',
+                    configFile: './.babelrc',// must be specified as babel-loader doesnot find it
+                },
+                loader: 'babel-loader',
             },
             {
                 test: /\.scss$/,
@@ -165,8 +161,10 @@ module.exports = {
         }
     },
     plugins: [
-        new CleanWebpackPlugin(['../public/*.*'], {
-            allowExternal: true
+        new CleanWebpackPlugin({
+            dry: true,
+            cleanOnceBeforeBuildPatterns: ['../public/*.*'],
+            dangerouslyAllowCleanPatternsOutsideProject: true
         }),
         new MiniCssExtractPlugin({// Thus you can import your Sass modules from `node_modules`.
                                   // Just prepend them with `~` to tell webpack that this is not a relative import

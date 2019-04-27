@@ -26,19 +26,16 @@ module.exports = {
         rules: [
             {
                 test: /\.(js|jsx)$/,
-                exclude: [/(node_modules|bower_components)/, './prototype/'],
+                exclude: /(node_modules|bower_components|prototype)/,
                 // include: [
                 //     path.resolve(__dirname, './entrypoints/signin'),
                 //     path.resolve(__dirname, './entrypoints/signup')
                 //     // path.resolve(__dirname, 'entrypoints/**')
                 // ],
-                // options: {
-                //     presets: ['env', 'react'],
-                //     plugins: [
-                //         'react-hot-loader/babel',
-                //         ["transform-object-rest-spread", { "useBuiltIns": true }]
-                //     ]
-                // },
+                options: {
+                    envName: process.env.BABEL_ENV || process.env.NODE_ENV || 'development',
+                    configFile: './.babelrc',// must be specified as babel-loader doesnot find it
+                },
                 loader: 'babel-loader'
             },
             {
@@ -101,7 +98,7 @@ module.exports = {
             },
             {
                 test: /\.pug$/,
-                exclude: ['./node_modules/'],
+                exclude: path.resolve(__dirname, './node_modules/'),
                 options: {
                     self: false,
                 },
@@ -136,7 +133,10 @@ module.exports = {
         // proxy: {
         //
         // },
-        hot: true,
+        open: true,
+        // openPage: 'up4d/build/home.html',
+        host: '0.0.0.0',// host: '192.168.100.121',// use current IP to allow access via LAN
+        hot: true,// disable while developing static landing pages on HTML files
         compress: false,
         port: 2805,
         // https: true,// true for self-signed, object for cert authority
@@ -149,8 +149,10 @@ module.exports = {
         }
     },
     plugins: [
-        new CleanWebpackPlugin(['../public/*.*'], {
-            allowExternal: true
+        new CleanWebpackPlugin({
+            dry: true,
+            cleanOnceBeforeBuildPatterns: ['../public/*.*'],
+            dangerouslyAllowCleanPatternsOutsideProject: true
         }),
         new HtmlWebpackPlugin({
             filename: 'index.html',
@@ -190,6 +192,8 @@ module.exports = {
         }),
         new webpack.HotModuleReplacementPlugin(),
         new webpack.ProvidePlugin({
+            'jQuery': 'jquery',
+            '$': 'jquery',
             'adbk': ['adbk', 'default']
         }),
         new webpack.DefinePlugin({
