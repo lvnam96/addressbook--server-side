@@ -1,0 +1,207 @@
+/**********************************\
+           #CONTACT ITEM
+\**********************************/
+
+.contact-item {
+    display: flex;
+    padding: .5em;
+    cursor: pointer;
+    will-change: transform, opacity;
+
+    &:hover {
+        background-color: rgba(251, 251, 251, .82);
+
+        // .contact-item__buttons > div {
+        //     visibility: visible;
+        // }
+
+        .contact-item__checkbox-label {
+            display: block;
+        }
+
+        .contact-item__avt__first-letter,
+        .contact-item__avt__img {
+            display: none;
+        }
+    }
+
+
+
+
+
+    /**********************************\
+                #AVATAR
+    \**********************************/
+
+    &__avt {
+        flex: 0 1 3em;
+        min-width: 3em;
+        max-width: 3em;
+        width: 3em;
+        height: 3em;
+        margin-right: 1.5em;
+        border-radius: 50%;
+        overflow: hidden;
+        position: relative;
+        cursor: auto;
+
+        &__first-letter {
+            display: block;
+            color: #fff;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            // font-size: 1.2em;
+            line-height: 3em;
+            white-space: nowrap;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+        }
+
+        &:__img {
+            max-width: 100%;
+            // border-radius: 50%;
+            position: absolute;
+            z-index: 2;
+        }
+    }
+
+    &__checkbox-label {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+        display: none;
+        width: 1.5em;
+        height: 1.5em;
+        background-color: transparent;
+        padding: .1em;
+        border: 2px solid #e91e63;
+        z-index: 2;
+        cursor: pointer;
+    }
+
+    &__checkbox {
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        z-index: -1;
+
+        &:checked {
+            + .contact-item__checkbox-label {
+                background-color: #e91e63;
+                background-clip: content-box;
+                display: block;
+            }
+
+            ~ div,
+            ~ img {
+                display: none;
+            }
+        }
+    }
+
+    // &--checked {
+    //     background-color: #ccc;
+    // }
+
+
+
+
+
+    /**********************************\
+                #NAME
+    \**********************************/
+
+    &__name {
+        margin-right: auto;
+        line-height: 3em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+
+
+
+
+    /**********************************\
+            #PHONE & BIRTH INFO
+    \**********************************/
+
+    &__birth {
+        display: none;
+        line-height: 3em;
+    }
+
+    &__phone {
+        display: none;
+        line-height: 3em;
+    }
+
+
+
+
+
+    /**********************************\
+            #EDIT & DELETE BTN
+    \**********************************/
+    &__btn {
+        display: none;
+        line-height: 3em;
+        text-align: center;
+        width: 3em;
+        border-radius: 50%;
+    }
+}
+
+
+
+
+
+/**********************************\
+            #MEDIA QUERIES
+\**********************************/
+
+@media (min-width: 500px) and (hover) {
+    .contact-item__btn {
+        visibility: hidden;
+        display: inline-block;
+
+        &:hover {
+            background-color: #fff;
+        }
+    }
+
+    .contact-item:hover .contact-item__btn {
+        visibility: visible;
+    }
+}
+
+@media (min-width: 1050px) {
+    .contact-item__birth,
+    .contact-item__phone {
+        display: block;
+        flex: 0 1 22%;
+    }
+}
+
+@media (hover) {
+    .contact-item:hover {
+        background-color: rgba(247, 247, 247, 0.8);
+
+        .contact-item__checkbox-label {
+            display: block;
+        }
+
+        .contact-item__avt__first-letter,
+        .contact-item__avt__img {
+            display: none;
+        }
+    }
+}

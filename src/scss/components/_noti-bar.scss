@@ -1,0 +1,50 @@
+/**********************************\
+            #NOTI BAR
+\**********************************/
+
+.noti-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px;
+    // background-color: #1E88E5;// This prop will be set by style attribute
+    color: #fff;
+    font-size: 1rem;
+    display: flex;
+    z-index: 999;
+    animation: showhide 3s ease-in-out both;
+
+
+
+
+
+    /**********************************\
+            #ELEMENTS IN NOTI BAR
+    \**********************************/
+    &__ico {
+        margin-right: 20px;
+    }
+
+    &__msg {
+
+    }
+
+    &__placeholder {
+
+    }
+}
+
+
+
+
+
+/**********************************\
+        #MEDIA QUERIES
+\**********************************/
+
+@media (min-width: 600px) {
+    .noti-bar {
+        justify-content: center;
+    }
+}
