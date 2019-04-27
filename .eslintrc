@@ -29,10 +29,14 @@
         "babel",
         "react"
     ],
+    "globals": {
+        "adbk": true,
+    },
     "rules": {
         "no-debugger": "warn",
         "no-console": "warn",
-        "no-undef": "warn",
+        "no-undef": "error",
+        "no-unused-vars": "warn",
         "semi": ["error", "always"],
         "react/react-in-jsx-scope": "off",
         "react/jsx-indent": ["warn", 4],
