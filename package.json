@@ -3,12 +3,16 @@
   "version": "1.0.0-alpha",
   "private": true,
   "scripts": {
+    "heroku-postinstall": "cd ./views && npm i",
     "prepare-dev-frontend": "cd ./views && npm run build:dev",
     "prestart": "npm run prepare-dev-frontend",
     "start": "nodemon ./bin/www",
     "prepare-prod-frontend": "cd ./views && npm run build",
     "predeploy": "npm run prepare-prod-frontend",
     "deploy": "node ./bin/www"
+  },
+  "engines": {
+    "node": "8.11.4"
   },
   "dependencies": {
     "async": "^2.6.1",
