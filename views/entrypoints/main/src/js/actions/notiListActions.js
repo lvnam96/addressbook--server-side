@@ -2,7 +2,7 @@ import * as ActionTypes from './actionTypes/notiListActionTypes';
 
 export const pushNoti = data => ({
     type: ActionTypes.PUSH,
-    data
+    data// {type, msg, id: Math.random()}
 });
 
 // export const removeNoti = dada => ({

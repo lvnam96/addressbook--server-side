@@ -3,19 +3,18 @@ import PropTypes from 'prop-types';
 import { WindowScroller, AutoSizer, List } from 'react-virtualized';
 
 import ContactItemContainer from './containers/ContactItemContainer';
-import Contact from '../../classes/Contact';// SHOULD THIS COMPONENT KNOW ABOUT THE EXISTING OF MY CLASSES???
 
-const MainList = props => {
-    function rowRenderer ({
+const ContactsList = props => {
+    const rowRenderer = ({
         index,
         isScrolling,
         isVisible,
         key,
         parent,
         style
-    }) {
+    }) => {
         const contactData = props.data[index],
-            contact = new Contact(contactData),
+            contact = new adbk.classes.Contact(contactData),
 
             // If content is complex, consider rendering a lighter-weight placeholder while scrolling.
             // content = isScrolling ? '...' : (
@@ -34,9 +33,9 @@ const MainList = props => {
                 {item}
             </div>
         );
-    }
+    };
 
-    return (
+    return props.data.length > 0 ?
         <div className="contact-list">
             <WindowScroller>
                 {({ height, isScrolling, onChildScroll, scrollTop }) => (
@@ -59,10 +58,12 @@ const MainList = props => {
                 )}
             </WindowScroller>
         </div>
-    );
+        :
+        <p className="mt-4 mb-0 text-muted font-italic">There is no contacts match your need.</p>
+    ;
 };
 
-MainList.propTypes = {
+ContactsList.propTypes = {
     openContactCard: PropTypes.func.isRequired,
     rmItem: PropTypes.func.isRequired,
     openForm: PropTypes.func.isRequired,
@@ -71,4 +72,4 @@ MainList.propTypes = {
     data: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
-export default MainList;
+export default ContactsList;

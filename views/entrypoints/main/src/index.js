@@ -2,6 +2,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
+import { AppContainer } from 'react-hot-loader';
 
 import { save as saveToLocalStorage } from './js/services/localStorageService';
 import { checkStorageAvailable } from './js/helpers/checkSupportedFeaturesHelper';
@@ -10,14 +11,20 @@ import App from './js/App';
 
 import './scss/style.scss';
 
-document.addEventListener('DOMContentLoaded', () => {
-    adbk.init((adbk) => {
-        ReactDOM.render(
+const render = (App) => {
+    ReactDOM.render(
+        <AppContainer>
             <Provider store={adbk.redux.store}>
                 <App />
-            </Provider>,
-            document.getElementsByClassName('body-wrapper')[0]
-        );
+            </Provider>
+        </AppContainer>,
+        document.getElementsByClassName('body-wrapper')[0]
+    );
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    adbk.init(() => {
+        render(App);
     });
 
     const saveDataBeforeCloseTab = (e = window.event) => {
@@ -39,6 +46,9 @@ if (process.env.NODE_ENV !== 'production') {
     window.adbk = adbk;// make adbk global
 
     if (module.hot) {
-        module.hot.accept();
+        module.hot.accept('./js/App.js', () => {
+            const HotReloadedApp = require('./js/App').default;
+            render(HotReloadedApp);
+        });
     }
 }

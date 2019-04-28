@@ -8,23 +8,6 @@
     cursor: pointer;
     will-change: transform, opacity;
 
-    &:hover {
-        background-color: rgba(251, 251, 251, .82);
-
-        // .contact-item__buttons > div {
-        //     visibility: visible;
-        // }
-
-        .contact-item__checkbox-label {
-            display: block;
-        }
-
-        .contact-item__avt__first-letter,
-        .contact-item__avt__img {
-            display: none;
-        }
-    }
-
 
 
 
@@ -62,7 +45,7 @@
             z-index: 1;
         }
 
-        &:__img {
+        #{&}:__img {
             max-width: 100%;
             // border-radius: 50%;
             position: absolute;
@@ -110,14 +93,6 @@
     //     background-color: #ccc;
     // }
 
-
-
-
-
-    /**********************************\
-                #NAME
-    \**********************************/
-
     &__name {
         margin-right: auto;
         line-height: 3em;
@@ -125,14 +100,6 @@
         overflow: hidden;
         text-overflow: ellipsis;
     }
-
-
-
-
-
-    /**********************************\
-            #PHONE & BIRTH INFO
-    \**********************************/
 
     &__birth {
         display: none;
@@ -144,19 +111,29 @@
         line-height: 3em;
     }
 
-
-
-
-
-    /**********************************\
-            #EDIT & DELETE BTN
-    \**********************************/
     &__btn {
         display: none;
         line-height: 3em;
         text-align: center;
         width: 3em;
         border-radius: 50%;
+    }
+
+    &:hover {
+        background-color: rgba(251, 251, 251, .82);
+
+        // .contact-item__buttons > div {
+        //     visibility: visible;
+        // }
+
+        .contact-item__checkbox-label {
+            display: block;
+        }
+
+        .contact-item__avt__first-letter,
+        .contact-item__avt__img {
+            display: none;
+        }
     }
 }
 
@@ -169,39 +146,51 @@
 \**********************************/
 
 @media (min-width: 500px) and (hover) {
-    .contact-item__btn {
-        visibility: hidden;
-        display: inline-block;
+    .contact-item {
+
+        &__btn {
+            visibility: hidden;
+            display: inline-block;
+
+            &:hover {
+                background-color: #fff;
+            }
+        }
 
         &:hover {
-            background-color: #fff;
-        }
-    }
 
-    .contact-item:hover .contact-item__btn {
-        visibility: visible;
+            .contact-item__btn {
+                visibility: visible;
+            }
+        }
     }
 }
 
 @media (min-width: 1050px) {
-    .contact-item__birth,
-    .contact-item__phone {
-        display: block;
-        flex: 0 1 22%;
+    .contact-item {
+
+        &__birth,
+        &__phone {
+            display: block;
+            flex: 0 1 22%;
+        }
     }
 }
 
 @media (hover) {
-    .contact-item:hover {
-        background-color: rgba(247, 247, 247, 0.8);
+    .contact-item {
 
-        .contact-item__checkbox-label {
-            display: block;
-        }
+        &:hover {
+            background-color: rgba(247, 247, 247, 0.8);
 
-        .contact-item__avt__first-letter,
-        .contact-item__avt__img {
-            display: none;
+            .contact-item__checkbox-label {
+                display: block;
+            }
+
+            .contact-item__avt__first-letter,
+            .contact-item__avt__img {
+                display: none;
+            }
         }
     }
 }

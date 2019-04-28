@@ -2,20 +2,27 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { getRandomColor } from './helpers/utilsHelper';
-import { timeObj as t, rangeOfWeek, getBirthsInWeek, getBirthsInMonth, getListOfBirthsToday, filterBirthsToday } from './helpers/timeHelper';
-import { sortByDay, sortByName } from './helpers/sortHelper';
+import { getListOfBirthsToday, filterBirthsToday } from './helpers/timeHelper';
+import * as storeActions from './storeActions';
 
 import ContactCard from './components/ContactCard/ContactCard';
 import MainNavContainer from './components/MainNav/containers/MainNavContainer';
 import NotiBar from './components/NotiBar';
-import MainContent from './components/MainContent';
+import MainContentContainer from './components/MainContent/MainContentContainer';
 import WorkingForm from './components/Form/WorkingForm';
-// import ConfirmDialog from './components/Modals/ConfirmDialog';
-import ModalDialog from './components/Modals/ModalDialog';
-// import Popup from './components/HOCs/Popup';
+import ConfirmDialog from './components/Modals/ConfirmDialog';
 
 const bodyElem = document.body;
+const CONTACT_EDIT_FORM_SLUG = 'contact-edit-form';
+const MODAL_DIALOG_SLUG = 'modal-dialog';
+const CONTACT_CARD_SLUG = 'contact-card';
+
+const preventBodyElemScrolling = () => {
+    bodyElem.classList.add('popup-open');
+};
+const setBodyElemScrollable = () => {
+    bodyElem.classList.remove('popup-open');
+};
 
 class App extends React.Component {
     constructor (props) {
@@ -23,36 +30,39 @@ class App extends React.Component {
         this.boundActions = adbk.redux.action;
         this.state = {
             contactIndex: 0,
-            isShowCC: false,
-            isConfirming: false,
+            // isShowCC: false,
+            // isConfirming: false,
+            // isShowForm: false,
+            prevOpenedPopupList: new adbk.classes.Stack(),
             dialogContent: null,
-            isShowForm: false
+            popupTogglersManager: new adbk.classes.BooleanTogglers([
+                CONTACT_CARD_SLUG,
+                MODAL_DIALOG_SLUG,
+                CONTACT_EDIT_FORM_SLUG,
+            ]),
         };
+        this.handleAfterConfirming = null;
         this.checkedItemsCounter = 0;
 
         // this.filterBirthsToday = this.filterBirthsToday.bind(this);
-        this.showNoti = this.showNoti.bind(this);
         this.rmContact = this.rmContact.bind(this);
-        this.delAll = this.delAll.bind(this);
         this.openForm = this.openForm.bind(this);
         this.closeForm = this.closeForm.bind(this);
-        this.openModalDialog = this.openModalDialog.bind(this);
-        this.closeModalDialog = this.closeModalDialog.bind(this);
+        this.openConfirmDialog = this.openConfirmDialog.bind(this);
+        this.closeConfirmDialog = this.closeConfirmDialog.bind(this);
         this.openContactCard = this.openContactCard.bind(this);
         this.closeContactCard = this.closeContactCard.bind(this);
-        this.handlerClickDeleteMenu = this.handlerClickDeleteMenu.bind(this);
         this.changeContactIndex = this.changeContactIndex.bind(this);
-        this.notifyServerFailed = this.notifyServerFailed.bind(this);
+        this.dismissCurrentPopup = this.dismissCurrentPopup.bind(this);
     }
 
     static get propTypes () {
         return {
+            // props from redux store provider:
             dispatch: PropTypes.func.isRequired,
             filterState: PropTypes.number.isRequired,
             notiList: PropTypes.arrayOf(PropTypes.object).isRequired,
             // contactIndex: PropTypes.number.isRequired,
-            // isShowCC: PropTypes.bool.isRequired,
-            // isShowForm: PropTypes.bool.isRequired,
             contacts: PropTypes.arrayOf(PropTypes.instanceOf(adbk.classes.Contact)).isRequired
         };
     }
@@ -67,35 +77,32 @@ class App extends React.Component {
     //     return false;
     // }// should extends PureComponent
 
-    // componentWillMount () {
-    //     this.init();
-    // }
-
     componentDidMount () {
         (() => {
             const birthsToday = getListOfBirthsToday(this.props.contacts);
+            const prepBirthNoti = (contactsNames) => {
+                birthsToday.forEach((contact, idx) => {
+                    if (idx === 0) { return; }
+                    contactsNames += ` & ${contact.name}`;
+                });
+                return `Today is ${contactsNames}'s birthday!! Wish ${birthsToday.length > 1 ? 'them' : 'him/her'} a happy birthday!`;
+            };
 
             if (birthsToday.length > 0) {
                 let contactsNames = birthsToday[0].name;
-
-                this.showNoti('alert', prepBirthNoti());
-
-                function prepBirthNoti () {
-                    birthsToday.forEach((contact, idx) => {
-                        if (idx === 0) { return; }
-                        contactsNames += ` & ${contact.name}`;
-                    });
-                    return `Today is ${contactsNames}'s birthday!! Wish ${birthsToday.length > 1 ? 'them' : 'him/her'} a happy birthday!`;
-                }
+                storeActions.showNoti('alert', prepBirthNoti(contactsNames));
             }
         })();
-    }
 
-    // componentWillReceiveProps(nextProps) {
-    //     if (nextProps.contacts !== this.props.contacts) {
-    //
-    //     }
-    // }
+        document.addEventListener('keyup', e => {
+            e = e || window.event;
+            if (e.key === 'Escape' || e.key === 'Esc' || e.keyCode === 27) {
+                if (this.state.prevOpenedPopupList.len > 0) {
+                    this.dismissCurrentPopup(this.state.prevOpenedPopupList.last);
+                }
+            }
+        });
+    }
 
     // filterBirthsToday () {// re-update happy-birthday list
     //     const newData = filterBirthsToday(this.props.contacts);
@@ -103,35 +110,9 @@ class App extends React.Component {
     //     this.boundActions.contacts.replaceAllContacts(newData);
     // }
 
-    delAll () {
-        // if data is empty already, no need to do anything
-        if (this.props.contacts.length === 0) {
-            this.showNoti('alert', 'There is no data left. Is it bad?');
-            return;
-        }
-
-        this.openModalDialog({
-            // labelYES: 'OK',
-            // labelNO: 'Cancel',
-            header: 'Confirm to delete all your data',
-            body: 'This can not be undone. Please make sure you want to do it!'
-        }, (res) => {
-            if (res) {
-                this.boundActions.contacts.asyncRemoveAllContacts(adbk.inst.adrsbook.id).then(json => {
-                    if (json.isSuccess) {
-                        this.showNoti('success', 'All your contacts are deleted.');
-                    } else {
-                        this.notifyServerFailed();
-                    }
-                });
-                this.boundActions.filterState.changeStateToAll();
-            }
-        });
-    }
-
     rmContact (contactId) {
         const contact = this.findContact(contactId);
-        this.boundActions.contacts.asyncRemoveContact(contact);
+        storeActions.asyncRemoveContact(contact);
     }
 
     findContact (contactId) {
@@ -146,29 +127,53 @@ class App extends React.Component {
         this.setState({ contactIndex: this.findContactIndex(contactId) });
     }
 
-    showNoti (type, msg) {
-        this.boundActions.notifications.pushNoti({
-            type,
-            msg,
-            id: Math.random()
-        });
+    dismissCurrentPopup (popupName, contactId) {
+        switch (popupName) {
+            case CONTACT_CARD_SLUG:
+                this.closeContactCard(contactId);
+                break;
+            case CONTACT_EDIT_FORM_SLUG:
+                this.closeForm(contactId);
+                break;
+            case MODAL_DIALOG_SLUG:
+                this.closeConfirmDialog();
+                break;
+            default:
+                break;
+        }
     }
 
     openContactCard (contactId) {
-        this.setState({
-            contactIndex: this.findContactIndex(contactId),
-            isShowCC: true
+        this.setState((prevState, prevProps) => {
+            return {
+                contactIndex: this.findContactIndex(contactId),
+                // isShowCC: true,
+                prevOpenedPopupList: prevState.prevOpenedPopupList.push(CONTACT_CARD_SLUG),
+                popupTogglersManager: prevState.popupTogglersManager.toggleOn(CONTACT_CARD_SLUG),
+            };
+        }, () => {
+            preventBodyElemScrolling();
         });
-
-        bodyElem.classList.add('body--no-scroll');
     }
 
-    closeContactCard () {
-        this.setState({
-            isShowCC: false
+    closeContactCard (contactId) {
+        this.setState((prevState, prevProps) => {
+            const newState = {
+                // isShowCC: false,
+            };
+            newState.popupTogglersManager = prevState.popupTogglersManager.toggleOff(CONTACT_CARD_SLUG);
+            if (prevState.prevOpenedPopupList.last === CONTACT_CARD_SLUG) {
+                newState.prevOpenedPopupList = prevState.prevOpenedPopupList.pull();
+            }
+            if (contactId) {
+                newState.contactIndex = this.findContactIndex(contactId);
+            }
+            return newState;
+        }, () => {
+            if (this.state.prevOpenedPopupList.len === 0) {
+                setBodyElemScrollable();
+            }
         });
-
-        bodyElem.classList.remove('body--no-scroll');
     }
 
     openForm (contactId) {
@@ -177,145 +182,150 @@ class App extends React.Component {
             contactIndex = this.findContactIndex(contactId);
         }
 
-        this.setState({
-            contactIndex,
-            isShowForm: true
+        this.setState((prevState, prevProps) => {
+            const newState = {
+                contactIndex,
+                // isShowForm: true,
+                prevOpenedPopupList: prevState.prevOpenedPopupList.push(CONTACT_EDIT_FORM_SLUG),
+                popupTogglersManager: prevState.popupTogglersManager.toggleOn(CONTACT_EDIT_FORM_SLUG),
+            };
+            return newState;
+        }, () => {
+            preventBodyElemScrolling();
         });
-
-        bodyElem.classList.add('body--no-scroll');
     }
 
     closeForm (contactId) {
-        if (!this.state.isShowCC) {
-            bodyElem.classList.remove('body--no-scroll');
-        }
         const contactIndex = this.findContactIndex(contactId);
-        this.setState((typeof contactId === 'string' ? {
-            contactIndex,
-            isShowForm: false
-        } : { isShowForm: false }));
+        this.setState((prevState, prevProps) => {
+            const newState = {
+                // isShowForm: false,
+            };
+            if (typeof contactId === 'string') {
+                newState.contactIndex = contactIndex;
+            }
+            if (prevState.prevOpenedPopupList.last === CONTACT_EDIT_FORM_SLUG) {
+                newState.prevOpenedPopupList = prevState.prevOpenedPopupList.pull();
+            }
+            if (prevState.prevOpenedPopupList.len > 0) {
+                newState.popupTogglersManager = prevState.popupTogglersManager.toggleOn(prevState.prevOpenedPopupList.last);
+            } else {
+                newState.popupTogglersManager =  prevState.popupTogglersManager.toggleOff(CONTACT_EDIT_FORM_SLUG);
+            }
+            return newState;
+        }, () => {
+            if (this.state.prevOpenedPopupList.len === 0) {
+                setBodyElemScrollable();
+            }
+        });
     }
 
-    openModalDialog (content, cb) {
+    openConfirmDialog (content, cb) {
         if (!cb) {
-            throw new Error('Callback is not provided! Check openModalDialog method in App.js');
-            return;
+            throw new Error('Callback is not provided! Check openConfirmDialog method in App.js');
         }
         this.handleAfterConfirming = cb;
-        this.setState({
-            dialogContent: content,
-            isConfirming: true
+        this.setState((prevState, prevProps) => {
+            return {
+                // isConfirming: true,
+                prevOpenedPopupList: prevState.prevOpenedPopupList.push(MODAL_DIALOG_SLUG),
+                popupTogglersManager: prevState.popupTogglersManager.toggleOn(MODAL_DIALOG_SLUG),
+            };
+        }, () => {
+            preventBodyElemScrolling();
         });
-        bodyElem.classList.add('body--no-scroll');
     }
 
-    closeModalDialog (response) {
-        if (this.state.isConfirming) {
-            this.setState({
-                dialogContent: null,
-                isConfirming: false
+    closeConfirmDialog (response) {
+        // if (this.state.popupTogglersManager.activatedToggler === MODAL_DIALOG_SLUG) {
+            this.setState((prevState, prevProps) => {
+                const newState = {
+                    // isConfirming: false,
+                };
+                if (prevState.prevOpenedPopupList.last === MODAL_DIALOG_SLUG) {
+                    newState.prevOpenedPopupList = prevState.prevOpenedPopupList.pull();
+                }
+                if (prevState.prevOpenedPopupList.len > 0) {
+                    newState.popupTogglersManager = prevState.popupTogglersManager.toggleOn(prevState.prevOpenedPopupList.last);
+                } else {
+                    newState.popupTogglersManager =  prevState.popupTogglersManager.toggleOff(MODAL_DIALOG_SLUG);
+                }
+                return newState;
             }, () => {
-                if (this.handleAfterConfirming) {
+                if (typeof this.handleAfterConfirming === 'function') {
                     this.handleAfterConfirming(response);
                     this.handleAfterConfirming = null;
                 }
-            });
-        }
-        bodyElem.classList.remove('body--no-scroll');
-    }
-
-    notifyServerFailed (customMsg) {
-        this.showNoti('alert', customMsg || 'Sorry! Something is wrong on our server :(');
-    }
-
-    handlerClickDeleteMenu (e) {
-        if (this.checkedItemsCounter > 0) {
-            this.openModalDialog(undefined, (res) => {
-                if (res) {
-                    this.boundActions.contacts.asyncRemoveMarkedContacts().then(json => {
-                        if (!json.isSuccess) {
-                            this.notifyServerFailed();
-                        }
-                    });
+                if (this.state.prevOpenedPopupList.len === 0) {
+                    setBodyElemScrollable();
                 }
             });
-        } else {
-            this.showNoti('alert', 'Long-press to delete all contacts');
-        }
+        // }
     }
+
+
 
     render () {
         const notifications = this.props.notiList.map(notiObj => (
             <NotiBar type={notiObj.type} msg={notiObj.msg} key={notiObj.id} />
         ));
+        let elemInPopup;
+        const activatedToggler = this.state.popupTogglersManager.activatedToggler;
+
         this.checkedItemsCounter = this.props.contacts.filter(contact => contact.isMarked).length;
 
-        let filteredContacts;
-        switch (this.props.filterState) {
-            case 1:
-                filteredContacts = getBirthsInWeek(this.props.contacts);
-                break;
-            case 2:
-                filteredContacts = getBirthsInMonth(this.props.contacts);
-                break;
-            default:
-                filteredContacts = sortByName(this.props.contacts);
-        }
-
-        return (
-            <div>
-                <MainContent
-                    contactsList={filteredContacts}
-                    openContactCard={this.openContactCard}
-                    rmItem={this.rmContact}
-                    openModalDialog={this.openModalDialog}
-                    openForm={this.openForm}
-                    toggleMarkedItem={this.boundActions.contacts.toggleMarkedItem} />
-                {notifications}
-                <MainNavContainer
-                    totalContacts={this.props.contacts.length}
-                    onClickDisplayAll={this.boundActions.filterState.changeStateToAll}
-                    onFilterBirthsInWeek={this.boundActions.filterState.changeStateToWeek}
-                    onFilterBirthsInMonth={this.boundActions.filterState.changeStateToMonth}
-                    onClickAddMenu={this.openForm}
-                    onClickDelAll={this.delAll}
-                    showNoti={this.showNoti}
-                    onClickDelete={this.handlerClickDeleteMenu}
-                    replaceData={this.boundActions.contacts.asyncReplaceAllContacts}
-                    numOfCheckedItems={this.checkedItemsCounter} />
-                {this.state.isShowCC &&
-                    <ContactCard
-                        contact={filteredContacts[this.state.contactIndex]}
+        if (activatedToggler) {
+            switch (activatedToggler) {
+                case CONTACT_CARD_SLUG:
+                    elemInPopup = <ContactCard
+                        contact={this.props.contacts[this.state.contactIndex]}
                         contactIndex={this.state.contactIndex}
                         onClose={this.closeContactCard}
                         onEditContact={this.openForm}
-                        openModalDialog={this.openModalDialog}
-                        onRemoveContact={this.rmContact} />
-                }
-                {this.state.isShowForm &&
-                    <WorkingForm
+                        openModalDialog={this.openConfirmDialog}
+                        onRemoveContact={this.rmContact}
+                    />;
+                    break;
+                case CONTACT_EDIT_FORM_SLUG:
+                    elemInPopup = <WorkingForm
                         isEditing={this.state.contactIndex > -1}
-                        contact={this.state.contactIndex > -1 ? filteredContacts[this.state.contactIndex] : adbk.classes.Contact.fromScratch()}
+                        contact={this.state.contactIndex > -1 ? this.props.contacts[this.state.contactIndex] : adbk.classes.Contact.fromScratch()}
                         closeForm={this.closeForm}
-                        addContact={this.boundActions.contacts.asyncAddContact}
-                        editContact={this.boundActions.contacts.asyncEditContact}
                         changeContactIndex={this.changeContactIndex}
-                        showNoti={this.showNoti} />
-                }
-                {this.state.isConfirming &&
-                    <ModalDialog
-                        isConfirming={this.state.isConfirming}
-                        closeModalDialog={this.closeModalDialog}
-                        {...this.state.dialogContent} />
-                }
-                {/* <ConfirmDialog
-                    isConfirming={this.state.isConfirming}
-                    closeModalDialog={this.closeModalDialog}
-                    handleAfterYes={() => {}}
-                    handleAfterNo={() => {}}
-                    data={{}} />
-                */}
-            </div>
+                    />;
+                    break;
+                case MODAL_DIALOG_SLUG:
+                    elemInPopup = <ConfirmDialog
+                        closeModalDialog={this.closeConfirmDialog}
+                        {...this.state.dialogContent}
+                    />;
+                    break;
+                default:
+                    console.error(`Uncatched ${activatedToggler}`);
+                    break;
+            }
+        }
+
+        return (
+            <>
+                <MainContentContainer
+                    contacts={this.props.contacts}
+                    filterState={this.props.filterState}
+                    totalContactsAmount={this.props.contacts.length}
+                    openContactCard={this.openContactCard}
+                    rmItem={this.rmContact}
+                    openModalDialog={this.openConfirmDialog}
+                    openForm={this.openForm}
+                    toggleMarkedItem={storeActions.toggleMarkedItem} />
+                {notifications}
+                <MainNavContainer
+                    totalContacts={this.props.contacts.length}
+                    onClickAddMenu={this.openForm}
+                    showNoti={storeActions.showNoti}
+                    openConfirmDialog={this.openConfirmDialog}
+                    numOfCheckedItems={this.checkedItemsCounter} />
+                {activatedToggler !== undefined && elemInPopup}
+            </>
         );
     }
 }

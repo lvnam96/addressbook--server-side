@@ -7,9 +7,7 @@ const ContactCard__DetailsRow = props => (
             <span>{props.text}</span>
         </div>
         <div className="contact-card__details-icon">
-            <div>
-                <i className={props.iconClass}></i>
-            </div>
+            <i className={props.iconClass}></i>
         </div>
     </div>
 );

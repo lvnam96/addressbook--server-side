@@ -4,18 +4,18 @@ import PropTypes from 'prop-types';
 const NotiBar = props => {
     let icoClass, bgColor;
     switch (props.type) {
-    case 'success':
-        icoClass = "fas fa-check";
-        bgColor = '#4caf50';
-    break;
-    case 'error':
-        icoClass = "fas fa-exclamation-triangle";
-        bgColor = '#e53935';
-    break;
-    default:
-        icoClass = "fas fa-exclamation-circle";
-        bgColor = '#1E88E5';
-    break;
+        case 'success':
+            icoClass = "fas fa-check";
+            bgColor = '#4caf50';
+        break;
+        case 'error':
+            icoClass = "fas fa-exclamation-triangle";
+            bgColor = '#e53935';
+        break;
+        default:
+            icoClass = "fas fa-exclamation-circle";
+            bgColor = '#59a5e8';
+        break;
     }
 
     return (

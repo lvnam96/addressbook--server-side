@@ -1,11 +1,11 @@
-@import '_variables.scss';
-@import '_mixins.scss';
-@import '_extends.scss';
+@import 'variables';
+@import 'mixins';
+@import 'extends';
 
-@import '_keyframes.scss';
-@import './base/_index.scss';
-@import './layout/_index.scss';
-@import './components/_index.scss';
+@import 'keyframes';
+@import './base/index';
+@import './layout/index';
+@import './components/index';
 
 // Medium devices (desktops, 992px and up)
 @media (min-width: 992px) {

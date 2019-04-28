@@ -1,9 +1,9 @@
 .contact-card {
+    width: 100%;
     margin: 0 auto;
     background-color: #fff;
     font-size: 1rem;
     will-change: transform, opacity;
-    animation: showUp .2s ease-out both;
 
 
 
@@ -24,6 +24,9 @@
         width: 100%;
         font-size: 1em;
         // transform: translateY(-100%);// if transform is used in animation of .contact-card, the .contact-card__btns will not be fixed on top of screen.
+        border-top-left-radius: $radius-size;
+        border-top-right-radius: $radius-size;
+        overflow: hidden;
     }
 
     &__btn {
@@ -46,7 +49,7 @@
             color: #000;
         }
 
-        .contact-card__btn:hover > &.fa-user-times {
+        .contact-card__remove-btn:hover > & {
             color: #ef5350;
         }
     }
@@ -159,6 +162,9 @@
         background-color: #fff;
         margin-top: 0;
         font-size: 1em;
+        border-bottom-left-radius: $radius-size;
+        border-bottom-right-radius: $radius-size;
+        overflow: hidden;
     }
 
     &__body-title {
@@ -182,7 +188,7 @@
         text-align: center;
         display: inline-block;
 
-        .fa {
+        [class*='fa-'] {
             font-size: 1em;
             line-height: 3em;
             // transition: transform .1s cubic-bezier(.7,.67,.62,1);
@@ -203,7 +209,7 @@
             }
         }
 
-        &:hover + .contact-card__details-icon .fa {
+        &:hover + .contact-card__details-icon [class*='fa-'] {
             transform: scale(1.4);
         }
     }
@@ -235,15 +241,17 @@
     }
 }
 
-@media (min-width: 700px) {
+@media (min-width: $tablet) {
     .contact-card {
         max-width: 640px;
-        width: 80%;
-        animation: showUp .2s ease-out both;
 
         &__btns-container {
             position: static;
             // transform: translateY(0);
+        }
+
+        &__btn-ico {
+            color: #aaa;
         }
 
         &__header {

@@ -1,5 +1,13 @@
 import { sortByDay } from './sortHelper';
 import { formatNumbToStr } from './utilsHelper';
+import { DateTime } from 'luxon';
+
+export const displayDateObject = (dateObj, options) => {
+    // return [dateObj.getDate(), dateObj.getMonth(), dateObj.getFullYear()].join('/');
+    const birth = DateTime.fromISO(dateObj.toISOString());
+    // return `${birth.day}/${birth.month}/${birth.year}`;
+    return birth.toLocaleString(options);// MM/DD/YYYY
+};
 
 export const isLeap = (year) => {
     return !(year % 4 || (year % 100 === 0 && year % 400));
@@ -89,9 +97,11 @@ export const displayBirthday = (birth, format) => {
                 }
         }
     } else if (birth instanceof Date) {
-        year = birth.getFullYear();
-        month = convertMonthToText(birth.getMonth() + 1);
-        return `${convertMonthToText(birth.getMonth() + 1)} ${birth.getDate()}, ${birth.getFullYear()}`;
+        // Old manual implement:
+        // year = birth.getFullYear();
+        // month = convertMonthToText(birth.getMonth() + 1);
+        // return `${convertMonthToText(birth.getMonth() + 1)} ${birth.getDate()}, ${birth.getFullYear()}`;
+        return displayDateObject(birth, DateTime.DATE_FULL);
     }
     return `${month} ${day}, ${year}`;
 };
@@ -102,7 +112,7 @@ export const convertDateObjToHTMLInputVal = birth => {
             mm = formatNumbToStr(birth.getMonth() + 1, 2),
             dd = formatNumbToStr(birth.getDate(), 2);
         return `${yyyy}-${mm}-${dd}`;
-    } else throw new Error('[helper: convertDateObjToHTMLInputVal] Input is not an instance of Date.')
+    } else throw new Error('[helper: convertDateObjToHTMLInputVal] Input is not an instance of Date.');
 };
 
 // DONE

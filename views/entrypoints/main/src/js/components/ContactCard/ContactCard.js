@@ -7,6 +7,11 @@ import Header from './Header';
 import Body from './Body';
 
 class ContactCard extends React.Component {
+    constructor (data) {
+        super(data);
+        this.onCloseHandler = this.onCloseHandler.bind(this);
+    }
+
     static propTypes() {
         return {
             contact: PropTypes.instanceOf(adbk.classes.Contact).isRequired,
@@ -35,9 +40,13 @@ class ContactCard extends React.Component {
         return false;
     }
 
+    onCloseHandler () {
+        return this.props.onClose(this.props.contact.id);
+    }
+
     render() {
         return (
-            <Popup onCloseHandler={this.props.onClose}>
+            <Popup onCloseHandler={this.onCloseHandler}>
                 <div className="contact-card">
                     <ButtonsContainer
                         contactId={this.props.contact.id}

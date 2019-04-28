@@ -1,51 +1,57 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
-class NavBtn extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
-    static get propTypes() {
-        return {
-            onClick: PropTypes.func.isRequired,
-            onMouseDown: PropTypes.func,
-            onMouseUp: PropTypes.func,
-            onTouchStart: PropTypes.func,
-            onTouchEnd: PropTypes.func,
-            icon: PropTypes.string.isRequired,
-            label: PropTypes.string.isRequired
-        };
-    }
-
-    shouldComponentUpdate(nextProps) {
-        if (nextProps.label !== this.props.label) {
-            return true;
-        }
-        return false;
-    }
-
-    render() {
-        if (this.props.isDropdownBtn) {
-            return (
-                <label htmlFor={this.props.inputId} className={`main-nav__item${(' ' + this.props.moreClass) || ''}`} onClick={this.props.onClick}>
-                    <i className={`fa ${this.props.icon}`}></i>
-                    <span className="main-nav__item-label">{this.props.label}</span>
-                </label>
-            );
-        }
-
+const NavBtn = (props) => {
+    if (props.isDropdownBtn && props.inputId) {
         return (
-            <div className={`main-nav__item${(' ' + this.props.moreClass) || ''}`} onClick={this.props.onClick}
-                onMouseDown={this.props.onMouseDown}
-                onMouseUp={this.props.onMouseUp}
-                onTouchStart={this.props.onTouchStart}
-                onTouchEnd={this.props.onTouchEnd}>
-                <i className={`fa ${this.props.icon}`}></i>
-                <span className="main-nav__item-label">{this.props.label}</span>
-            </div>
+            <label
+                ref={props.btnRef}
+                htmlFor={props.inputId}
+                className={classNames('main-nav__item', {
+                    [props.moreClass]: !!props.moreClass
+                })}
+                onClick={props.onClick}>
+                <i className={classNames('fa', {
+                    [props.icon]: !!props.icon,
+                })}></i>
+                <span className="main-nav__item-label">{props.label}</span>
+            </label>
         );
     }
-}
+// React.forwardRef((props, ref) => {
+    return (
+        <div
+            ref={props.btnRef}
+            className={classNames('main-nav__item', {
+                [props.moreClass]: !!props.moreClass
+            })}
+            onClick={props.onClick}
+            onMouseDown={props.onMouseDown}
+            onMouseUp={props.onMouseUp}
+            onTouchStart={props.onTouchStart}
+            onTouchEnd={props.onTouchEnd}
+        >
+            <i className={classNames('fa', {
+                [props.icon]: !!props.icon,
+            })}></i>
+            <span className="main-nav__item-label">{props.label}</span>
+        </div>
+    );
+};
+
+NavBtn.propTypes = {
+    btnRef: PropTypes.object,
+    onClick: PropTypes.func.isRequired,
+    onMouseDown: PropTypes.func,
+    onMouseUp: PropTypes.func,
+    onTouchStart: PropTypes.func,
+    onTouchEnd: PropTypes.func,
+    icon: PropTypes.string.isRequired,
+    label: PropTypes.string.isRequired,
+    inputId: PropTypes.string,
+    moreClass: PropTypes.string,
+    isDropdownBtn: PropTypes.bool,
+};
 
 export default NavBtn;

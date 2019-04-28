@@ -1,17 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import * as storeActions from '../../storeActions';
+
 import FormContainer from './containers/FormContainer';
 // import EditForm from './containers/EditFormContainer';
 
 const WorkingForm = props => {
     if (props.isEditing) {
         const saveEditedContact = editedContact => {
-            props.editContact(editedContact).then(() => {
+            storeActions.asyncEditContact(editedContact).then(() => {
                 // props.refresh();
                 props.changeContactIndex(editedContact.id);
                 props.closeForm(editedContact.id);
-                props.showNoti('success', `Saved.`);
+                storeActions.showNoti('success', `Saved.`);
             });
         };
         return (
@@ -19,7 +21,7 @@ const WorkingForm = props => {
                 title="Edit Contact"
                 contact={props.contact}
                 closeForm={props.closeForm}
-                showNoti={props.showNoti}
+                showNoti={storeActions.showNoti}
                 handlerSubmit={saveEditedContact}
             />
         );
@@ -28,16 +30,17 @@ const WorkingForm = props => {
             newContact.adrsbookId = adbk.inst.adrsbook.id;
             newContact.accountId = adbk.inst.user.id;
 
-            props.addContact(newContact);
-            props.closeForm();
-            props.showNoti('success', `New contact: "${newContact.name}" was created.`);
+            storeActions.asyncAddContact(newContact).then(() => {
+                props.closeForm();
+                storeActions.showNoti('success', `New contact: "${newContact.name}" was created.`);
+            });
         };
         return (
             <FormContainer
                 title="Add new contact"
                 contact={props.contact}
                 closeForm={props.closeForm}
-                showNoti={props.showNoti}
+                showNoti={storeActions.showNoti}
                 handlerSubmit={addNewContact}
             />
         );
@@ -46,12 +49,9 @@ const WorkingForm = props => {
 
 WorkingForm.propTypes = {
     contact: PropTypes.instanceOf(adbk.classes.Contact).isRequired,
-    addContact: PropTypes.func.isRequired,
-    editContact: PropTypes.func.isRequired,
     isEditing: PropTypes.bool.isRequired,
     closeForm: PropTypes.func.isRequired,
     changeContactIndex: PropTypes.func.isRequired,
-    showNoti: PropTypes.func.isRequired
 };
 
 export default WorkingForm;

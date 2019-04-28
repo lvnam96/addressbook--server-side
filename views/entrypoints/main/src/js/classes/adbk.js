@@ -5,6 +5,8 @@ import ContactsList from './ContactsList';
 import Contact from './Contact';
 import NotificationsList from './NotificationsList';
 import User from './User';
+import BooleanTogglers from './BooleanTogglers';
+import Stack from './Stack';
 
 // services
 import axios from '../services/requestServices';
@@ -19,7 +21,9 @@ import * as notiListActions from '../actions/notiListActions';
 class Adbk {
     constructor () {
         this.classes = {
-            Account, Contact, Adrsbook, ContactsList, NotificationsList, User
+            Account, Contact, Adrsbook, ContactsList, NotificationsList, User,
+            BooleanTogglers,
+            Stack,
         };
         this.inst = {};
         this.status = {
@@ -33,6 +37,8 @@ class Adbk {
                 filterState: bindActionCreators(filterStateActions, store.dispatch)
             }
         };
+
+        this._setupReduxStore = this._setupReduxStore.bind(this);
     }
 
     _setupReduxStore () {
@@ -45,7 +51,7 @@ class Adbk {
         if (!this.status._isDataLoaded) {
             axios.get('/backdoor/get-all-data')
                 .then(res => {
-                    console.log('THE FIRST DATA LOADING TIME. DATA: ', res);
+                    // console.log('THE FIRST DATA LOADING TIME. DATA: ', res);
                     this.inst.user = User.fromJSON(res.data.data.user);
                     this.inst.adrsbook = Adrsbook.fromJSON(res.data.data.adrsbook);
 

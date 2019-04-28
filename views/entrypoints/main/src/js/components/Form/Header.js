@@ -16,7 +16,7 @@ class FormHeader extends React.PureComponent {
                     <h2 className="form-title__text">{this.props.title}</h2>
                 </div>
                 <div className="form__close-btn" onClick={this.props.handlerCloseBtn}>
-                    <div><i className="fa fa-times"></i></div>
+                    <i className="fa fa-times"></i>
                 </div>
             </div>
         );

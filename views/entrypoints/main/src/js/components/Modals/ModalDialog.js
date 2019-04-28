@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
 import Popup from '../HOCs/Popup';
 
 const ModalDialog = (props) => {
@@ -15,7 +14,6 @@ const ModalDialog = (props) => {
             <div className="dialog" style={{
                 backgroundColor: '#fff',
                 padding: '20px 30px',
-                borderRadius: '15px',
                 boxShadow: '0 0 25px 10px rgba(0, 0, 0, .5)',
             }}>
                 <h3 className="modal-dialog__header">{props.header}</h3>
@@ -43,7 +41,6 @@ ModalDialog.propTypes = {
     labelNO: PropTypes.string,
     header: PropTypes.string,
     body: PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
-    isConfirming: PropTypes.bool.isRequired
 };
 
 export default ModalDialog;

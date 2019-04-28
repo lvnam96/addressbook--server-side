@@ -1,32 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { getRandomColor } from '../../../helpers/utilsHelper';
+import { randomUUID, getRandomColor } from '../../../helpers/utilsHelper';
 import { convertDateObjToHTMLInputVal } from '../../../helpers/timeHelper';
-
 import { fixedEncodeURIComponent, fixedEncodeURI } from '../../../helpers/encodeHelper';
 
 import Form from '../Form';
+// import { parenthesizedExpression } from 'babel-types';
+import emptyContact from './emptyContactData.json';
+emptyContact.id = randomUUID();
+emptyContact.color = getRandomColor();
 
-const spacePtrn = /\s/g,
-    addFilledClass = e => {
-        e.target.parentNode.classList.add('JS-form__input-container--filled');
-    },
-    checkInputFilled = e => {
-        const inputElem = e.target;
-        if (inputElem.value === '') {
-            inputElem.parentNode.classList.remove('JS-form__input-container--filled');
-        }
-    },
-    emptyContact = {// default empty contact's values
-        name: '',
-        labels: [],
-        birth: '',
-        note: '',
-        email: '',
-        website: '',
-        phone: ''
-    };
+const spacePtrn = /\s/g;
+const addFilledClass = e => {
+    e.target.parentNode.classList.add('JS-form__input-container--filled');
+};
+const checkInputFilled = e => {
+    const inputElem = e.target;
+    if (inputElem.value === '') {
+        inputElem.parentNode.classList.remove('JS-form__input-container--filled');
+    }
+};
 
 class FormContainer extends React.Component {
     constructor(props) {
@@ -167,10 +161,11 @@ class FormContainer extends React.Component {
 
     resetForm() {
         this.setState((prevState) => {
+            console.log(prevState);
             return {
                 contact: {
                     ...emptyContact,
-                    color: prevState.color
+                    color: prevState.contact.color,
                 }
             };
         });
@@ -183,27 +178,17 @@ class FormContainer extends React.Component {
     handlerSaveForm(e) {
         e.preventDefault();
 
-        let {
-            name,
-            id,
-            color,
-            labels,
-            birth,
-            note,
-            email,
-            website,
-            phone
-        } = this.state.contact;
+        const submittedData = Object.assign({}, this.state.contact);
 
-        name = typeof name === 'string' && name.trim();
-        if (name === '') {
+        submittedData.name = String(submittedData.name) && submittedData.name.trim();
+        if (submittedData.name === '') {
             this.props.showNoti('error', 'Please type a name');
             return;
         } else {
-            this.state.contact.name = name;
+            submittedData.name = name;
         }
 
-        this.state.contact.website = (ws => {
+        submittedData.website = (ws => {
             ws = typeof ws === 'string' ? ws.trim() : '';
             if (ws.length) {
                 const hasURLSyntax = ws.search(/^https?:\/\/\S+/g) === 0 ? true : false,
@@ -218,23 +203,23 @@ class FormContainer extends React.Component {
             } else {
                 return ws;
             }
-        })(website);
+        })(submittedData.website);
 
         // format labels data
         let newLabels = [];
         if (this.cboxFamily.checked) { newLabels.push('family'); }
         if (this.cboxCoWorker.checked) { newLabels.push('coWorker'); }
         if (this.cboxFriends.checked) { newLabels.push('friends'); }
-        this.state.contact.labels = newLabels;
+        submittedData.labels = newLabels;
         // const labelSet = new Set();
         // labelSet.add('family');
         // labelSet.add('coWorker');
         // labelSet.add('friends');
         // this.state.labels = labelSet;
 
-        this.state.contact.note = typeof note === 'string' ? note.trim() : '';
+        submittedData.note = typeof note === 'string' ? submittedData.note.trim() : '';
 
-        this.props.handlerSubmit(this.state.contact);
+        this.props.handlerSubmit(submittedData);
     }
 
     changeColor(e) {
@@ -251,7 +236,6 @@ class FormContainer extends React.Component {
     render () {
         return (
             <Form
-                // {...this.props}
                 title={this.props.title}
                 contact={this.state.contact}
                 checkInputFilled={checkInputFilled}
@@ -263,7 +247,8 @@ class FormContainer extends React.Component {
                 closeForm={this.props.closeForm}
                 refCBoxFamily={thisDOM => this.cboxFamily = thisDOM}
                 refCBoxCoWorker={thisDOM => this.cboxCoWorker = thisDOM}
-                refCBoxFriend={thisDOM => this.cboxFriends = thisDOM} />
+                refCBoxFriend={thisDOM => this.cboxFriends = thisDOM}
+            />
         );
     }
 }

@@ -5,7 +5,7 @@
 .main {
     min-height: calc(100vh - 140px);
     margin-bottom: 140px;
-    padding: .5rem 0;
+    padding: .5rem .8rem;
     overflow-y: auto;// force to scroll, 'auto' doesn't seem to work
     scroll-behavior: smooth;// Firefox 49+, Experimental Feature in Chrome 41+
     -webkit-overflow-scrolling: touch;// lazy scrolling in webkit

@@ -1,0 +1,32 @@
+.contact-filter {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+
+    &__hint-numb {
+
+    }
+}
+
+
+
+
+@media (min-width: $mobile) {
+
+}
+
+@media (min-width: $tablet) {
+
+}
+
+@media (min-width: $desktop) {
+    .contact-filter {
+        position: initial;
+        position: static;
+    }
+}
+
+@media (min-width: $lg-desktop) {
+
+}

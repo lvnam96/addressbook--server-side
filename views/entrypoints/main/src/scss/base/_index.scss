@@ -38,12 +38,13 @@ html {
 
 body {
     background: #eee;
-    background: linear-gradient(to right, #e0e0e0, #eee);
+    background: linear-gradient(to right, #efefef, #f9f9f9);
     font-family: 'Roboto', sans-serif;
     color: #212121;
     font-size: 1rem;
 }
 
-.body--no-scroll {
+.no-scroll,
+.popup-open {
     overflow-y: hidden;
 }

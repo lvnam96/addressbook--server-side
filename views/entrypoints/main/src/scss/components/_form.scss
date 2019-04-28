@@ -5,7 +5,6 @@
 .form-container {
     width: 100%;
     background-color: #f0efee;
-    animation: showUp .2s ease-out both;
 }
 
 
@@ -129,22 +128,6 @@
     width: 100%;
 }
 
-#form_cb-family,
-#form_cb-coWorker,
-#form_cb-friends {
-    position: fixed;
-    top: -99px;
-    left: -99px;
-    z-index: -99;
-    visibility: hidden;
-
-    &:checked + .form__cb-box {
-        background-color: #37939c;
-        // background-clip: content-box;
-        transform: scale(.8);
-    }
-}
-
 .form__input-container--labels {
     flex-grow: 1;
     display: flex;
@@ -166,6 +149,22 @@
     margin: 1em 0;
     width: 100%;
     vertical-align: top;
+}
+
+#form_cb-family,
+#form_cb-coWorker,
+#form_cb-friends {
+    position: fixed;
+    top: -99px;
+    left: -99px;
+    z-index: -99;
+    visibility: hidden;
+
+    &:checked + .form__cb-box {
+        background-color: #37939c;
+        // background-clip: content-box;
+        transform: scale(.8);
+    }
 }
 
 
@@ -240,12 +239,34 @@
 
 
 /**********************************\
+            #CHECKBOX
+\**********************************/
+
+.form__cb-box {
+    display: inline-block;
+    width: 1.5em;
+    height: 1.5em;
+    background-color: transparent;
+    padding: .1em;
+    margin-right: .5em;
+    border: 2px solid #37939c;
+    border-radius: 5px;
+    z-index: 2;
+    transition: background-color, transform;
+    transition-duration: .2s;
+}
+
+
+
+
+
+/**********************************\
 #FEATURE: CHANGE INPUT FIELD'S STATE
 \**********************************/
 
 .form__input-field:focus + .form__input-label::after,
 .JS-form__input-container--filled .form__input-label::after {
-    transform: scale3d(1, calc(1/3), 1);
+    transform: scale3d(1, calc(1 / 3), 1);
 }
 
 .form__input-field:focus + .form__input-label__text,
@@ -296,28 +317,6 @@
 ::placeholder {
     opacity: 0;
     color: #777;
-}
-
-
-
-
-
-/**********************************\
-            #CHECKBOX
-\**********************************/
-
-.form__cb-box {
-    display: inline-block;
-    width: 1.5em;
-    height: 1.5em;
-    background-color: transparent;
-    padding: .1em;
-    margin-right: .5em;
-    border: 2px solid #37939c;
-    border-radius: 5px;
-    z-index: 2;
-    transition: background-color, transform;
-    transition-duration: .2s;
 }
 
 
@@ -401,7 +400,6 @@
 @media (min-width: 700px) {
     .form-container {
         max-width: 640px;
-        width: 80%;
         margin: 0 auto;
         // position: absolute;
         // top: 50%;

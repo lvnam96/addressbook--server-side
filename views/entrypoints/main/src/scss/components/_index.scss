@@ -1,7 +1,9 @@
-@import '_overlay.scss';
-@import '_contact-list.scss';
-@import '_contact-item.scss';
-@import '_contact-card.scss';
-@import '_form.scss';
-@import '_noti-bar.scss';
-@import '_main-nav.scss';
+@import 'popup';
+@import 'contact-list';
+@import 'contact-item';
+@import 'contact-filter';
+@import 'contact-card';
+@import 'form';
+@import 'noti-bar';
+@import 'main-nav';
+@import 'confirm-dialog';

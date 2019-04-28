@@ -1,21 +1,51 @@
+//
+//  #5EC7F5 xanh dương: bg.main,
+//  #8E8A34 vàng tối: bg.navbar
+//  #EBE342 vàng chanh: ???
+//  #519CB5 : inputs,
+//  #2F84A8 xanh dương tối: cards
+
+//  #40223C crushed: bg.main,
+//  #42988F aqua: bg.navbar
+//  #B1C592 fish paste: ???
+//  #F1DDBA white pink: inputs,
+//  #FB718A pink: cards
+
+//  Level: hover
+//  box-shadow: 0 1px 3px 1px #555;
+//  Level: normal
+//  box-shadow: 0 3px 15px 1px #555;
+
+//  10px = .625rem
+//  5px = .3125rem
+
 /*********************\
-# COLORS
+# COLOR
 \*********************/
-$color--blue: #0f7dbc;//#82d4e1;
+$color--brand: #34a7f6;//#34a7f6;// primary
+$color--linkedin: #19408b;
+
+$color--blue: #33adff;//#40a2f7;//#82d4e1;
+$color--green-blue: #19abd1;//#82d4e1;
 $color--light-blue: #28a8e0;
-$color--green: #5edd76;//#82e47d;
-$color--red: #F0535C;//#ed2024;
+$color--green: #5edd76;
+$color--red: #fb4550;//#F0535C;
+$color--pink: #fb718a;
+$color--cyan: #00a79c;//#30d0de;// secondary
+$color--orange: #ffa800;
+$color--brown: #6c4c41;
+$color--yellow: #edb102;
 
 $color--white: #fffffe;
-$color--light-gray: #e6e7e8;
+$color--light-gray: #fafafa;
 $color--gray: #cacaca;
 $color--light-black: #666;
 $color--black: #414042;
 $color--dark-black: #212121;
 
-$primary-color: $color--blue;
-$accent-color: $color--green;
-$secondary-color: $color--green;
+$primary-color: $color--brand;
+$accent-color: $color--pink;
+$secondary-color: $accent-color;
 $light-color: $color--light-gray;
 $bg-color: $color--white;
 $text-color: $color--light-black;
@@ -25,12 +55,44 @@ $text-color: $color--light-black;
 
 
 /*********************\
+# CONFIG
+\*********************/
+$radius-size-sm: .5rem;
+$radius-size: 1rem;
+$radius-size-lg: 1.5rem;
+
+
+
+
+
+/*********************\
 # RESPONSIVE POINTS & SIZE
 \*********************/
-$page-max-width: 75rem;// 1200px
-$mobile: 36rem;// 512px small
-$tablet: 48rem;// 768px medium
-$desktop: 62rem;// 992px large
-$lg-desktop: $page-max-width;// 1200px extra large
+$page-max-width: 1200px;
+$mobile: 512px;// 36rem sm
+$tablet: 768px;// 48rem md
+$desktop: 992px;// 62rem lg
+$lg-desktop: $page-max-width;// 75rem xl
 $content-padding-mobile: 10px;
 $content-padding-tablet: 20px;
+
+// Paths
+// $project-name: 'adrsbk';
+// $publicPath: '/#{$project-name}/build/';
+// $imgPublicPath: $publicPath + 'imgs/';
+
+@media (min-width: $mobile) {
+
+}
+
+@media (min-width: $tablet) {
+
+}
+
+@media (min-width: $desktop) {
+
+}
+
+@media (min-width: $lg-desktop) {
+
+}
