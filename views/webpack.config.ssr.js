@@ -3,15 +3,15 @@ const webpack = require('webpack');
 // const HtmlWebpackPlugin = require('html-webpack-plugin');
 // const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 // const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-// const CleanWebpackPlugin = require('clean-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 const nodeExternals = require('webpack-node-externals');
 
-const productionMode = process.env.NODE_ENV === 'production';
+const isProductionMode = process.env.NODE_ENV === 'production';
 
 module.exports = {
-    mode: 'production',
+    mode: isProductionMode ? 'production' : 'development',
     entry: {
-        // core: './core/js/index.js',
+        // core: ['@babel/polyfill', './core/js/index.js'],
         // App: './entrypoints/main/src/index.js',// for v2.0.0
         Signin: './entrypoints/signin/index.ssr.js',
         Signup: './entrypoints/signup/index.ssr.js'
@@ -157,7 +157,7 @@ module.exports = {
             }
         ]
     },
-    devtool: 'source-map',// use 'source-map' for production
+    devtool: isProductionMode ? 'source-map' : 'cheap-module-source-map',// use 'source-map' for production
     resolve: {
         extensions: ['.js'],
         alias: {
@@ -165,11 +165,11 @@ module.exports = {
         }
     },
     plugins: [
-        // new CleanWebpackPlugin({
-        //     dry: true,
-        //     cleanOnceBeforeBuildPatterns: ['../public/*.*'],
-        //     dangerouslyAllowCleanPatternsOutsideProject: true
-        // }),
+        new CleanWebpackPlugin({
+            dry: true,
+            cleanOnceBeforeBuildPatterns: ['./ssr/*.*'],
+            dangerouslyAllowCleanPatternsOutsideProject: false
+        }),
         // new MiniCssExtractPlugin({// Thus you can import your Sass modules from `node_modules`.
         //                           // Just prepend them with `~` to tell webpack that this is not a relative import
         //     // chunkFilename: "[id].css",
@@ -192,14 +192,15 @@ module.exports = {
             'adbk': ['adbk', 'default']
         }),
         new webpack.DefinePlugin({
-            NODE_ENV: JSON.stringify('production'),
-            'process.env.NODE_ENV': JSON.stringify('production'),
-            __DEV__: JSON.stringify(JSON.parse(process.env.BUILD_DEV || 'false')),
-            __PROD__: JSON.stringify(JSON.parse(process.env.BUILD_PROD || 'true')),
-            __PRERELEASE__: JSON.stringify(JSON.parse(process.env.BUILD_PRERELEASE || 'false'))
+            // NODE_ENV: JSON.stringify(isProductionMode ? 'production' : 'development'),
+            'process.env.NODE_ENV': JSON.stringify(isProductionMode ? 'production' : 'development'),
+            // __DEV__: JSON.stringify(JSON.parse(process.env.BUILD_DEV || 'false')),
+            // __PROD__: JSON.stringify(JSON.parse(process.env.BUILD_PROD || 'true')),
+            // __PRERELEASE__: JSON.stringify(JSON.parse(process.env.BUILD_PRERELEASE || 'false'))
         }),
         new webpack.EnvironmentPlugin({
-            NODE_ENV: 'production',
+            NODE_ENV: isProductionMode ? 'production' : 'development',
+            DEV: JSON.parse(process.env.DEV || 'false'),
             HOT_RELOAD: false,
             DEBUG: false
         }),

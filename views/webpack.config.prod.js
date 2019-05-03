@@ -9,7 +9,7 @@ const productionMode = process.env.NODE_ENV === 'production';
 module.exports = {
     mode: 'production',
     entry: {
-        core: './core/js/index.js',
+        core: ['@babel/polyfill', './core/js/index.js'],
         App: './entrypoints/main/src/index.js',
         Signin: './entrypoints/signin/index.js',
         Signup: './entrypoints/signup/index.js'
@@ -124,7 +124,7 @@ module.exports = {
             },
             {
                 test: /\.pug$/,
-                exclude: ['./node_modules/'],
+                exclude: path.resolve(__dirname, './node_modules/'),
                 options: {
                     self: false,
                 },
@@ -194,6 +194,7 @@ module.exports = {
         }),
         new webpack.EnvironmentPlugin({
             NODE_ENV: 'production',
+            DEV: JSON.parse(process.env.DEV || 'false'),
             HOT_RELOAD: false,
             DEBUG: false
         }),

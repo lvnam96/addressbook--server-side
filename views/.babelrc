@@ -3,12 +3,14 @@
         "production": {
             "presets": ["@babel/preset-env", "@babel/preset-react"],
             "plugins": [
+                "@babel/plugin-transform-runtime",
                 "@babel/plugin-proposal-object-rest-spread"
             ]
         },
         "development": {
             "presets": ["@babel/preset-env", "@babel/preset-react"],
             "plugins": [
+                "@babel/plugin-transform-runtime",
                 "react-hot-loader/babel",
                 ["@babel/plugin-proposal-object-rest-spread", { "useBuiltIns": true }]
             ]
