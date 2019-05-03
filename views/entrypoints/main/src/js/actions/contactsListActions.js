@@ -1,11 +1,11 @@
 import * as ActionTypes from './actionTypes/contactsListActionTypes';
-import axios, { getJSONData, handleFailedRequest } from '../services/requestServices';
+import axios, { handleServerResponse, handleFailedRequest } from '../services/requestServices';
 import ContactsList from '../classes/ContactsList';
 import Contact from '../classes/Contact';
 
 export const asyncGetAllContacts = () => (dispatch, getState) => {
     return axios.get('/backdoor/contacts')
-        .then(getJSONData)
+        .then(handleServerResponse)
         .then(json => {
             if (json.data.res) {
                 const contactsList = ContactsList.fromJSON(json.data.data);// const contacts = json.data.map((elem) => new Contact(elem));
@@ -24,7 +24,7 @@ export const asyncAddContact = (rawInfo) => (dispatch, getState) => {
     const contact = new Contact(rawInfo);
     // return axios.get('/backdoor/addContact')
     return axios.post('/backdoor/contacts/add', { contact: contact.toJSON() })
-        .then(getJSONData)
+        .then(handleServerResponse)
         .then(json => {
             if (json.data.res) {
                 dispatch(addContact(contact));
@@ -42,7 +42,7 @@ export const asyncEditContact = (rawInfo) => (dispatch, getState) => {
     const contact = new Contact(rawInfo);
     // return axios.get('/backdoor/editContact')
     return axios.post('/backdoor/contacts/edit', { contact: contact.toJSON() })
-        .then(getJSONData)
+        .then(handleServerResponse)
         .then(json => {
             if (json.data.res) {
                 dispatch(editContact(contact));
@@ -74,7 +74,7 @@ export const removeContact = (id) => ({
 export const asyncRemoveContact = (contact) => (dispatch, getState) => {
     // return axios.get('/backdoor/removeContact')
     return axios.post('/backdoor/contacts/delete', { contact: contact.toJSON() })
-        .then(getJSONData)
+        .then(handleServerResponse)
         .then(json => {
             if (json.data.res) {
                 dispatch(removeContact(contact.id));
@@ -92,7 +92,7 @@ export const asyncRemoveMarkedContacts = () => (dispatch, getState) => {
         markedContacts = state.contacts.filter((contact) => contact.isMarked).map(contact => contact.toJSON());
     // return axios.get('/backdoor/removeMultipleContacts')
     return axios.post('/backdoor/contacts/delete-multiple', { contacts: markedContacts })
-        .then(getJSONData)
+        .then(handleServerResponse)
         .then(json => {
             if (json.data.res) {
                 dispatch(removeMarkedContacts());
@@ -108,7 +108,7 @@ export const removeAllContacts = () => ({
 export const asyncRemoveAllContacts = (adrsbookId) => (dispatch, getState) => {
     // return axios.get('/backdoor/removeAllContacts')
     return axios.post('/backdoor/contacts/delete-all', { adrsbookId })
-        .then(getJSONData)
+        .then(handleServerResponse)
         .then(json => {
             if (json.data.res) {
                 dispatch(removeAllContacts());
@@ -129,7 +129,7 @@ export const asyncReplaceAllContacts = (jsonContacts, adrsbookId) => (dispatch, 
         contacts,
         adrsbookId
     })
-        .then(getJSONData)
+        .then(handleServerResponse)
         .then(json => {
             if (json.data.res) {
                 dispatch(replaceAllContacts(contacts));

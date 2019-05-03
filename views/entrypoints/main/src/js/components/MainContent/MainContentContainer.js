@@ -47,13 +47,13 @@ const MainContentContainer = props => {
             reader.addEventListener('load', fileLoadedEvent => {
                 let textFromFileLoaded = fileLoadedEvent.target.result;
                 let dataParsedFromTextFile = JSON.parse(textFromFileLoaded);
-                storeActions.asyncReplaceAllContacts(dataParsedFromTextFile).then(json => {
-                    if (json.isSuccess) {
+                storeActions.asyncReplaceAllContacts(dataParsedFromTextFile).then(res => {
+                    if (res.isSuccess) {
                         ls.save(dataParsedFromTextFile);
                         storeActions.changeStateToAll();
                         storeActions.showNoti('success', 'Your data is restored successfully!');
                     } else {
-                        storeActions.notifyServerFailed();
+                        storeActions.notifyServerFailed(res.errMsg);
                     }
                 });
             }, false);
@@ -62,6 +62,7 @@ const MainContentContainer = props => {
     };
 
     const onBackupData = e => {
+        const store = adbk.redux.store;
         const bodyElem = document.body;
         if ('Blob' in window) {
             const destroyClickedElement = (e) => {

@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import ContactFormContext from '../containers/ContactFormContext';
-
 class CheckboxInput extends React.PureComponent {
     render () {
         return (

@@ -1,11 +1,15 @@
 import axios from 'axios';
 const devDomain = 'http://localhost';
-const prodDomain = 'http://ab.garyle.me';
-const domain = process.env.NODE_ENV !== 'production' ? devDomain : devDomain;// CHANGE THIS WHEN DEPLOYING APP ON HEROKU
+const prodDomain = 'http://contacts.garyle.me';// how to get current domain
+const isDevBuild = process.env.NODE_ENV !== 'production';
+const isDevServer = process.env.DEV;
+// console.log(isDevBuild);
+// console.log(isDevServer);
+const domain = isDevServer || isDevBuild ? devDomain : prodDomain;// CHANGE THIS WHEN DEPLOYING APP ON HEROKU
 const mockAPIPort = 2004;
 const devServerPort = 3000;
-const prodServerPort = 80;
-const port = process.env.NODE_ENV !== 'production' ? mockAPIPort : devServerPort;// CHANGE THIS WHEN DEPLOYING APP ON HEROKU
+const prodServerPort = parseInt(process.env.PORT || 80);
+const port = isDevBuild ? mockAPIPort : (isDevServer ? devServerPort : prodServerPort);// CHANGE THIS WHEN DEPLOYING APP ON HEROKU
 
 const instance = axios.create({
     baseURL: domain + ':' + port,
@@ -16,10 +20,10 @@ const instance = axios.create({
     withCredentials: false,// default
 });
 
-export const getJSONData = res => {
+export const getJSONData = handledResponse => {
     return {
         isSuccess: true,// this means our request has reached the server successfully
-        data: res.data// data sent back from server
+        data: handledResponse.data// data sent back from server
     };
 };
 
@@ -28,7 +32,10 @@ export const handleFailedRequest = err => {
     // to display request failed notification & decide whether re-send request,
     // return the status of this action, because the decision of how to response to user
     // should be placed in react
-    return { isSuccess: false };
+    return {
+        isSuccess: false,
+        errMsg: 'Request is failed! Please check your internet.',
+    };
     // switch (err.status) {
     //     case 404:
     //         err.msg = '404 error. Please try again later.';
@@ -43,6 +50,25 @@ export const handleFailedRequest = err => {
     //         err.msg = 'Something wrong on our server. Please try again.';
     // }
     // err.code = res.statusCode;
+};
+
+export const handleSuccessQueryButFailedTask = () => {
+    
+};
+
+export const handleServerResponse = (axiosResponse) => {
+    // axiosResponse.data contains json responded from our server's routers
+    if (axiosResponse.data.res) {// this means our query is successfully SENT to our server & has a pre-defined json response
+        return {
+            isSuccess: true,// this means our request has reached the server successfully
+            data: axiosResponse.data// data sent back from server
+        };
+    } else {// this means the task is failed, not the query
+        return {
+            isSuccess: false,
+            errMsg: 'Sorry! Something is wrong on our server :(',
+        };
+    }
 };
 
 export default instance;

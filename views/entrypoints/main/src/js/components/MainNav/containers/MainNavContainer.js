@@ -24,14 +24,14 @@ class MainNavContainer extends React.Component {
     static get propTypes() {
         return {
             openConfirmDialog: PropTypes.func.isRequired,
-            onClickAddMenu: PropTypes.func.isRequired,
-            totalContacts: PropTypes.number.isRequired,
+            openForm: PropTypes.func.isRequired,
+            totalContactsAmount: PropTypes.number.isRequired,
             numOfCheckedItems: PropTypes.number.isRequired
         };
     }
 
     shouldComponentUpdate(nextProps) {
-        if (nextProps.totalContacts !== this.props.totalContacts) {
+        if (nextProps.totalContactsAmount !== this.props.totalContactsAmount) {
             return true;
         }
         if (nextProps.numOfCheckedItems !== this.props.numOfCheckedItems) {
@@ -55,12 +55,12 @@ class MainNavContainer extends React.Component {
     // }
 
     handlerAddNewContact(e) {
-        this.props.onClickAddMenu(-1);
+        this.props.openForm(null);
     }
 
     delAll () {
         // if data is empty already, no need to do anything
-        if (this.props.totalContacts === 0) {
+        if (this.props.totalContactsAmount === 0) {
             storeActions.showNoti('alert', 'There is no data left. Is it bad?');
             return;
         }
@@ -70,11 +70,11 @@ class MainNavContainer extends React.Component {
             body: 'This can not be undone. Please make sure you want to do it!'
         }, (res) => {
             if (res) {
-                storeActions.asyncRemoveAllContacts(adbk.inst.adrsbook.id).then(json => {
-                    if (json.isSuccess) {
+                storeActions.asyncRemoveAllContacts(adbk.inst.adrsbook.id).then(res => {
+                    if (res.isSuccess) {
                         storeActions.showNoti('success', 'All your contacts are deleted.');
                     } else {
-                        storeActions.notifyServerFailed();
+                        storeActions.notifyServerFailed(res.errMsg);
                     }
                 });
                 storeActions.changeStateToAll();
@@ -108,11 +108,11 @@ class MainNavContainer extends React.Component {
         if (this.props.numOfCheckedItems > 0) {
             this.props.openConfirmDialog(undefined, (res) => {
                 if (res) {
-                    storeActions.asyncRemoveMarkedContacts().then(json => {
-                        if (json.isSuccess) {
+                    storeActions.asyncRemoveMarkedContacts().then(res => {
+                        if (res.isSuccess) {
                             storeActions.showNoti('success', 'Deleted marked contacts!');
                         } else {
-                            storeActions.notifyServerFailed();
+                            storeActions.notifyServerFailed(res.errMsg);
                         }
                     });
                 }
@@ -132,7 +132,7 @@ class MainNavContainer extends React.Component {
                 delBtnRef={this.delBtnRef}
                 onClickDelete={this.handlerClickDeleteMenu}
                 onClickDisplayAll={storeActions.changeStateToAll}
-                totalContacts={this.props.totalContacts}
+                totalContactsAmount={this.props.totalContactsAmount}
                 numOfCheckedItems={this.props.numOfCheckedItems} />
         );
     }

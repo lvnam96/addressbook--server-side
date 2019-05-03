@@ -1,5 +1,6 @@
 // import chance from 'chance';
-import faker from 'faker/locale/vi';
+// import faker from 'faker/locale/vi';
+import axios from 'axios';
 
 export const getRandomStr = length => {
     // https://gist.github.com/lvnam96/592fa2a61bfc7de728ea6785197dae13
@@ -23,8 +24,10 @@ export const getRandomColor = () => {
 
 // NEVER USE IT FOR REAL ID, GET REAL UUID
 // IN RESPONSE AFTER SUBMIT NEW CONTACT TO SERVER
-export const randomUUID = () => {
-    return faker.random.uuid();
+export const randomUUID = async () => {
+    // return faker.random.uuid();
+    const response = await axios.get('http://faker.hook.io/?property=random.uuid');
+    return response.data;
 };
 
 export const isIterable = (obj) => {
@@ -33,7 +36,7 @@ export const isIterable = (obj) => {
     return false;
   }
   return typeof obj[Symbol.iterator] === 'function';
-}
+};
 
 export const formatNumbToStr = (numb, strLength) => {
     let str = numb + '';// convert type from number to string

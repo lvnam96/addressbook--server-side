@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import CheckboxInput from './CheckboxInput';
-import ContactFormContext from '../containers/ContactFormContext';
+// import ContactFormContext from '../containers/ContactFormContext';
 
 class CheckboxField extends React.PureComponent {
     render () {
@@ -20,7 +20,7 @@ class CheckboxField extends React.PureComponent {
     }
 }
 
-CheckboxField.contextType = ContactFormContext;
+// CheckboxField.contextType = ContactFormContext;
 
 CheckboxField.propTypes = {
     value: PropTypes.string,

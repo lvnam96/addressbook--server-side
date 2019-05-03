@@ -30,6 +30,7 @@ class App extends React.Component {
         this.boundActions = adbk.redux.action;
         this.state = {
             contactIndex: 0,
+            openingContactId: null,
             // isShowCC: false,
             // isConfirming: false,
             // isShowForm: false,
@@ -111,20 +112,18 @@ class App extends React.Component {
     // }
 
     rmContact (contactId) {
-        const contact = this.findContact(contactId);
-        storeActions.asyncRemoveContact(contact);
+        const contact = storeActions.findContact(contactId);
+        storeActions.asyncRemoveContact(contact).then(res => {
+            if (res.isSuccess) {
+                storeActions.showNoti('success', 'Removed!');
+            } else {
+                storeActions.notifyServerFailed(res.errMsg);
+            }
+        });
     }
 
-    findContact (contactId) {
-        return this.props.contacts.find(contact => contact.id === contactId);
-    }
-
-    findContactIndex (contactId) {
-        return this.props.contacts.findIndex(contact => contact.id === contactId);
-    }
-
-    changeContactIndex (contactId) {
-        this.setState({ contactIndex: this.findContactIndex(contactId) });
+    changeContactIndex (contactId, cb) {
+        this.setState({ contactIndex: storeActions.findContactIndex(contactId) }, cb);
     }
 
     dismissCurrentPopup (popupName, contactId) {
@@ -146,7 +145,8 @@ class App extends React.Component {
     openContactCard (contactId) {
         this.setState((prevState, prevProps) => {
             return {
-                contactIndex: this.findContactIndex(contactId),
+                contactIndex: storeActions.findContactIndex(contactId),
+                openingContactId: contactId,
                 // isShowCC: true,
                 prevOpenedPopupList: prevState.prevOpenedPopupList.push(CONTACT_CARD_SLUG),
                 popupTogglersManager: prevState.popupTogglersManager.toggleOn(CONTACT_CARD_SLUG),
@@ -160,13 +160,20 @@ class App extends React.Component {
         this.setState((prevState, prevProps) => {
             const newState = {
                 // isShowCC: false,
+                openingContactId: null,
             };
-            newState.popupTogglersManager = prevState.popupTogglersManager.toggleOff(CONTACT_CARD_SLUG);
+            
             if (prevState.prevOpenedPopupList.last === CONTACT_CARD_SLUG) {
                 newState.prevOpenedPopupList = prevState.prevOpenedPopupList.pull();
             }
+            if (prevState.prevOpenedPopupList.len > 0) {
+                newState.popupTogglersManager = prevState.popupTogglersManager.toggleOn(prevState.prevOpenedPopupList.last);
+            } else {
+                newState.openingContactId = null;
+                newState.popupTogglersManager = prevState.popupTogglersManager.toggleOff(CONTACT_CARD_SLUG);
+            }
             if (contactId) {
-                newState.contactIndex = this.findContactIndex(contactId);
+                newState.contactIndex = storeActions.findContactIndex(contactId);
             }
             return newState;
         }, () => {
@@ -176,15 +183,16 @@ class App extends React.Component {
         });
     }
 
-    openForm (contactId) {
+    openForm (contactId = null) {
         let contactIndex;
-        if (contactId !== -1) {
-            contactIndex = this.findContactIndex(contactId);
+        if (typeof contactId === 'string') {
+            contactIndex = storeActions.findContactIndex(contactId);
         }
 
         this.setState((prevState, prevProps) => {
             const newState = {
                 contactIndex,
+                openingContactId: contactId,
                 // isShowForm: true,
                 prevOpenedPopupList: prevState.prevOpenedPopupList.push(CONTACT_EDIT_FORM_SLUG),
                 popupTogglersManager: prevState.popupTogglersManager.toggleOn(CONTACT_EDIT_FORM_SLUG),
@@ -196,7 +204,7 @@ class App extends React.Component {
     }
 
     closeForm (contactId) {
-        const contactIndex = this.findContactIndex(contactId);
+        const contactIndex = storeActions.findContactIndex(contactId);
         this.setState((prevState, prevProps) => {
             const newState = {
                 // isShowForm: false,
@@ -210,6 +218,7 @@ class App extends React.Component {
             if (prevState.prevOpenedPopupList.len > 0) {
                 newState.popupTogglersManager = prevState.popupTogglersManager.toggleOn(prevState.prevOpenedPopupList.last);
             } else {
+                newState.openingContactId = null;
                 newState.popupTogglersManager =  prevState.popupTogglersManager.toggleOff(CONTACT_EDIT_FORM_SLUG);
             }
             return newState;
@@ -248,6 +257,7 @@ class App extends React.Component {
                 if (prevState.prevOpenedPopupList.len > 0) {
                     newState.popupTogglersManager = prevState.popupTogglersManager.toggleOn(prevState.prevOpenedPopupList.last);
                 } else {
+                    newState.openingContactId = null;
                     newState.popupTogglersManager =  prevState.popupTogglersManager.toggleOff(MODAL_DIALOG_SLUG);
                 }
                 return newState;
@@ -289,6 +299,7 @@ class App extends React.Component {
                 case CONTACT_EDIT_FORM_SLUG:
                     elemInPopup = <WorkingForm
                         isEditing={this.state.contactIndex > -1}
+                        contactId={this.state.openingContactId}
                         contact={this.state.contactIndex > -1 ? this.props.contacts[this.state.contactIndex] : adbk.classes.Contact.fromScratch()}
                         closeForm={this.closeForm}
                         changeContactIndex={this.changeContactIndex}
@@ -319,8 +330,8 @@ class App extends React.Component {
                     toggleMarkedItem={storeActions.toggleMarkedItem} />
                 {notifications}
                 <MainNavContainer
-                    totalContacts={this.props.contacts.length}
-                    onClickAddMenu={this.openForm}
+                    totalContactsAmount={this.props.contacts.length}
+                    openForm={this.openForm}
                     showNoti={storeActions.showNoti}
                     openConfirmDialog={this.openConfirmDialog}
                     numOfCheckedItems={this.checkedItemsCounter} />

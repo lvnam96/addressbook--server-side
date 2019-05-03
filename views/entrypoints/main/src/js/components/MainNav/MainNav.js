@@ -9,16 +9,16 @@ const MainNav = props => (
         {/* <ul className='filter-sub-nav translatedDown200'>
             <li className="filter-sub-nav__item" title='Display contacts whose birthday is in current week' onClick={props.onFilterBirthsInWeek}>Current WEEK</li>
             <li className="filter-sub-nav__item" title='Display contacts whose birthday is in current month' onClick={props.onFilterBirthsInMonth}>Current MONTH</li>
-        </ul>
-        <input style={{display: 'none'}} type='file' id='inptFileBtn' accept='.txt'
+            </ul>
+            <input style={{display: 'none'}} type='file' id='inptFileBtn' accept='.txt'
             onChange={props.handlerUploadFile} />
-        <ul className='backup-restore-sub-nav translatedDown100'>
+            <ul className='backup-restore-sub-nav translatedDown100'>
             <li className="filter-sub-nav__item" id='bckpDataBtn' onClick={props.handlerBackupData} title='Save current data into a text file'>Backup</li>
             <li className="filter-sub-nav__item" id='rstrDataBtn' onClick={props.handlerRestoreData} title='Replace current data by the new one in your backup file'>Restore</li>
         </ul> */}
         <nav className='main-nav'>
             <NavBtn
-                label={`Contacts (${props.totalContacts})`}
+                label={`Contacts (${props.totalContactsAmount})`}
                 icon="fas fa-address-book"
                 onClick={props.onClickDisplayAll} />
             {/* <input type='checkbox' id='sort-toggle' style={{display: 'none'}} />
@@ -88,7 +88,7 @@ MainNav.propTypes = {
     // handlerUploadFile: PropTypes.func.isRequired,
     // handlerBackupData: PropTypes.func.isRequired,
     onClickDelete: PropTypes.func.isRequired,
-    totalContacts: PropTypes.number.isRequired,
+    totalContactsAmount: PropTypes.number.isRequired,
     onClickDisplayAll: PropTypes.func.isRequired,
     // onFilterBirthsInWeek: PropTypes.func.isRequired,
     // onFilterBirthsInMonth: PropTypes.func.isRequired,

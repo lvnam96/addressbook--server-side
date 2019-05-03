@@ -1,3 +1,3 @@
 import React from 'react';
-import emptyContact from './emptyContactData.json';
+import emptyContact from './defaultEmptyContactData.json';
 export default React.createContext(emptyContact);

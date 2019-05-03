@@ -7,9 +7,10 @@ import { fixedEncodeURIComponent, fixedEncodeURI } from '../../../helpers/encode
 
 import Form from '../Form';
 // import { parenthesizedExpression } from 'babel-types';
-import emptyContact from './emptyContactData.json';
-emptyContact.id = randomUUID();
-emptyContact.color = getRandomColor();
+import defaultEmptyContact from './defaultEmptyContactData.json';
+defaultEmptyContact.id = randomUUID();
+defaultEmptyContact.color = getRandomColor();
+console.log(defaultEmptyContact.id);
 
 const spacePtrn = /\s/g;
 const addFilledClass = e => {
@@ -28,21 +29,21 @@ class FormContainer extends React.Component {
         const contact = this.props.contact;
         this.state = {
             contact: {
-                name: contact.name || emptyContact.name,
-                id: contact.id || emptyContact.id,
-                color: contact.color || emptyContact.color,
-                labels: (contact.labels && Array.from(contact.labels)) || emptyContact.labels,
-                birth: (contact.birth && convertDateObjToHTMLInputVal(contact.birth)) || emptyContact.birth,
-                note: contact.note || emptyContact.note,
-                email: contact.email || emptyContact.email,
-                website: contact.website || emptyContact.website,
-                phone: contact.phone || emptyContact.phone
+                name: contact.name || defaultEmptyContact.name,
+                id: contact.id || defaultEmptyContact.id,
+                color: contact.color || defaultEmptyContact.color,
+                labels: (contact.labels && Array.from(contact.labels)) || defaultEmptyContact.labels,
+                birth: (contact.birth && convertDateObjToHTMLInputVal(contact.birth)) || defaultEmptyContact.birth,
+                note: contact.note || defaultEmptyContact.note,
+                email: contact.email || defaultEmptyContact.email,
+                website: contact.website || defaultEmptyContact.website,
+                phone: contact.phone || defaultEmptyContact.phone
             }
         };
 
-        this.cboxFamily;
-        this.cboxFriends;
-        this.cboxCoWorker;
+        this.cboxFamily = React.createRef();
+        this.cboxFriends = React.createRef();
+        this.cboxCoWorker = React.createRef();
 
         this.handlerSaveForm = this.handlerSaveForm.bind(this);
         this.changeColor = this.changeColor.bind(this);
@@ -161,10 +162,10 @@ class FormContainer extends React.Component {
 
     resetForm() {
         this.setState((prevState) => {
-            console.log(prevState);
             return {
                 contact: {
-                    ...emptyContact,
+                    ...prevState,
+                    ...defaultEmptyContact,
                     color: prevState.contact.color,
                 }
             };
@@ -184,8 +185,6 @@ class FormContainer extends React.Component {
         if (submittedData.name === '') {
             this.props.showNoti('error', 'Please type a name');
             return;
-        } else {
-            submittedData.name = name;
         }
 
         submittedData.website = (ws => {
@@ -207,9 +206,9 @@ class FormContainer extends React.Component {
 
         // format labels data
         let newLabels = [];
-        if (this.cboxFamily.checked) { newLabels.push('family'); }
-        if (this.cboxCoWorker.checked) { newLabels.push('coWorker'); }
-        if (this.cboxFriends.checked) { newLabels.push('friends'); }
+        if (this.cboxFamily.current.checked) { newLabels.push('family'); }
+        if (this.cboxCoWorker.current.checked) { newLabels.push('coWorker'); }
+        if (this.cboxFriends.current.checked) { newLabels.push('friends'); }
         submittedData.labels = newLabels;
         // const labelSet = new Set();
         // labelSet.add('family');
@@ -217,9 +216,13 @@ class FormContainer extends React.Component {
         // labelSet.add('friends');
         // this.state.labels = labelSet;
 
-        submittedData.note = typeof note === 'string' ? submittedData.note.trim() : '';
-
-        this.props.handlerSubmit(submittedData);
+        submittedData.note = typeof submittedData.note === 'string' ? submittedData.note.trim() : '';
+        
+        // submittedData.adrsbookId = adbk.inst.adrsbook.id;
+        // submittedData.accountId = adbk.inst.user.id;
+        // OR:
+        const contact = adbk.newContact(submittedData);
+        this.props.handlerSubmit(contact);
     }
 
     changeColor(e) {
@@ -245,9 +248,9 @@ class FormContainer extends React.Component {
                 handlerChangeInput={this.handlerChangeInput}
                 resetForm={this.resetForm}
                 closeForm={this.props.closeForm}
-                refCBoxFamily={thisDOM => this.cboxFamily = thisDOM}
-                refCBoxCoWorker={thisDOM => this.cboxCoWorker = thisDOM}
-                refCBoxFriend={thisDOM => this.cboxFriends = thisDOM}
+                refCBoxFamily={this.cboxFamily}
+                refCBoxCoWorker={this.cboxCoWorker}
+                refCBoxFriend={this.cboxFriends}
             />
         );
     }

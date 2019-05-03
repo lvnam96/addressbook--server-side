@@ -76,6 +76,12 @@ class Adbk {
     get contactsList () {
         return this.inst.adrsbook.contactsList;
     }
+    
+    newContact (rawContact) {
+        rawContact.adrsbookId = this.inst.adrsbook.id;
+        rawContact.accountId = this.inst.user.id;
+        return new Contact(rawContact);
+    }
 }
 
 const adbk = new Adbk();
