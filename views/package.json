@@ -4,19 +4,19 @@
   "description": "adrsbook app's front-end using serverside rendering",
   "main": "index.js",
   "scripts": {
-    "build:ssr": "npx -p webpack -p webpack-cli webpack --config webpack.config.ssr.js",
-    "build:app-dev": "npx -p webpack -p webpack-cli webpack --config webpack.config.dev.js",
-    "build:dev": "npx -p npm-run-all run-s build:ssr build:app-dev",
-    "build:app-prod": "npx -p webpack -p webpack-cli webpack --config webpack.config.prod.js",
-    "build:prod": "npx -p npm-run-all run-s build:ssr build:app-prod",
+    "build:ssr": "webpack --config webpack.config.ssr.js",
+    "build:app-dev": "webpack --config webpack.config.dev.js",
+    "build:dev": "run-s build:ssr build:app-dev",
+    "build:app-prod": "webpack --config webpack.config.prod.js",
+    "build:prod": "run-s build:ssr build:app-prod",
     "prebuild": "npm run test",
     "build": "npm run build:prod",
     "generate-random-data": "node ./mockAPI/generate.js",
     "prestart:api": "npm run generate-random-data",
-    "start:api": "npx -p json-server --watch ./mockAPI/db.json --port 2004 --routes ./mockAPI/routes.json",
-    "start:dev-server": "npx -p webpack -p webpack-cli webpack-dev-server --config webpack.config.dev.js",
-    "start": "npx -p npm-run-all run-p start:api start:dev-server",
-    "test": "npx -p jest jest --passWithNoTests"
+    "start:api": "json-server --watch ./mockAPI/db.json --port 2004 --routes ./mockAPI/routes.json",
+    "start:dev-server": "webpack-dev-server --config webpack.config.dev.js",
+    "start": "run-p start:api start:dev-server",
+    "test": "jest --passWithNoTests"
   },
   "repository": {
     "type": "git",
@@ -31,7 +31,7 @@
   "devDependencies": {
     "@babel/cli": "^7.4.3",
     "@babel/core": "^7.4.3",
-    "@babel/plugin-proposal-object-rest-spread": "^7.4.3",
+    "@babel/plugin-proposal-object-rest-spread": "^7.4.4",
     "@babel/plugin-transform-runtime": "^7.4.4",
     "@babel/preset-env": "^7.4.3",
     "@babel/preset-react": "^7.0.0",
@@ -85,6 +85,7 @@
   "dependencies": {
     "@babel/polyfill": "^7.4.3",
     "@babel/runtime": "^7.4.4",
+    "@babel/runtime-corejs2": "^7.4.4",
     "@fortawesome/fontawesome-free": "^5.8.1",
     "axios": "^0.18.0",
     "bootstrap": "^4.3.1",
