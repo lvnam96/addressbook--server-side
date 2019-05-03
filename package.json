@@ -3,7 +3,7 @@
   "version": "1.0.0-alpha",
   "private": true,
   "scripts": {
-    "heroku-postinstall": "cd ./views && sudo npm i -g webpack && npm i",
+    "heroku-postbuild": "npm --prefix ./views install ./views && cd ./views && webpack --config webpack.config.ssr.js && webpack --config webpack.config.prod.js",
     "prepare-dev-frontend": "cd ./views && npm run build:dev",
     "prepare-prod-frontend": "cd ./views && npm run build",
     "prestart": "DEV=true npm run prepare-prod-frontend",
@@ -45,6 +45,8 @@
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-react": "^7.11.0",
     "nodemon": "^1.17.4",
+    "webpack": "^4.30.0",
+    "webpack-cli": "^3.3.1",
     "webpack-node-externals": "^1.7.2"
   }
 }
