@@ -3,7 +3,6 @@
   "version": "1.0.0-alpha",
   "private": true,
   "scripts": {
-    "heroku-postbuild": "npm --prefix ./views install ./views && cd ./views && webpack --config webpack.config.ssr.js && webpack --config webpack.config.prod.js",
     "prepare-dev-frontend": "cd ./views && npm run build:dev",
     "prepare-prod-frontend": "cd ./views && npm run build",
     "prestart": "DEV=true npm run prepare-prod-frontend",
