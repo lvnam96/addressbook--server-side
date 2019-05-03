@@ -20,9 +20,9 @@ html
         //- script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js", integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49", crossorigin="anonymous")
         //- script(src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js", integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em", crossorigin="anonymous")
         if !!htmlWebpackPlugin && !htmlWebpackPlugin.options.prod
-            script(crossorigin, src="https://unpkg.com/react@16/umd/react.development.js")
-            script(crossorigin, src="https://unpkg.com/react-dom@16/umd/react-dom.development.js")
+            script(crossorigin, src="https://unpkg.com/react@^16.8.6/umd/react.development.js")
+            script(crossorigin, src="https://unpkg.com/react-dom@^16.8.6/umd/react-dom.development.js")
         else
-            script(crossorigin, src="https://unpkg.com/react@16/umd/react.production.min.js")
-            script(crossorigin, src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js")
+            script(crossorigin, src="https://unpkg.com/react@^16.8.6/umd/react.production.min.js")
+            script(crossorigin, src="https://unpkg.com/react-dom@^16.8.6/umd/react-dom.production.min.js")
         block closeBody

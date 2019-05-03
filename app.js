@@ -39,7 +39,7 @@ if (app.get('env') === 'production') {
 }
 app.use(session({
     store: new (require('connect-pg-simple')(session))({ pool }),
-    secret: '@$^#c(&)#cn)(#cn#mx)e(#@)',
+    secret: '@$^#c(&)#cn)(#cn#mx)e(#@)',// change this in production
     saveUninitialized: false,
     resave: false,
     cookie: cookiesConfig
@@ -62,16 +62,18 @@ app.use((req, res, next) => {
 });
 
 // error handler
-app.use((err, req, res, next) => {
+app.use((err, req, res, next) => {// express error handler requires 4 arguments
     // set locals, only providing error in development
     res.locals.message = err.message;
-    res.locals.error = err;
-    // use this when finish developing:
-    // res.locals.error = req.app.get('NODE_ENV') === 'development' ? err : {};
+    res.locals.error = req.app.get('NODE_ENV') === 'production' ? {} : err;
     // TO-DO: check Sentry for error reporting in production
+    if (res.headersSent) {
+        return next(err);
+    }
 
     // render the error page
     res.status(err.status || 500);
+    res.statusCode(err.status || 500);
     res.render('error');
 });
 

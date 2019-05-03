@@ -10,9 +10,9 @@ var backdoor = require('./backdoor/index');
 
 // '/' route
 
-router.get('/', auth.restrictNonUserMiddleware, (req, res, next) => {
+router.get('/', auth.allowUserAccessing, (req, res, next) => {
     res.render('index', {
-        title: 'Address Book',
+        // title: 'Contacts Book',
         isSignedIn: true
     });
 });

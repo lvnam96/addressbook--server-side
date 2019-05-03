@@ -18,7 +18,7 @@ router.get('/is-uname-used', (req, res, next) => {
     });
 });
 
-router.get('/get-all-data', (req, res, next) => {
+router.get('/get-all-data',  auth.allowUserAccessing, (req, res, next) => {
     adbk.user.loadAll(req.user.id).then(data => {
         data = {
             user: data.user.toJSON(),
@@ -31,11 +31,11 @@ router.get('/get-all-data', (req, res, next) => {
     });
 });
 
-router.use('/addressbook', auth.restrictNonUserMiddleware, adrsbkRouter);
+router.use('/addressbook', auth.allowUserAccessing, adrsbkRouter);
 
-router.use('/contacts', auth.restrictNonUserMiddleware, contactsRouter);
+router.use('/contacts', auth.allowUserAccessing, contactsRouter);
 
-router.get('/', auth.restrictNonUserMiddleware, (req, res, next) => {
+router.get('/', auth.allowUserAccessing, (req, res, next) => {
     console.log('GET request to /backdoor');
 });
 

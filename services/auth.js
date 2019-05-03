@@ -1,11 +1,11 @@
-function restrictNonUserMiddleware (req, res, next) {
+function allowUserAccessing (req, res, next) {
     if (req.isAuthenticated()) {
         return next();
     }
     return res.redirect('/signin');
 }
 
-function restrictUserMiddleware (req, res, next) {
+function allowNonUserAccessing (req, res, next) {
     if (req.isAuthenticated()) {
         return res.redirect('/');
     }
@@ -13,6 +13,6 @@ function restrictUserMiddleware (req, res, next) {
 }
 
 module.exports = {
-    restrictNonUserMiddleware,
-    restrictUserMiddleware
+    allowUserAccessing,
+    allowNonUserAccessing
 };

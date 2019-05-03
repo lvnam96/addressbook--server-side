@@ -9,14 +9,14 @@ const signupFormHTMLString = require('../views/ssr/Signup.ssr.js').default;
 
 // '/signup' route
 
-router.get('/', auth.restrictUserMiddleware, (req, res, next) => {
-    res.render('signup', {
+router.get('/', auth.allowNonUserAccessing, (req, res, next) => {
+    return res.render('signup', {
         ssr: signupFormHTMLString || '',
-        title: 'Sign Up | Address Book'
+        // title: 'Sign Up | Contacts Book'
     });
 });
 
-router.post('/', auth.restrictUserMiddleware, (req, res, next) => {
+router.post('/', auth.allowNonUserAccessing, (req, res, next) => {
     const signupData = req.body;
     signupData.uname = signupData.uname.toLowerCase();
     if (signupData.uname.match(/[^a-z0-9]/gm) !== null) {// null === null -> true

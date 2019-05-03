@@ -7,7 +7,7 @@ const signinFormHTMLString = require('../views/ssr/Signin.ssr.js').default;
 
 // '/signin' route
 
-router.get('/', auth.restrictUserMiddleware, (req, res, next) => {
+router.get('/', auth.allowNonUserAccessing, (req, res, next) => {
     const query = req.query;
     // if (query.returnedUser) {
     //     return res.render('signin', {
@@ -16,14 +16,14 @@ router.get('/', auth.restrictUserMiddleware, (req, res, next) => {
     //         returnedUser: query.returnedUser
     //     });
     // }
-    res.render('signin', {
+    return res.render('signin', {
         ssr: signinFormHTMLString || '',
-        title: 'Sign In | Address Book'
+        // title: 'Sign In | Contacts Book'
     });
 });
 
 router.post('/',
-    auth.restrictUserMiddleware,
+    auth.allowNonUserAccessing,
     (req, res, next) => {//https://github.com/jaredhanson/passport-local/issues/4#issuecomment-4521526
         req.body.uname = req.body.uname.trim().toLowerCase();
         passport.authenticate('local', (err, user, info) => {
