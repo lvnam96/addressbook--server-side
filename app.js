@@ -28,10 +28,11 @@ app.set('view engine', 'pug');
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+
 const cookiesConfig = { maxAge: 30 * 24 * 60 * 60 * 1000 };// 30 days
 if (app.get('env') === 'production') {
     app.set('trust proxy', 1);// trust first proxy
@@ -73,7 +74,6 @@ app.use((err, req, res, next) => {// express error handler requires 4 arguments
 
     // render the error page
     res.status(err.status || 500);
-    res.statusCode(err.status || 500);
     res.render('error');
 });
 
