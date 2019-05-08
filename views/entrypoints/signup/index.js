@@ -1,3 +1,5 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
 import SignUpFormContainer from './js/SignUpFormContainer';
 // import registerServiceWorker from './registerServiceWorker';
 
@@ -12,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV === 'developlemt') {
     module.hot.accept();
 }
 // registerServiceWorker();

@@ -2,21 +2,15 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const auth = require('../services/auth');
-const React = require('react');
+const React = require('react');// required for ssr
 const signinFormHTMLString = require('../views/ssr/Signin.ssr.js').default;
 
 // '/signin' route
 
 router.get('/', auth.allowNonUserAccessing, (req, res, next) => {
     const query = req.query;
-    // if (query.returnedUser) {
-    //     return res.render('signin', {
-    //         ssr: renderToString(React.createElement(AppSSR)) || '',
-    //         title: 'Sign In | Address Book',
-    //         returnedUser: query.returnedUser
-    //     });
-    // }
     return res.render('signin', {
+        returnedUser: query.returnedUser || null,
         ssr: signinFormHTMLString || '',
         // title: 'Sign In | Contacts Book'
     });

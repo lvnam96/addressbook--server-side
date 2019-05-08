@@ -5,14 +5,33 @@ const SignUpForm = (props) => {
     return (
         <form action="/signin" method="post" className="signin-form" onSubmit={props.onSubmit}>
             <p className={"input-wrapper" + (props.isUnameUsed === true ? ' input-wrapper--error' : '')}>
-                <input type="text"
-                    value={props.unameVal} onChange={props.onUnameChange} className="form-control signin-form__uname" autoComplete="username" placeholder="username"/>
+                <input
+                    type="text"
+                    value={props.unameVal}
+                    onChange={props.onUnameChange}
+                    className="form-control signin-form__uname"
+                    autoComplete="username"
+                    placeholder="username"
+                />
             </p>
             <p className={"input-wrapper" + (props.isUnameUsed === true ? ' input-wrapper--error' : '')}>
-                <input type="password" value={props.passwdVal} onChange={props.onPasswdChange} className="form-control signin-form__passwd" autoComplete="current-password" placeholder="password"/>
+                <input
+                    type="password"
+                    value={props.passwdVal}
+                    onChange={props.onPasswdChange}
+                    className="form-control signin-form__passwd"
+                    autoComplete="current-password"
+                    placeholder="password"
+                />
             </p>
             <p className="input-wrapper">
-                <input type="password" value={props.cfPasswdVal} onChange={props.onCfPasswdChange} className="form-control signin-form__passwd" placeholder="confirm password"/>
+                <input
+                    type="password"
+                    value={props.cfPasswdVal}
+                    onChange={props.onCfPasswdChange}
+                    className="form-control signin-form__passwd"
+                    placeholder="confirm password"
+                />
             </p>
             {
                 props.isSignedUp ? (

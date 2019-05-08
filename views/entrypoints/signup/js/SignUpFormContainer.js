@@ -1,8 +1,8 @@
 import React from 'react';
 import axios from 'axios';
 import jsSHA from "jssha";
-import debounce from 'lodash/debounce';
-import Timeout from '../../../core/js/models/Timeout';
+import debounce from 'lodash/debounce';// used for queries (should be used for production)
+import Timeout from '../../../core/js/models/Timeout';// used for not important tasks: check passwords match (implemented from scratch, used for fun)
 
 import SignUpForm from './SignUpForm';
 
@@ -170,8 +170,9 @@ class SignUpFormContainer extends React.Component {
             sha512Hash.update(curState.passwdVal);
             const sha512HashedPasswd = sha512Hash.getHash('HEX');
             this.setState({ isSubmitting: true }, () => {
+                const uname = curState.unameVal.trim().toLowerCase();
                 axios.post('/signup', {
-                    uname: curState.unameVal.trim().toLowerCase(),
+                    uname,
                     passwd: sha512HashedPasswd
                 }).then(json => {
                 // axios.get('http://localhost:2004/signup').then(json => {
@@ -184,8 +185,10 @@ class SignUpFormContainer extends React.Component {
                             newState.isSignedUp = true;
                             this.setState(newState, () => {
                                 let t = setTimeout(() => {
-                                    clearTimeout(t);
-                                    window.location = "/signin";
+                                    clearTimeout(t);// could be removed if not clearing timeout does NOT matter in memory comsuming
+                                    if (window) {
+                                        window.location = json.data.redirectLocation;
+                                    }
                                 }, 500);
                             });
                         } else {
@@ -196,16 +199,21 @@ class SignUpFormContainer extends React.Component {
                             this.setState(newState);
                         }
                     } else {
-                        this.setState({ isSubmitting: false });
-                        console.error('Sorry. Server is down.');
+                        this.setState({ isSubmitting: false }, () => {
+                            !!window && window.alert('Sorry, something is wrong on our server.');
+                        });
                     }
+                }).catch(err => {
+                    this.setState({ isSubmitting: false }, () => {
+                        !!window && window.alert('Sorry, server didn\'t response.');
+                        console.error(err);
+                    });
                 });
             });
         }
     }
 
     render () {
-        let returnedUser = 'noone';
         const {
             unameVal,
             passwdVal,
@@ -219,7 +227,21 @@ class SignUpFormContainer extends React.Component {
         const isReadyToSubmit = !!unameVal && !!passwdVal && !!cfPasswdVal && isPasswdMatched === true && isUnameUsed === false;
         // const isSigningUpFailed = !isSignedUp && this.submitingTimes > 0;
         return (
-            <SignUpForm unameVal={unameVal} passwdVal={passwdVal} cfPasswdVal={cfPasswdVal} isUnameUsed={isUnameUsed} isPasswdMatched={isPasswdMatched} onPasswdChange={this.onPasswdChange} onCfPasswdChange={this.onCfPasswdChange} onUnameChange={this.onUnameChange} isReadyToSubmit={isReadyToSubmit} isSubmitting={isSubmitting} isSignedUp={isSignedUp} isSigningUpFailed={isSigningUpFailed} onSubmit={this.onSubmit} />
+            <SignUpForm
+                unameVal={unameVal}
+                passwdVal={passwdVal}
+                cfPasswdVal={cfPasswdVal}
+                isUnameUsed={isUnameUsed}
+                isPasswdMatched={isPasswdMatched}
+                onPasswdChange={this.onPasswdChange}
+                onCfPasswdChange={this.onCfPasswdChange}
+                onUnameChange={this.onUnameChange}
+                isReadyToSubmit={isReadyToSubmit}
+                isSubmitting={isSubmitting}
+                isSignedUp={isSignedUp}
+                isSigningUpFailed={isSigningUpFailed}
+                onSubmit={this.onSubmit}
+            />
         );
     }
 }

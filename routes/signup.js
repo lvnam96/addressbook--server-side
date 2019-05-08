@@ -4,7 +4,7 @@ const passport = require('passport');
 const User = require('../classes/User');
 const auth = require('../services/auth');
 const adbk = require('../classes/adbk');
-const React = require('react');
+const React = require('react');// required for ssr
 const signupFormHTMLString = require('../views/ssr/Signup.ssr.js').default;
 
 // '/signup' route
@@ -30,10 +30,14 @@ router.post('/', auth.allowNonUserAccessing, (req, res, next) => {
             // res.set('Access-Control-Allow-Origin', 'http://localhost:2805');
             // res.set('Access-Control-Allow-Methods', 'GET, POST, PUT');
             // res.set('Access-Control-Allow-Headers', 'Content-Type');
-            console.error(err);
+            // error is output in console already in adbk.user.signUp
             return res.json({ res: false });
         } else {
-            return res.json({ res: true, user });
+            return res.json({
+                res: true,
+                user,
+                redirectLocation: '/signin?' + user.uname,
+            });
         }
     });
 });

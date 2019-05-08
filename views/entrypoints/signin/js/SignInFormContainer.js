@@ -12,13 +12,13 @@ class SignInFormContainer extends React.Component {
     constructor (props) {
         super(props);
         this.state = {
-            unameVal: '',
+            unameVal: (!!window && window.returnedUser) || '',
             passwdVal: '',
             isWrongUnameOrPasswd: false,
             isSignedIn: false,
-            isSubmitting: null
+            isSubmitting: false,
         };
-        this.submitingTimes = 0;
+        this.submitingTimes = 0;// for feature: limit the submitting times
 
         this.onUnameChange = this.onUnameChange.bind(this);
         this.onPasswdChange = this.onPasswdChange.bind(this);
@@ -67,15 +67,21 @@ class SignInFormContainer extends React.Component {
                             this.setState(newState);
                         }
                     } else {
-                        console.error('Sorry, server is down.');
+                        this.setState({ isSubmitting: false }, () => {
+                            !!window && window.alert('Sorry, something is wrong on our server.');
+                        });
                     }
+                }).catch(err => {
+                    this.setState({ isSubmitting: false }, () => {
+                        !!window && window.alert('Sorry, server didn\'t response.');
+                        console.error(err);
+                    });
                 });
             });
         }
     }
 
     render () {
-        let returnedUser = 'noone';
         const {
             unameVal,
             passwdVal,
@@ -84,7 +90,20 @@ class SignInFormContainer extends React.Component {
             isSubmitting
         } = this.state;
         const isReadyToSubmit = !!unameVal && !!passwdVal;
-        return (<SignInForm unameVal={unameVal} passwdVal={passwdVal} isReadyToSubmit={isReadyToSubmit} onPasswdChange={this.onPasswdChange} isWrongUnameOrPasswd={isWrongUnameOrPasswd} isSignedIn={isSignedIn} submitingTimes={this.submitingTimes} onSubmit={this.onSubmit} isSubmitting={isSubmitting} onUnameChange={this.onUnameChange}/>);
+        return (
+            <SignInForm
+                unameVal={unameVal}
+                passwdVal={passwdVal}
+                isReadyToSubmit={isReadyToSubmit}
+                onPasswdChange={this.onPasswdChange}
+                isWrongUnameOrPasswd={isWrongUnameOrPasswd}
+                isSignedIn={isSignedIn}
+                submitingTimes={this.submitingTimes}
+                onSubmit={this.onSubmit}
+                isSubmitting={isSubmitting}
+                onUnameChange={this.onUnameChange}
+            />
+        );
     }
 }
 
