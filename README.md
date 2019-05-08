@@ -52,21 +52,21 @@ CREATE TABLE IF NOT EXISTS account (
 
 CREATE TABLE IF NOT EXISTS addressbook (
     id UUID PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
-    -- account_id UUID REFERENCES account (id),
+    -- account_id UUID REFERENCES account (id) ON UPDATE CASCADE ON DELETE SET NULL,
     name VARCHAR(25),
     color VARCHAR(30) CHECK (color LIKE 'rgb(%)' OR color LIKE 'rgba(%)' OR color LIKE '#%' OR color LIKE 'hsl(%)')
 );
 
 --prepare for future feature: share addressbook to other users
 CREATE TABLE account_addressbook (
-    account_id UUID REFERENCES account (id),
-    addressbook_id UUID REFERENCES addressbook (id)
+    account_id UUID REFERENCES account (id) ON UPDATE CASCADE ON DELETE CASCADE,
+    addressbook_id UUID REFERENCES addressbook (id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS contact (
     id UUID PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
-    addressbook_id UUID REFERENCES addressbook (id),
-    account_id UUID REFERENCES account (id),
+    addressbook_id UUID REFERENCES addressbook (id) ON UPDATE CASCADE ON DELETE CASCADE,
+    account_id UUID REFERENCES account (id) ON UPDATE CASCADE ON DELETE SET NULL,
     birth DATE CHECK (birth < CURRENT_DATE),
     email VARCHAR(355),
     phone VARCHAR(15),
