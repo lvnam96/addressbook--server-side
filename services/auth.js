@@ -6,10 +6,10 @@ function allowUserAccessing (req, res, next) {
 }
 
 function allowNonUserAccessing (req, res, next) {
-    if (req.isAuthenticated()) {
-        return res.redirect('/');
+    if (!req.isAuthenticated()) {
+        return next();
     }
-    return next();
+    return res.redirect('/');
 }
 
 module.exports = {
