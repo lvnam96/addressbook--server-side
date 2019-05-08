@@ -6,15 +6,15 @@ const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const nodeExternals = require('webpack-node-externals');
 
-const isProductionMode = process.env.NODE_ENV === 'production';
+const isProductionMode = process.env.NODE_ENV !== 'development';
 
 module.exports = {
     mode: isProductionMode ? 'production' : 'development',
     entry: {
         // core: ['@babel/polyfill', './core/js/index.js'],
         // App: './entrypoints/main/src/index.js',// for v2.0.0
-        Signin: './entrypoints/signin/index.ssr.js',
-        Signup: './entrypoints/signup/index.ssr.js'
+        Signin: ['@babel/polyfill', './entrypoints/signin/index.ssr.js'],
+        Signup: ['@babel/polyfill', './entrypoints/signup/index.ssr.js']
     },
     output: {
         library: 'app',
@@ -26,7 +26,8 @@ module.exports = {
     //     'react': 'React',
     //     'react-dom': 'ReactDOM'
     // },
-    target: 'node', // in order to ignore built-in modules like path, fs, etc.
+    // target: 'node', // in order to ignore built-in modules like path, fs, etc.
+    target: 'web',
     externals: [nodeExternals({
         whitelist: ['jssha', 'axios', 'react', 'react-dom', /^lodash/]
     })], // in order to ignore all modules in node_modules folder
@@ -192,11 +193,7 @@ module.exports = {
             'adbk': ['adbk', 'default']
         }),
         new webpack.DefinePlugin({
-            // NODE_ENV: JSON.stringify(isProductionMode ? 'production' : 'development'),
-            'process.env.NODE_ENV': JSON.stringify(isProductionMode ? 'production' : 'development'),
-            // __DEV__: JSON.stringify(JSON.parse(process.env.BUILD_DEV || 'false')),
-            // __PROD__: JSON.stringify(JSON.parse(process.env.BUILD_PROD || 'true')),
-            // __PRERELEASE__: JSON.stringify(JSON.parse(process.env.BUILD_PRERELEASE || 'false'))
+            // 'process.env.NODE_ENV': JSON.stringify(isProductionMode ? 'production' : 'development'),
         }),
         new webpack.EnvironmentPlugin({
             NODE_ENV: isProductionMode ? 'production' : 'development',

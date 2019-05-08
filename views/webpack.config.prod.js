@@ -188,13 +188,12 @@ module.exports = {
             'adbk': ['adbk', 'default']
         }),
         new webpack.DefinePlugin({
-            __DEV__: JSON.stringify(JSON.parse(process.env.BUILD_DEV || 'false')),
-            __PROD__: JSON.stringify(JSON.parse(process.env.BUILD_PROD || 'true')),
-            __PRERELEASE__: JSON.stringify(JSON.parse(process.env.BUILD_PRERELEASE || 'false'))
+            // __DEV__: JSON.stringify(JSON.parse(process.env.BUILD_DEV || 'false')),
         }),
         new webpack.EnvironmentPlugin({
             NODE_ENV: 'production',
             DEV: JSON.parse(process.env.DEV || 'false'),
+            PORT: JSON.parse(process.env.PORT || 'null'),
             HOT_RELOAD: false,
             DEBUG: false
         }),
