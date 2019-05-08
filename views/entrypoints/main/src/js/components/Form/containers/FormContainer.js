@@ -1,16 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { randomUUID, getRandomColor } from '../../../helpers/utilsHelper';
+import { getRandomStr, getRandomColor } from '../../../helpers/utilsHelper';
 import { convertDateObjToHTMLInputVal } from '../../../helpers/timeHelper';
 import { fixedEncodeURIComponent, fixedEncodeURI } from '../../../helpers/encodeHelper';
 
 import Form from '../Form';
 // import { parenthesizedExpression } from 'babel-types';
-import defaultEmptyContact from './defaultEmptyContactData.json';
-defaultEmptyContact.id = randomUUID();
-defaultEmptyContact.color = getRandomColor();
-console.log(defaultEmptyContact.id);
+import emptyContact from './defaultEmptyContactData.json';
+let defaultEmptyContact = {
+    ...emptyContact,
+    id: getRandomStr(10),
+    color: getRandomColor(),
+};
 
 const spacePtrn = /\s/g;
 const addFilledClass = e => {

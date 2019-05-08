@@ -55,8 +55,8 @@ const WorkingForm = props => {
 };
 
 WorkingForm.propTypes = {
-    contact: PropTypes.instanceOf(adbk.classes.Contact).isRequired,
-    contactId: PropTypes.string.isRequired,
+    // contact: PropTypes.instanceOf(adbk.classes.Contact).isRequired,
+    contactId: PropTypes.string,
     isEditing: PropTypes.bool.isRequired,
     closeForm: PropTypes.func.isRequired,
     changeContactIndex: PropTypes.func.isRequired,

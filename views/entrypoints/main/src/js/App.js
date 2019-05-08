@@ -300,7 +300,7 @@ class App extends React.Component {
                     elemInPopup = <WorkingForm
                         isEditing={this.state.contactIndex > -1}
                         contactId={this.state.openingContactId}
-                        contact={this.state.contactIndex > -1 ? this.props.contacts[this.state.contactIndex] : adbk.classes.Contact.fromScratch()}
+                        // contact={this.state.contactIndex > -1 ? this.props.contacts[this.state.contactIndex] : adbk.classes.Contact.fromScratch()}
                         closeForm={this.closeForm}
                         changeContactIndex={this.changeContactIndex}
                     />;
