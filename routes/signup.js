@@ -33,9 +33,12 @@ router.post('/', auth.allowNonUserAccessing, (req, res, next) => {
             // error is output in console already in adbk.user.signUp
             return res.json({ res: false });
         } else {
+            if (user instanceof User) {
+                user = user.toJSON();
+            }
             return res.json({
                 res: true,
-                user,
+                user,// at the moment front-end app is not using this
                 redirectLocation: '/signin?' + user.uname,
             });
         }

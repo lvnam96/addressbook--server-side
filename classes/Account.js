@@ -17,10 +17,16 @@ class Account extends Factory {
         this._salt = data.salt;
         this._isSerializable = this._isSerializable || new Set();
         for (let keyname of [
-            'id', 'uname', 'fbId', 'email', 'lastLogin', 'createdOn'
+            'id', 'uname', 'passwd', 'fbId', 'email', 'lastLogin', 'createdOn'
         ]) {
             this._isSerializable = this._isSerializable.add(keyname);
         }
+    }
+
+    toJSON () {
+        const json = super.toJSON();
+        delete json.passwd;// SECURITY: never send pwd to client
+        return json;
     }
 
     static fromJSON (json) {
