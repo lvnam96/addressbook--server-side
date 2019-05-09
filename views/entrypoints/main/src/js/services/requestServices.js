@@ -1,14 +1,14 @@
 import axios from 'axios';
 const devDomain = 'http://localhost';
-const prodDomain = 'http://contacts.garyle.me';// how to get current domain
+const prodDomain = 'http://contacts.garyle.me';// how to get current domain? ex: adbk.config.domain.baseURL
 const isDevBuild = process.env.NODE_ENV !== 'production';
 const isDevServer = process.env.DEV;
 // console.log(isDevBuild);
 // console.log(isDevServer);
 const domain = isDevServer || isDevBuild ? devDomain : prodDomain;// CHANGE THIS WHEN DEPLOYING APP ON HEROKU
 const mockAPIPort = 2004;
-const devServerPort = 3000;
-const prodServerPort = parseInt(process.env.PORT || 80);
+const devServerPort = parseInt(process.env.PORT || 3000, 10);
+const prodServerPort = parseInt(process.env.PORT || 80, 10);
 const port = isDevBuild ? mockAPIPort : (isDevServer ? devServerPort : prodServerPort);// CHANGE THIS WHEN DEPLOYING APP ON HEROKU
 
 const instance = axios.create({
