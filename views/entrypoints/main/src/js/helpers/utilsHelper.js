@@ -2,7 +2,7 @@
 // import faker from 'faker/locale/vi';
 import axios from 'axios';
 
-export const getRandomStr = length => {
+export const getRandomStr = (length = 10) => {
     // https://gist.github.com/lvnam96/592fa2a61bfc7de728ea6785197dae13
     let text = '';
     const POSSIBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
@@ -23,11 +23,25 @@ export const getRandomColor = () => {
 };
 
 // NEVER USE IT FOR REAL ID, GET REAL UUID
-// IN RESPONSE AFTER SUBMIT NEW CONTACT TO SERVER
+// IN RESPONSE AFTER SUBMITTING NEW CONTACT TO SERVER
+export const queryRandomUUID = () => {
+    // const response = await axios.get('http://faker.hook.io/?property=random.uuid');
+    // return response.data;
+    return new Promise((resolve, reject) => {
+        axios.get('http://faker.hook.io/?property=random.uuid').then(res => {
+            resolve(res.data);
+        }).catch(err => {
+            console.error(err);
+            reject(err);
+        });
+    });
+};
+
 export const randomUUID = async () => {
-    // return faker.random.uuid();
-    const response = await axios.get('http://faker.hook.io/?property=random.uuid');
-    return response.data;
+    // return faker.random.uuid();// if used, remember to remove the wrapping async function
+    // OR:
+    let uuid = await queryRandomUUID();
+    return uuid;
 };
 
 export const isIterable = (obj) => {
