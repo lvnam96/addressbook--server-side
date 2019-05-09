@@ -43,6 +43,8 @@ const MainContent = props => {
                         <Dropdown.Menu className="border-0 shadow" style={{ overflow: 'hidden', }}>
                             <Dropdown.Item className='py-3 py-md-2' onClick={props.onBackupData}><i className='fas fa-download'></i>&nbsp;&nbsp;Backup</Dropdown.Item>
                             <Dropdown.Item className='py-3 py-md-2' onClick={props.onRestoreData}><i className='fas fa-upload'></i>&nbsp;&nbsp;Restore</Dropdown.Item>
+                            <hr className="my-2"/>
+                            <Dropdown.Item className='py-3 py-md-2' href="/signout"><i className="fas fa-door-open"></i>&nbsp;&nbsp;Sign out</Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
                 </div>
