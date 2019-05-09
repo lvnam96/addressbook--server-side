@@ -1,27 +1,27 @@
 .contact-filter {
-    position: -webkit-sticky;
-    position: sticky;
-    top: 0;
-    z-index: 1020;
+    // position: -webkit-sticky;
+    // position: sticky;
+    // top: 0;
+    // z-index: 1020;
 
     &__hint-numb {
 
     }
-    
+
     // OVERWRITE Bootstrap4
     .page-link {
         cursor: pointer;
         color: $color--cyan!important;
         background-color: transparent;
         border-color: currentColor;
-        
+
         &:hover {
             color: $color--cyan!important;
             background-color: $color--light-gray;
             border-color: currentColor;
         }
     }
-    
+
     .page-item.active .page-link {
         color: $color--white!important;
         background-color: $color--cyan;

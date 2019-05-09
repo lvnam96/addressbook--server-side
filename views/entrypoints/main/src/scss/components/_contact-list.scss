@@ -51,6 +51,14 @@
     }
 }
 
+.dropdown {// overwrite Bootstrap4's default
+
+    hr {
+        margin-top: .5rem;
+        margin-bottom: .5rem;
+    }
+}
+
 .contact-list {
     font-size: 1rem;
     // width: 100%;
