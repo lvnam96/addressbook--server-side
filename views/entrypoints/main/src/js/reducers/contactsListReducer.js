@@ -10,16 +10,17 @@ const contactsListReducer = (state = initialState, action) => {
         case ActionTypes.ADD:
             return [...state, new Contact(action.contact)];
         case ActionTypes.EDIT:
-            index = find(action.contact.id, state);
-            console.log(new Contact(action.contact))
+            // index = find(action.contact.id, state);
+            index = state.findIndex(contact => contact.id === action.contact.id);
+            if (index === -1) { throw new Error('Cannot find contact\'s index'); }
             return [
                 ...state.slice(0, index),
                 new Contact(action.contact),
                 ...state.slice(index + 1)
             ];
-            return [...state, action.data];
         case ActionTypes.MARK:
-            index = find(action.contact.id, state);
+            index = state.findIndex(contact => contact.id === action.contact.id);
+            if (index === -1) { throw new Error('Cannot find contact\'s index'); }
             return [
                 ...state.slice(0, index),
                 new Contact({
@@ -29,7 +30,8 @@ const contactsListReducer = (state = initialState, action) => {
                 ...state.slice(index + 1)
             ];
         case ActionTypes.UNMARK:
-            index = find(action.contact.id, state);
+            index = state.findIndex(contact => contact.id === action.contact.id);
+            if (index === -1) { throw new Error('Cannot find contact\'s index'); }
             return [
                 ...state.slice(0, index),
                 new Contact({
@@ -39,7 +41,8 @@ const contactsListReducer = (state = initialState, action) => {
                 ...state.slice(index + 1)
             ];
         case ActionTypes.TOGGLE_MARKER:
-            index = find(action.contact.id, state);
+            index = state.findIndex(contact => contact.id === action.contact.id);
+            if (index === -1) { throw new Error('Cannot find contact\'s index'); }
             return [
                 ...state.slice(0, index),
                 new Contact({
