@@ -28,7 +28,7 @@ export const getJSONData = handledResponse => {
 };
 
 export const handleFailedRequest = err => {
-    console.log('axios: handleFailedRequest', err);
+    console.error('axios: handleFailedRequest', err);
     // to display request failed notification & decide whether re-send request,
     // return the status of this action, because the decision of how to response to user
     // should be placed in react
@@ -53,15 +53,16 @@ export const handleFailedRequest = err => {
 };
 
 export const handleSuccessQueryButFailedTask = () => {
-    
+
 };
 
 export const handleServerResponse = (axiosResponse) => {
     // axiosResponse.data contains json responded from our server's routers
     if (axiosResponse.data.res) {// this means our query is successfully SENT to our server & has a pre-defined json response
         return {
+            ...axiosResponse,
             isSuccess: true,// this means our request has reached the server successfully
-            data: axiosResponse.data// data sent back from server
+            // data: axiosResponse.data// data sent back from server
         };
     } else {// this means the task is failed, not the query
         return {

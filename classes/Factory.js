@@ -9,7 +9,6 @@ class Fatory {
     }
 
     toJSON () {
-        const data = Object.assign({}, this.data);
         const serializableKeys = this._isSerializable || [];
         const plainObj = {};
         for (let key of serializableKeys) {
@@ -21,6 +20,10 @@ class Fatory {
         }
 
         return plainObj;
+    }
+
+    toDB () {
+        return this.toJSON();
     }
 
     static fromJSON (json) {

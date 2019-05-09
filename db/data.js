@@ -37,7 +37,9 @@ const asyncGetContactsInAdrsbook = (accountId, adrsbookId) => {
         [accountId, adrsbookId]
     ).then(res => {
         return res.rows;
-    }).catch(err => console.error(err));
+    }).catch(err => {
+        throw err;
+    });
 };
 
 const getAllData = (userId, cb) => {
@@ -73,7 +75,9 @@ const getAllData = (userId, cb) => {
                     user: mapUserData(res.rows[0])
                 });
             })
-            .catch(err => console.error(err));
+            .catch(err => {
+                throw err;
+            });
     }
 
     function getAdrsbooks (data, cb) {
@@ -84,7 +88,9 @@ const getAllData = (userId, cb) => {
                     adrsbookId: res.rows[0].addressbook_id// for now each user has only 1 adrsbook
                 });
             })
-            .catch(err => console.error(err));
+            .catch(err => {
+                throw err;
+            });
     }
 
     function getAdrsbook (data, cb) {
@@ -95,7 +101,9 @@ const getAllData = (userId, cb) => {
                     adrsbook: res.rows[0]// for now each user has only 1 adrsbook
                 });
             })
-            .catch(err => console.error(err));
+            .catch(err => {
+                throw err;
+            });
     }
 
     function getContacts (data, cb) {
@@ -114,14 +122,22 @@ const addAdrsbook = (adrsbook, cb) => {
         VALUES ($1, $2) RETURNING *`, [
         adrsbook.name,
         adrsbook.color
-    ], cb);
+    ], cb).then(res => {
+        return res.rows[0];
+    }).catch(err => {
+        throw err;
+    });
 };
 
 const addAccountAdrsbookRelationship = (userId, adrsbookId, cb) => {
     return query('INSERT INTO account_addressbook (account_id, addressbook_id) VALUES ($1, $2) RETURNING *', [
         userId,
         adrsbookId
-    ], cb);
+    ], cb).then(res => {
+        return res.rows;
+    }).catch(err => {
+        throw err;
+    });
 };
 
 const addContact = (contact, cb) => {
@@ -139,7 +155,11 @@ const addContact = (contact, cb) => {
         website,
         labels,
         avatarURL
-    ], cb);
+    ], cb).then(res => {
+        return res.rows[0];
+    }).catch(err => {
+        throw err;
+    });
 };
 
 const editContact = (contact, cb) => {
@@ -156,7 +176,11 @@ const editContact = (contact, cb) => {
         avatar_url = $10
         WHERE id = $1 RETURNING *`, [
             id, birth, email, phone, note, name, color, website, labels, avatarURL
-        ], cb);
+        ], cb).then(res => {
+            return res.rows[0];
+        }).catch(err => {
+            throw err;
+        });
 };
 
 const removeContact = (contact, cb) => {
@@ -169,29 +193,48 @@ const removeContact = (contact, cb) => {
         contact.accountId,
         contact.id,
         contact.adrsbookId
-    ], cb);
+    ], cb).then(res => {
+        return res.rows[0];
+    }).catch(err => {
+        throw err;
+    });
 };
 
 const removeMultiContacts = (accountId, adrsbookId, contactIds, cb) => {
     // accountId: string
     // adrsbookId: string
     // contactIds: array of strings
-    const formatIdsList = ids => ids.map(id => "'" + id + "'"),
-        idsStr = formatIdsList(contactIds).join(','),
-        whereClause = whereClauseMatchAccAndAdrsbook(accountId, adrsbookId);
-    return pDB.any('DELETE FROM contact $1:raw AND id IN ($2:raw) RETURNING *', [whereClause, idsStr], cb);
+    const formatIdsList = ids => ids.map(id => "'" + id + "'");
+    const idsStr = formatIdsList(contactIds).join(',');
+    const whereClause = whereClauseMatchAccAndAdrsbook(accountId, adrsbookId);
+    return pDB.any(
+        'DELETE FROM contact $1:raw AND id IN ($2:raw) RETURNING *',
+        [whereClause, idsStr],
+        cb
+    ).then(rows => rows).catch(err => { throw err; });
 };
 
 const removeAllContacts = (accountId, adrsbookId, cb) => {
     // accountId: string
     // adrsbookId: string
-    return query('DELETE FROM contact WHERE account_id = $1 AND addressbook_id = $2 RETURNING *', [accountId, adrsbookId], cb);
+    return query('DELETE FROM contact WHERE account_id = $1 AND addressbook_id = $2 RETURNING *', [accountId, adrsbookId], cb).then(res => {
+        return res.rows;
+    }).catch(err => {
+        throw err;
+    });
 };
 
-// BUG: should cover special case: duplicated contacts appear in both database & imported data
+// BUG: these too queries should cover this special case: duplicated contacts appear in both database & imported data => 2 resolving way:
+// - remove old ones, then import new ones (replaceAllContacts)
+// - import & modify duplicated ones (importContacts)
+
 const importContacts = (contacts) => {
     const queryStr =  getQueryStrToImportContacts(contacts);
-    return query(queryStr);
+    return query(queryStr).then(res => {
+        return res.rows;
+    }).catch(err => {
+        throw err;
+    });
     // getClient((err, client, done) => {
     //     const shouldAbort = (err) => {
     //         if (err) {
@@ -264,11 +307,18 @@ const importContacts = (contacts) => {
 // error: constraint 'contact pkey' is violented
 const replaceAllContacts = (contacts, accountId, adrsbookId) => {
     return pDB.tx('replace-all-contacts', t => {
-        return t.any('DELETE FROM contact WHERE account_id = $1 AND addressbook_id = $2 RETURNING *', [accountId, adrsbookId]).then(deletedContacts => {
-            const importQueryStr = getQueryStrToImportContacts(contacts);
-            return t.any(importQueryStr);
-        });
-    })
+        return t.any('DELETE FROM contact WHERE account_id = $1 AND addressbook_id = $2 RETURNING *', [accountId, adrsbookId])
+            .then(deletedContacts => {
+                const importQueryStr = getQueryStrToImportContacts(contacts) + 'RETURNING *';
+                return t.any(importQueryStr)
+                    .then(rows => rows)
+                    .catch(err => {
+                        throw err;
+                    }
+                );
+            }
+    );
+    });
 };
 
 module.exports = {

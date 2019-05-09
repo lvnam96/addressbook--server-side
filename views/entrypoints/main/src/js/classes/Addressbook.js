@@ -1,6 +1,7 @@
 import Factory from './Factory';
 import ContactsList from './ContactsList';
 import axios, { getJSONData, handleFailedRequest } from '../services/requestServices';
+import { isIterable } from '../helpers/utilsHelper';
 
 // IN: obj
 // FROM: json obj from server, old inst, example empty obj
@@ -26,7 +27,7 @@ import axios, { getJSONData, handleFailedRequest } from '../services/requestServ
 class Addressbook extends Factory {
     constructor (data) {
         super(data);
-        this._contactsList = ContactsList.fromJSON(data.contacts);
+        this._contactsList = data.contacts.data ? ContactsList.fromInstanceJSON(data.contacts) : ContactsList.fromJSON(data.contacts);
         this._data = data;
         this._id = data.id;
         this._accountId = data.accountId;

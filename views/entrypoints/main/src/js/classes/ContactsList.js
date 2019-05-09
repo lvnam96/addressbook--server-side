@@ -5,7 +5,13 @@ import { isIterable } from '../helpers/utilsHelper';
 class ContactsList extends Factory {
     constructor (rawContacts) {
         super(rawContacts);
-        this._data = Array.isArray(rawContacts.data) ? rawContacts.data.map((contact) => new Contact(contact)) : null;
+        if (rawContacts instanceof ContactsList) {
+            this._data = rawContacts.data.map((contact) => new Contact(contact)) || [];
+        } else if (Array.isArray(rawContacts)) {
+            this._data = rawContacts.map((contact) => new Contact(contact)) || [];
+        } else {
+            this._data = [];
+        }
         this._isSerializable = this._isSerializable || new Set();
         for (let keyname of [
             'data'
@@ -20,8 +26,12 @@ class ContactsList extends Factory {
         return jsoned;
     }
 
-    static fromJSON (data) {
-        return super.fromJSON(data);
+    static fromJSON (json) {
+        return super.fromJSON(json);
+    }
+
+    static fromInstanceJSON (jsonOfOldInstance) {
+        return this.fromJSON(jsonOfOldInstance.data);
     }
 
     get data () {

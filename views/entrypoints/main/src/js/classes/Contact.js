@@ -1,6 +1,6 @@
 import Factory from './Factory';
 import axios, { getJSONData, handleFailedRequest } from '../services/requestServices';
-import { randomUUID, getRandomColor, isIterable } from '../helpers/utilsHelper';
+import { getRandomColor, isIterable, getRandomStr } from '../helpers/utilsHelper';
 
 // IN: obj
 // FROM: json obj from server, old inst, example empty obj
@@ -78,7 +78,7 @@ class Contact extends Factory {
         }
         return new Contact({
             ...base,
-            id: randomUUID(),
+            id: getRandomStr(10),// use uuid created in database
             color: getRandomColor(),
             // birth: new Date()
         });
@@ -122,7 +122,7 @@ class Contact extends Factory {
     updt (newData) {
         const props = Object.keys(newData);
 
-        for (prop of props) {
+        for (let prop of props) {
             this._updateProp(prop, newData[prop]);
         }
     }

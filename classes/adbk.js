@@ -7,8 +7,11 @@ const serv = require('../services/');
 const db = require('../db/');
 
 function signUp (json, cb) {
-    const user = User.fromJSON(json).toDB();
+    const user = User.fromJSON(json).toDB();// convert to User obj from JSON data
     User.signUp(user, (err, rawUserData) => {
+        if (err) {
+            console.error(err);
+        }
         let user;
         if (rawUserData) {
             user = User.fromJSON(rawUserData).toJSON();
@@ -44,13 +47,21 @@ function findById (id, done) {
 function addContact (json) {
     const contact = Contact.fromJSON(json).toDB();
     return db.data.addContact(contact)
-        .then(rawData => Contact.fromJSON(rawData));
+        .then(contact => Contact.fromJSON(contact))
+        .catch(err => {
+            console.error(err);
+            throw err;
+        });
 }
 
 function editContact (json) {
     const contact = Contact.fromJSON(json).toDB();
     return db.data.editContact(contact)
-        .then(rawData => Contact.fromJSON(rawData));
+        .then(contact => Contact.fromJSON(contact))
+        .catch(err => {
+            console.error(err);
+            throw err;
+        });
 }
 
 function delContact (json) {
@@ -61,7 +72,11 @@ function delContact (json) {
     // }
     const contact = Contact.fromJSON(json).toDB();
     return db.data.removeContact(contact)
-        .then(rawData => Contact.fromJSON(rawData));
+        .then(contact => Contact.fromJSON(contact))
+        .catch(err => {
+            console.error(err);
+            throw err;
+        });
 }
 
 function delMultiContacts (contacts) {
@@ -74,40 +89,75 @@ function delMultiContacts (contacts) {
     return db.data.removeMultiContacts(accountId, adrsbookId, contactIds)
         .then(rows => {
             return rows.map(rawData => Contact.fromJSON(rawData));
+        })
+        .catch(err => {
+            console.error(err);
+            throw err;
         });
 }
 
 function delAllContacts (accountId, adrsbookId) {
     // accountId: string
     // adrsbookId: string
-    return db.data.removeAllContacts(accountId, adrsbookId);
+    return db.data.removeAllContacts(accountId, adrsbookId)
+        .then(rows => {
+            return rows.map(rawData => Contact.fromJSON(rawData));
+        }).catch(err => {
+            console.error(err);
+            throw err;
+        });
 }
 
 function importContacts (contacts) {
     contacts = contacts.map(contact => Contact.fromJSON(contact).toDB());
-    return db.data.importContacts(contacts);
+    return db.data.importContacts(contacts)
+        .then(rows => {
+            return rows.map(rawData => Contact.fromJSON(rawData));
+        }).catch(err => {
+            console.error(err);
+            throw err;
+        });
 }
 
 function replaceAllContacts (contacts, accountId, adrsbookId) {
     contacts = contacts.map(contact => Contact.fromJSON(contact).toDB());
-    return db.data.replaceAllContacts(contacts, accountId, adrsbookId);
+    return db.data.replaceAllContacts(contacts, accountId, adrsbookId)
+        .then(rows => {
+            if (Array.isArray(rows) && rows.length > 0) {
+                return rows.map(rawData => Contact.fromJSON(rawData));
+            }
+            return [];
+        }).catch(err => {
+            console.error(err);
+            throw err;
+        });
 }
 
 function loadAllContacts () {
-    return db.data.getAllContacts().then(({ rows }) => rows.map(rawData => Contact.fromJSON(rawData)));
+    return db.data.getAllContacts()
+        .then(({ rows }) => {
+            return rows.map(contact => Contact.fromJSON(contact));
+        }).catch(err => {
+            console.error(err);
+            throw err;
+        });
 }
 
 function loadAllData (accountId) {
-    return db.data.getAllData(accountId).then(rawData => {
-        const data = {
-            user: User.fromDB(rawData.user),
-            adrsbook: Addressbook.fromDB({
-                ...rawData.adrsbook,
-                contacts: rawData.contacts
-            })
-        };
-        return data;
-    });
+    return db.data.getAllData(accountId)
+        .then(rawData => {
+            const data = {
+                user: User.fromDB(rawData.user),
+                adrsbook: Addressbook.fromDB({
+                    ...rawData.adrsbook,
+                    contacts: rawData.contacts
+                })
+            };
+            return data;
+        }).catch(err => {
+            console.error(err);
+            throw err;
+        });
 }
 
 // CONTROLLER

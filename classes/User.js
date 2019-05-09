@@ -21,14 +21,10 @@ class User extends Account {
     }
 
     toDB () {
-        const jsoned = this.toJSON();
-        jsoned.username = jsoned.uname;
-        jsoned.password = jsoned.passwd;
-        jsoned.facebook_id = jsoned.fbId;
-        jsoned.last_login = jsoned.lastLogin;
-        jsoned.created_on = jsoned.createdOn;
-        jsoned.is_active = jsoned.isActive;
-        return jsoned;
+        const json = super.toDB();
+        // json.adrsbook = json._adrsbook;// not needed
+        json.is_active = json.isActive;
+        return json;
     }
 
     static fromJSON (json) {
@@ -45,7 +41,7 @@ class User extends Account {
 
     init () {
         return this.loadData().then(data => {
-            this._adrsbook = data.adrsbook
+            this._adrsbook = data.adrsbook;
         }).catch();
     }
 

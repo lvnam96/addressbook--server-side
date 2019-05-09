@@ -1,8 +1,6 @@
 const Factory = require('./Factory');
 const serv = require('../services/');
 const db = require('../db/');
-const { pool } = db.poolInitiator;
-const randomStr = 0;
 
 class Account extends Factory {
     constructor (data) {
@@ -35,6 +33,19 @@ class Account extends Factory {
 
     static fromDB (data) {
         return super.fromDB(data);
+    }
+
+    toDB () {
+        const json = super.toDB();
+        json.username = json._uname;
+        json.password = json._passwd;
+        json.facebook_id = json.fbId;
+        json.last_login = json.lastLogin;
+        json.created_on = json.createdOn;
+        // never allow updating these infos into database:
+        // json.id = json._id;
+        // json.salt = json._salt;
+        return json;
     }
 
     get id () {
