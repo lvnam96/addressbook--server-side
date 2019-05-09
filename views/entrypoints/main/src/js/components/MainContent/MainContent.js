@@ -12,7 +12,7 @@ const MainContent = props => {
     return (
         <main className="main">
             <header className="page-header">
-                <h1 className="page-title">Address Book</h1>
+                <h1 className="page-title">Contacts Book</h1>
             </header>
             {/*
             <div className="btn-group" role="group" aria-label="Basic example">
