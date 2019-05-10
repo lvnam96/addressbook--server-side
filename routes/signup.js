@@ -39,7 +39,7 @@ router.post('/', auth.allowNonUserAccessing, (req, res, next) => {
             return res.json({
                 res: true,
                 user,// at the moment front-end app is not using this
-                redirectLocation: '/signin?' + user.uname,
+                redirectLocation: '/signin?returnedUser=' + user.uname,
             });
         }
     });
