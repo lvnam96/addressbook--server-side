@@ -1,6 +1,6 @@
 import axios from 'axios';
 const devDomain = 'http://localhost';
-const prodDomain = 'http://contacts.garyle.me';// how to get current domain? ex: adbk.config.domain.baseURL
+const prodDomain = typeof window !== 'undefined' ? window.location.origin : 'https://contacts.garyle.me';// how to get current domain? ex: adbk.config.domain.baseURL
 const isDevBuild = process.env.NODE_ENV !== 'production';
 const isDevServer = process.env.DEV;
 // console.log(isDevBuild);
@@ -11,14 +11,19 @@ const devServerPort = parseInt(process.env.PORT || 3000, 10);
 const prodServerPort = parseInt(process.env.PORT || 80, 10);
 const port = isDevBuild ? mockAPIPort : (isDevServer ? devServerPort : prodServerPort);// CHANGE THIS WHEN DEPLOYING APP ON HEROKU
 
-const instance = axios.create({
-    baseURL: domain + ':' + port,
+const axiosOptions = {
     timeout: 30000,// default: 0
     // headers: {},
     // transformRequest: [() => {}],
     // transformResponse: [() => {}],
     withCredentials: false,// default
-});
+};
+if (isDevServer || isDevBuild) {
+    axiosOptions.baseURL = domain + ':' + port;
+} else {
+    axiosOptions.baseURL = prodDomain;
+}
+const instance = axios.create(axiosOptions);
 
 export const getJSONData = handledResponse => {
     return {
