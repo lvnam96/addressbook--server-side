@@ -12,7 +12,7 @@ class SignInFormContainer extends React.Component {
     constructor (props) {
         super(props);
         this.state = {
-            unameVal: (!!window && window.returnedUser) || '',
+            unameVal: (typeof window !== 'undefined' && window.returnedUser) ? window.returnedUser : '',
             passwdVal: '',
             isWrongUnameOrPasswd: false,
             isSignedIn: false,
@@ -59,7 +59,7 @@ class SignInFormContainer extends React.Component {
                             this.setState(newState, () => {
                                 let t = setTimeout(() => {
                                     clearTimeout(t);
-                                    window.location = "/";
+                                    if (typeof window !== 'undefined') window.location = "/";
                                 }, 500);
                             });
                         } else {
@@ -68,12 +68,12 @@ class SignInFormContainer extends React.Component {
                         }
                     } else {
                         this.setState({ isSubmitting: false }, () => {
-                            !!window && window.alert('Sorry, something is wrong on our server.');
+                            if (typeof window !== 'undefined') window.alert('Sorry, something is wrong on our server.');
                         });
                     }
                 }).catch(err => {
                     this.setState({ isSubmitting: false }, () => {
-                        !!window && window.alert('Sorry, server didn\'t response.');
+                        if (typeof window !== 'undefined') window.alert('Sorry, server didn\'t response.');
                         console.error(err);
                     });
                 });
