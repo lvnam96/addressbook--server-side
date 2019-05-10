@@ -117,12 +117,27 @@ const getAllData = (userId, cb) => {
 };
 
 const addAdrsbook = (adrsbook, cb) => {
-    return query(`INSERT
-        INTO addressbook (name, color)
-        VALUES ($1, $2) RETURNING *`, [
-        adrsbook.name,
-        adrsbook.color
-    ], cb).then(res => {
+    if (typeof cb === 'function') {
+        return query(
+            `INSERT
+                INTO addressbook (name, color)
+                VALUES ($1, $2) RETURNING *`,
+            [
+                adrsbook.name,
+                adrsbook.color
+            ],
+            cb
+        );
+    }
+    return query(
+        `INSERT
+            INTO addressbook (name, color)
+            VALUES ($1, $2) RETURNING *`,
+        [
+            adrsbook.name,
+            adrsbook.color
+        ]
+    ).then(res => {
         return res.rows[0];
     }).catch(err => {
         throw err;
@@ -130,10 +145,19 @@ const addAdrsbook = (adrsbook, cb) => {
 };
 
 const addAccountAdrsbookRelationship = (userId, adrsbookId, cb) => {
-    return query('INSERT INTO account_addressbook (account_id, addressbook_id) VALUES ($1, $2) RETURNING *', [
-        userId,
-        adrsbookId
-    ], cb).then(res => {
+    if (typeof cb === 'function') {
+        return query('INSERT INTO account_addressbook (account_id, addressbook_id) VALUES ($1, $2) RETURNING *', [
+            userId,
+            adrsbookId
+        ], cb);
+    }
+    return query(
+        'INSERT INTO account_addressbook (account_id, addressbook_id) VALUES ($1, $2) RETURNING *',
+        [
+            userId,
+            adrsbookId
+        ]
+    ).then(res => {
         return res.rows;
     }).catch(err => {
         throw err;
@@ -143,6 +167,21 @@ const addAccountAdrsbookRelationship = (userId, adrsbookId, cb) => {
 const addContact = (contact, cb) => {
     const { birth, adrsbookId, accountId, email, phone, note, name, color, labels, website, avatarURL } = contact;
 
+    if (typeof cb === 'function') {
+        return query('INSERT INTO contact (addressbook_id, account_id, birth, email, phone, note, name, color, website, labels, avatar_url) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *', [
+            adrsbookId,
+            accountId,
+            birth,
+            email,
+            phone,
+            note,
+            name,
+            color,
+            website,
+            labels,
+            avatarURL
+        ], cb);
+    }
     return query('INSERT INTO contact (addressbook_id, account_id, birth, email, phone, note, name, color, website, labels, avatar_url) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *', [
         adrsbookId,
         accountId,
@@ -155,7 +194,7 @@ const addContact = (contact, cb) => {
         website,
         labels,
         avatarURL
-    ], cb).then(res => {
+    ]).then(res => {
         return res.rows[0];
     }).catch(err => {
         throw err;
@@ -164,6 +203,21 @@ const addContact = (contact, cb) => {
 
 const editContact = (contact, cb) => {
     const { id, birth, email, phone, note, name, color, website, labels, avatarURL } = contact;
+    if (typeof cb === 'function') {
+        return query(`UPDATE contact SET
+        birth = $2,
+        email = $3,
+        phone = $4,
+        note = $5,
+        name = $6,
+        color = $7,
+        website = $8,
+        labels = $9,
+        avatar_url = $10
+        WHERE id = $1 RETURNING *`, [
+                id, birth, email, phone, note, name, color, website, labels, avatarURL
+            ], cb);
+    }
     return query(`UPDATE contact SET
         birth = $2,
         email = $3,
@@ -176,7 +230,7 @@ const editContact = (contact, cb) => {
         avatar_url = $10
         WHERE id = $1 RETURNING *`, [
             id, birth, email, phone, note, name, color, website, labels, avatarURL
-        ], cb).then(res => {
+        ]).then(res => {
             return res.rows[0];
         }).catch(err => {
             throw err;
@@ -189,11 +243,18 @@ const removeContact = (contact, cb) => {
     //     id: string
     //     adrsbookId: string
     // }
+    if (typeof cb === 'function') {
+        return query('DELETE FROM contact WHERE account_id = $1 AND id = $2 AND addressbook_id = $3 RETURNING *', [
+            contact.accountId,
+            contact.id,
+            contact.adrsbookId
+        ], cb);
+    }
     return query('DELETE FROM contact WHERE account_id = $1 AND id = $2 AND addressbook_id = $3 RETURNING *', [
         contact.accountId,
         contact.id,
         contact.adrsbookId
-    ], cb).then(res => {
+    ]).then(res => {
         return res.rows[0];
     }).catch(err => {
         throw err;
@@ -207,17 +268,26 @@ const removeMultiContacts = (accountId, adrsbookId, contactIds, cb) => {
     const formatIdsList = ids => ids.map(id => "'" + id + "'");
     const idsStr = formatIdsList(contactIds).join(',');
     const whereClause = whereClauseMatchAccAndAdrsbook(accountId, adrsbookId);
+    if (typeof cb === 'function') {
+        return pDB.any(
+            'DELETE FROM contact $1:raw AND id IN ($2:raw) RETURNING *',
+            [whereClause, idsStr],
+            cb
+        );
+    }
     return pDB.any(
         'DELETE FROM contact $1:raw AND id IN ($2:raw) RETURNING *',
-        [whereClause, idsStr],
-        cb
+        [ whereClause, idsStr ]
     ).then(rows => rows).catch(err => { throw err; });
 };
 
 const removeAllContacts = (accountId, adrsbookId, cb) => {
     // accountId: string
     // adrsbookId: string
-    return query('DELETE FROM contact WHERE account_id = $1 AND addressbook_id = $2 RETURNING *', [accountId, adrsbookId], cb).then(res => {
+    if (typeof cb === 'function') {
+        return query('DELETE FROM contact WHERE account_id = $1 AND addressbook_id = $2 RETURNING *', [accountId, adrsbookId], cb);
+    }
+    return query('DELETE FROM contact WHERE account_id = $1 AND addressbook_id = $2 RETURNING *', [accountId, adrsbookId]).then(res => {
         return res.rows;
     }).catch(err => {
         throw err;
