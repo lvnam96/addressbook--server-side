@@ -22,8 +22,18 @@ class Fatory {
         return plainObj;
     }
 
-    toDB () {
-        return this.toJSON();
+    toDB () {// basically same as toJSON()
+        const serializableKeys = this._isSerializable || [];
+        const plainObj = {};
+        for (let key of serializableKeys) {
+            if (this[key] && typeof this[key].toJSON === 'function') {
+                plainObj[key] = this[key].toJSON();
+            } else {
+                plainObj[key] = this[key];
+            }
+        }
+
+        return plainObj;
     }
 
     static fromJSON (json) {
