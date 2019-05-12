@@ -149,6 +149,9 @@ module.exports = {
             },
             {
                 test: /\.(woff2?|eot|ttf|otf)$/i,
+                options: {
+                    limit: 8192
+                },
                 loader: 'url-loader'
             }
         ]
