@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { getListOfBirthsToday, filterBirthsToday } from './helpers/timeHelper';
+import { checkStorageAvailable } from './helpers/checkSupportedFeaturesHelper';
 import * as storeActions from './storeActions';
 
 import ContactCard from './components/ContactCard/ContactCard';
@@ -103,6 +104,10 @@ class App extends React.Component {
                 }
             }
         });
+
+        if (!checkStorageAvailable('localStorage')) {
+            storeActions.showNoti('alert', 'Sorry, your browser does NOT support saving your data locally.');
+        }
     }
 
     // filterBirthsToday () {// re-update happy-birthday list

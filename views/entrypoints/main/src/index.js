@@ -5,7 +5,6 @@ import { Provider } from 'react-redux';
 import { AppContainer } from 'react-hot-loader';
 
 import { save as saveToLocalStorage } from './js/services/localStorageService';
-import { checkStorageAvailable } from './js/helpers/checkSupportedFeaturesHelper';
 
 import App from './js/App';
 
@@ -37,10 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     window.addEventListener('beforeunload', saveDataBeforeCloseTab, false);
 });
-
-if (!checkStorageAvailable('localStorage')) {
-    alert('Sorry, your browser does NOT support Local Storage.\nWe will not be able to save your data.');
-}
 
 if (process.env.NODE_ENV !== 'production') {
     window.adbk = adbk;// make adbk global
