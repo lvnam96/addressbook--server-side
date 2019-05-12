@@ -276,8 +276,13 @@ class App extends React.Component {
 
 
     render () {
-        const notifications = this.props.notiList.map(notiObj => (
-            <NotiBar type={notiObj.type} msg={notiObj.msg} key={notiObj.id} />
+        const notifications = this.props.notiList.map(({type, msg, displayTimeDuration, id}) => (
+            <NotiBar
+                displayTimeDuration={displayTimeDuration}
+                type={type}
+                msg={msg}
+                key={id}
+            />
         ));
         let elemInPopup;
         const activatedToggler = this.state.popupTogglersManager.activatedToggler;

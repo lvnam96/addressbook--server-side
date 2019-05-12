@@ -2,10 +2,11 @@
 const store = adbk.redux.store;
 const boundActions = adbk.redux.action;
 
-export const showNoti = (type, msg) => {
+export const showNoti = (type, msg, displayTimeDuration) => {
     boundActions.notifications.pushNoti({
         type,
         msg,
+        displayTimeDuration,
         id: Math.random()
     });
 };

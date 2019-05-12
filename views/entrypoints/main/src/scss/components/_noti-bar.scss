@@ -8,43 +8,29 @@
     left: 0;
     width: 100%;
     padding: 20px;
-    // background-color: #1E88E5;// This prop will be set by style attribute
+    background-color: #59a5e8;// This prop will be set by style attribute
     color: #fff;
     font-size: 1rem;
-    display: flex;
     z-index: 2147483647;// z-index maximum value
-    animation: showhide 3s ease-in-out both;
 
-
-
-
-
-    /**********************************\
-            #ELEMENTS IN NOTI BAR
-    \**********************************/
     &__ico {
-        margin-right: 20px;
+        margin-right: 1rem;
     }
 
     &__msg {
 
     }
 
-    &__placeholder {
-
+    &__close-btn {
+        font-size: .8rem;
+        color: $color--white;
     }
-}
 
+    &.show {
+        animation: fadeInDown 3s ease-in-out both;
+    }
 
-
-
-
-/**********************************\
-        #MEDIA QUERIES
-\**********************************/
-
-@media (min-width: 600px) {
-    .noti-bar {
-        justify-content: center;
+    &.hide {
+        animation: fadeOutUp .2s ease-in-out forwards;
     }
 }

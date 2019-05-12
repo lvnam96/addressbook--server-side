@@ -47,12 +47,26 @@
     }
 }
 
-@keyframes showhide {
+@keyframes fadeInDown {
     0%, 100% {
-        transform: translate(0,-100%);
+        transform: translate(0, -100%);
+        opacity: 0;
     }
 
     10%, 90% {
         transform: translate(0,0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOutUp {
+    0% {
+        transform: 0;
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(0, -100%);
+        opacity: 0;
     }
 }

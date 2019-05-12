@@ -1,38 +1,62 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 
 const NotiBar = props => {
-    let icoClass, bgColor;
+    const [isShowed, toggleIsShowed] = useState(true);
+    const animationDuration = props.displayTimeDuration;
+    let icoClass, backgroundColor;
     switch (props.type) {
         case 'success':
             icoClass = "fas fa-check";
-            bgColor = '#4caf50';
+            backgroundColor = '#4caf50';
         break;
         case 'error':
             icoClass = "fas fa-exclamation-triangle";
-            bgColor = '#e53935';
+            backgroundColor = '#e53935';
         break;
-        default:
+        default:// case 'alert':
             icoClass = "fas fa-exclamation-circle";
-            bgColor = '#59a5e8';
+            backgroundColor = '#59a5e8';
         break;
     }
 
+    const handleNotibarClose = e => {
+        toggleIsShowed(false);
+    };
+
+    const notiBarStyle = {
+        backgroundColor,
+    };
+    if (isShowed) {
+        notiBarStyle.animationDuration = props.displayTimeDuration;
+    }
+
     return (
-        <div className='noti-bar' style={{backgroundColor: bgColor}}>
-            <div className='noti-bar__ico'>
-                <i className={icoClass}></i>
-            </div>
-            <div className='noti-bar__msg'>
-                <span>{props.msg}</span>
-            </div>
-            <div className='noti-bar__placeholder'>
+        <div className={classnames('noti-bar', (isShowed ? 'show' : 'hide'))} style={notiBarStyle}>
+            <div className="row align-items-center">
+                <div className="col">
+                    <span className="noti-bar__ico">
+                        <i className={icoClass}></i>
+                    </span>
+                    <span className="noti-bar__msg">
+                        <span>{props.msg}</span>
+                    </span>
+                </div>
+                <div className="col-auto">
+                    <button className="btn noti-bar__close-btn" onClick={handleNotibarClose}><i className="fas fa-times-circle"></i></button>
+                </div>
             </div>
         </div>
     );
 }
 
+NotiBar.defaultProps = {
+    displayTimeDuration: '3s',
+};
+
 NotiBar.propTypes = {
+    displayTimeDuration: PropTypes.string,
     type: PropTypes.string.isRequired,
     msg: PropTypes.string.isRequired
 };
