@@ -43,7 +43,7 @@ const Form = props => {
                                     <CheckboxField
                                         labels={props.contact.labels}
                                         id="form_cb-family"
-                                        ref={props.refCBoxFamily}
+                                        inputRef={props.refCBoxFamily}
                                         value="family"
                                         label="Family"
                                     />
@@ -52,7 +52,7 @@ const Form = props => {
                                     <CheckboxField
                                         labels={props.contact.labels}
                                         id="form_cb-coWorker"
-                                        ref={props.refCBoxCoWorker}
+                                        inputRef={props.refCBoxCoWorker}
                                         value="coWorker"
                                         label="Co-worker"
                                     />
@@ -61,7 +61,7 @@ const Form = props => {
                                     <CheckboxField
                                         labels={props.contact.labels}
                                         id="form_cb-friends"
-                                        ref={props.refCBoxFriend}
+                                        inputRef={props.refCBoxFriend}
                                         value="friends"
                                         label="Friends"
                                     />

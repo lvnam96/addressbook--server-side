@@ -219,7 +219,7 @@ class FormContainer extends React.Component {
         // this.state.labels = labelSet;
 
         submittedData.note = typeof submittedData.note === 'string' ? submittedData.note.trim() : '';
-        
+
         // submittedData.adrsbookId = adbk.inst.adrsbook.id;
         // submittedData.accountId = adbk.inst.user.id;
         // OR:

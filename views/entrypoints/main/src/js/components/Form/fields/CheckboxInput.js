@@ -17,7 +17,7 @@ class CheckboxInput extends React.PureComponent {
                     onFocus={this.props.addFilledClass}
                     onBlur={this.props.checkInputFilled}
                     className={this.props.className}
-                    ref={this.props.ref}
+                    ref={this.props.inputRef}
                 />
                 <label className="form__cb-box" htmlFor={this.props.id}></label>
             </>
@@ -34,7 +34,7 @@ CheckboxInput.propTypes = {
     handlerChangeInput: PropTypes.func,
     addFilledClass: PropTypes.func,
     checkInputFilled: PropTypes.func,
-    ref: PropTypes.func,
+    inputRef: PropTypes.object,
     className: PropTypes.string,
 };
 
