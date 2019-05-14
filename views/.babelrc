@@ -4,6 +4,7 @@
             "presets": ["@babel/preset-env", "@babel/preset-react"],
             "plugins": [
                 ["@babel/plugin-transform-runtime", { "corejs": 2 }],
+                "@babel/plugin-syntax-dynamic-import",
                 "@babel/plugin-proposal-object-rest-spread"
             ]
         },
@@ -12,6 +13,7 @@
             "plugins": [
                 ["@babel/plugin-transform-runtime", { "corejs": 2 }],
                 "react-hot-loader/babel",
+                "@babel/plugin-syntax-dynamic-import",
                 ["@babel/plugin-proposal-object-rest-spread", { "useBuiltIns": true }]
             ]
         }

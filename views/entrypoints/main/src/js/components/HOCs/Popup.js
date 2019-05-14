@@ -18,18 +18,20 @@ const Popup = (props) => {
         throw new Error('<Popup/> requires a single component as its only child');
     }
     if (props.isOpen === undefined || (props.isOpen !== undefined && !!props.isOpen)) {
-        return <React.Fragment>
-            <div className="popup-backdrop" style={props.backdropStyle}></div>
-            <div className="popup" onClick={props.onCloseHandler}>
-                <div className={classNames('popup-dialog', {
-                    'popup-dialog--centered': props.isCentered !== undefined ? props.isCentered : true,
-                })}>
-                    <div className="popup-content" style={props.contentBoxStyle}>
-                        {children}
+        return (
+            <>
+                <div className="popup-backdrop" style={props.backdropStyle}></div>
+                <div className="popup" onClick={props.onCloseHandler}>
+                    <div className={classNames('popup-dialog', {
+                        'popup-dialog--centered': props.isCentered !== undefined ? props.isCentered : true,
+                    })}>
+                        <div className="popup-content" style={props.contentBoxStyle}>
+                            {children}
+                        </div>
                     </div>
                 </div>
-            </div>
-        </React.Fragment>;
+            </>
+        );
     } else {
         return null;
     }

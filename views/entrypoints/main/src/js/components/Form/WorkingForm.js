@@ -3,11 +3,17 @@ import PropTypes from 'prop-types';
 
 import * as storeActions from '../../storeActions';
 
-import FormContainer from './containers/FormContainer';
+// import FormContainer from './containers/FormContainer';
 // import EditForm from './containers/EditFormContainer';
+import LoadingPopup from '../HOCs/LoadingPopup';
+const FormContainer = React.lazy(() => import('./containers/FormContainer'));
 
 const WorkingForm = props => {
     const store = adbk.redux.store;
+    const loadingPopupComp = (<LoadingPopup
+        handleClose={props.closeForm}
+        closeFuncArgs={props.contactId}
+    />);
     if (props.isEditing) {
         const saveEditedContact = editedContact => {
             storeActions.asyncEditContact(editedContact).then(res => {
@@ -23,13 +29,15 @@ const WorkingForm = props => {
             });
         };
         return (
-            <FormContainer
-                title="Edit Contact"
-                contact={store.getState().contacts.find(contact => contact.id === props.contactId)}
-                closeForm={props.closeForm}
-                showNoti={storeActions.showNoti}
-                handlerSubmit={saveEditedContact}
-            />
+            <React.Suspense fallback={loadingPopupComp}>
+                <FormContainer
+                    title="Edit Contact"
+                    contact={store.getState().contacts.find(contact => contact.id === props.contactId)}
+                    closeForm={props.closeForm}
+                    showNoti={storeActions.showNoti}
+                    handlerSubmit={saveEditedContact}
+                />
+            </React.Suspense>
         );
     } else {
         const addNewContact = newContact => {
@@ -43,13 +51,15 @@ const WorkingForm = props => {
             });
         };
         return (
-            <FormContainer
-                title="Add new contact"
-                contact={adbk.classes.Contact.fromScratch()}
-                closeForm={props.closeForm}
-                showNoti={storeActions.showNoti}
-                handlerSubmit={addNewContact}
-            />
+            <React.Suspense fallback={loadingPopupComp}>
+                <FormContainer
+                    title="Add new contact"
+                    contact={adbk.classes.Contact.fromScratch()}
+                    closeForm={props.closeForm}
+                    showNoti={storeActions.showNoti}
+                    handlerSubmit={addNewContact}
+                />
+            </React.Suspense>
         );
     }
 };

@@ -6,18 +6,18 @@ import { getListOfBirthsToday, filterBirthsToday } from './helpers/timeHelper';
 import { checkStorageAvailable } from './helpers/checkSupportedFeaturesHelper';
 import * as storeActions from './storeActions';
 
-import ContactCard from './components/ContactCard/ContactCard';
 import MainNavContainer from './components/MainNav/containers/MainNavContainer';
 import NotiBar from './components/NotiBar';
 import MainContentContainer from './components/MainContent/MainContentContainer';
 import WorkingForm from './components/Form/WorkingForm';
 import ConfirmDialog from './components/Modals/ConfirmDialog';
+import LoadingPopup from './components/HOCs/LoadingPopup';
+const ContactCard = React.lazy(() => import('./components/ContactCard/ContactCard'));
 
 const bodyElem = document.body;
 const CONTACT_EDIT_FORM_SLUG = 'contact-edit-form';
 const MODAL_DIALOG_SLUG = 'modal-dialog';
 const CONTACT_CARD_SLUG = 'contact-card';
-
 const preventBodyElemScrolling = () => {
     bodyElem.classList.add('popup-open');
 };
@@ -165,9 +165,9 @@ class App extends React.Component {
         this.setState((prevState, prevProps) => {
             const newState = {
                 // isShowCC: false,
-                openingContactId: null,
+                // openingContactId: null,
             };
-            
+
             if (prevState.prevOpenedPopupList.last === CONTACT_CARD_SLUG) {
                 newState.prevOpenedPopupList = prevState.prevOpenedPopupList.pull();
             }
@@ -297,14 +297,22 @@ class App extends React.Component {
         if (activatedToggler) {
             switch (activatedToggler) {
                 case CONTACT_CARD_SLUG:
-                    elemInPopup = <ContactCard
-                        contact={this.props.contacts[this.state.contactIndex]}
-                        contactIndex={this.state.contactIndex}
-                        onClose={this.closeContactCard}
-                        onEditContact={this.openForm}
-                        openModalDialog={this.openConfirmDialog}
-                        onRemoveContact={this.rmContact}
-                    />;
+                    elemInPopup = (
+                        <React.Suspense fallback={(
+                            <LoadingPopup
+                                handleClose={this.closeContactCard}
+                            />
+                        )}>
+                            <ContactCard
+                                contact={this.props.contacts[this.state.contactIndex]}
+                                contactIndex={this.state.contactIndex}
+                                onClose={this.closeContactCard}
+                                onEditContact={this.openForm}
+                                openModalDialog={this.openConfirmDialog}
+                                onRemoveContact={this.rmContact}
+                            />
+                        </React.Suspense>
+                    );
                     break;
                 case CONTACT_EDIT_FORM_SLUG:
                     elemInPopup = <WorkingForm
