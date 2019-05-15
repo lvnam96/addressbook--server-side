@@ -70,8 +70,14 @@ const MainNav = props => (
                 icon="fas fa-upload"
                 onClick={props.handlerRestoreData} />*/}
             <NavBtn
+                moreClass={classNames({
+                    'color-blink': props.totalContactsAmount === 0,
+                })}
                 label="Add new contact"
-                icon="fas fa-plus-circle"
+                icon={classNames('fas fa-plus-circle', {
+                    'jump': props.totalContactsAmount === 0,
+                    'scale-bigger': props.totalContactsAmount === 0,
+                })}
                 onClick={props.handlerAddNewContact} />
         </nav>
     </nav>

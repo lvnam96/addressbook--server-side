@@ -82,16 +82,28 @@
                 }
             }
         }
+
+        &.color-blink {
+            animation: color-blink 3s infinite;
+        }
     }
 
     &__item-label {
         display: none;
     }
 
-    .fa {
+    [class*="fa"] {
         pointer-events: none;
         transition: transform ease .3s;
         font-size: 1.2em;
+
+        &.jump {
+            animation: jump 1s infinite,
+        }
+
+        &.scale-bigger {
+            animation: scale-bigger 1s infinite,
+        }
     }
 }
 
@@ -149,7 +161,7 @@
 \**********************************/
 
 @media (min-width: 400px) {
-    .main-nav .fa {
+    .main-nav [class*="fa"] {
         font-size: 1.5em;
     }
 }
@@ -192,7 +204,7 @@
                 color: #000;
             }
 
-            .fa {
+            [class*="fa"] {
                 flex-basis: 60px;
                 margin-left: 10px;
                 font-size: 1.2em;
@@ -222,8 +234,8 @@
         display: flex;
     }
 
-    #bckp-rstr-toggle:checked + .main-nav__item > .fa,
-    #sort-toggle:checked + .main-nav__item > .fa {
+    #bckp-rstr-toggle:checked + .main-nav__item > [class*="fa"],
+    #sort-toggle:checked + .main-nav__item > [class*="fa"] {
         transform: rotate(-180deg);
 
         &::before {
@@ -231,14 +243,14 @@
         }
     }
 
-    // #bckp-rstr-toggle:checked + .main-nav__item > .fa::before,
-    // #sort-toggle:checked + .main-nav__item > .fa::before {
+    // #bckp-rstr-toggle:checked + .main-nav__item > [class*="fa"]::before,
+    // #sort-toggle:checked + .main-nav__item > [class*="fa"]::before {
     //     content: '\f107';
     // }
 }
 
 @media (min-width: 930px) {
-    .main-nav__item .fa {
+    .main-nav__item [class*="fa"] {
         flex-basis: 90px;
         margin-left: 0;
     }
