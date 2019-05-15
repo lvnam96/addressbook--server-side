@@ -9,6 +9,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const session = require('express-session');
 const { pool } = require('./db/pool');
 const adbk = require('./classes/adbk');
+const compression = require('compression');
 
 const router = require('./routes/index');
 
@@ -28,6 +29,7 @@ app.set('view engine', 'pug');
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
+app.use(compression());// put compression middleware before any files serving middleware
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser());
 app.use(bodyParser.json());
