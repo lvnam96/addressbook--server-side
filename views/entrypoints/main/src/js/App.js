@@ -11,7 +11,7 @@ import NotiBar from './components/NotiBar';
 import MainContent from './components/MainContent/containers/MainContentContainer';
 import WorkingForm from './components/Form/WorkingForm';
 import ConfirmDialog from './components/Modals/ConfirmDialog';
-import LoadingPopup from './components/HOCs/LoadingPopup';
+import LoadingPopup from './components/Popup/LoadingPopup';
 const ContactCard = React.lazy(() => import('./components/ContactCard/ContactCard'));
 
 const bodyElem = document.body;

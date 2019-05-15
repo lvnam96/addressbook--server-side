@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
+import classNames from 'classnames';
 
 const NotiBar = props => {
     const [isShowed, toggleIsShowed] = useState(true);
@@ -33,7 +33,7 @@ const NotiBar = props => {
     }
 
     return (
-        <div className={classnames('noti-bar', (isShowed ? 'show' : 'hide'))} style={notiBarStyle}>
+        <div className={classNames('noti-bar', (isShowed ? 'show' : 'hide'))} style={notiBarStyle}>
             <div className="row align-items-center">
                 <div className="col">
                     <span className="noti-bar__ico">

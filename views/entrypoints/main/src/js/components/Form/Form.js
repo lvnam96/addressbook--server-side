@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Popup from '../HOCs/Popup';
+import Popup from '../Popup/Popup';
 import Header from './Header';
 import Avt from './Avt';
 import TextField from './fields/TextField';

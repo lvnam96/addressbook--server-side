@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Popup from '../HOCs/Popup';
+import Popup from '../Popup/Popup';
 
 const ConfirmDialog = (props) => {
     const cancelAction = () => {

@@ -5,7 +5,7 @@ import * as storeActions from '../../storeActions';
 
 // import FormContainer from './containers/FormContainer';
 // import EditForm from './containers/EditFormContainer';
-import LoadingPopup from '../HOCs/LoadingPopup';
+import LoadingPopup from '../Popup/LoadingPopup';
 const FormContainer = React.lazy(() => import('./containers/FormContainer'));
 
 const WorkingForm = props => {
