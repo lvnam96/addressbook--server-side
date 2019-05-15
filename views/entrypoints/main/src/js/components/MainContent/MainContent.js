@@ -2,15 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Dropdown from 'react-bootstrap/Dropdown';
 
-import ContactsList from '../ContactsList/ContactsList';
 import ContactsFilter from '../ContactsList/ContactsFilter';
+const ContactsList = React.lazy(() => import('../ContactsList/ContactsList'));
 
 const MainContent = props => {
-    const onClickShowAll = e => { props.onClickFilter('all'); };
-    const onClickFilterBirthsInWeek = e => { props.onClickFilter('week'); };
-    const onClickFilterBirthsInMonth = e => { props.onClickFilter('month'); };
     return (
-        <main className="main">
+        <main className="d-flex flex-column main">
             <header className="page-header">
                 <h1 className="page-title">Contacts Book</h1>
             </header>
@@ -27,12 +24,9 @@ const MainContent = props => {
                     <ContactsFilter
                         filterState={props.filterState}
                         totalContactsAmount={props.allContacts.length}
-                        beingDisplayedContactsAmount={props.filteredContacts.length}
+                        // beingDisplayedContactsAmount={props.filteredContacts.length}
                         birthsInWeekAmount={props.birthsInWeekAmount}
                         birthsInMonthAmount={props.birthsInMonthAmount}
-                        onClickShowAll={onClickShowAll}
-                        onClickFilterBirthsInWeek={onClickFilterBirthsInWeek}
-                        onClickFilterBirthsInMonth={onClickFilterBirthsInMonth}
                     />
                 </div>
                 <div className="col-auto px-0">
@@ -49,13 +43,21 @@ const MainContent = props => {
                     </Dropdown>
                 </div>
             </div>
-            <ContactsList
-                data={props.filteredContacts}
-                openContactCard={props.openContactCard}
-                rmItem={props.rmItem}
-                openForm={props.openForm}
-                openModalDialog={props.openModalDialog}
-                toggleMarkedItem={props.toggleMarkedItem} />
+            <React.Suspense fallback={(
+                <div className="flex-fill d-flex justify-content-center align-items-center">
+                    <div className="spinner-grow text-cyan" role="status">
+                        <span className="sr-only">Loading...</span>
+                    </div>
+                </div>
+            )}>
+                <ContactsList
+                    data={props.filteredContacts}
+                    openContactCard={props.openContactCard}
+                    rmItem={props.rmItem}
+                    openForm={props.openForm}
+                    openModalDialog={props.openModalDialog}
+                    toggleMarkedItem={props.toggleMarkedItem} />
+            </React.Suspense>
         </main>
     );
 };
@@ -71,7 +73,6 @@ MainContent.propTypes = {
     toggleMarkedItem: PropTypes.func.isRequired,
     allContacts: PropTypes.arrayOf(PropTypes.object).isRequired,
     filteredContacts: PropTypes.arrayOf(PropTypes.object).isRequired,
-    onClickFilter: PropTypes.func.isRequired,
     onRestoreData: PropTypes.func.isRequired,
     onBackupData: PropTypes.func.isRequired,
     filterState: PropTypes.number.isRequired,

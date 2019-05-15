@@ -6,9 +6,9 @@ import { getListOfBirthsToday, filterBirthsToday } from './helpers/timeHelper';
 import { checkStorageAvailable } from './helpers/checkSupportedFeaturesHelper';
 import * as storeActions from './storeActions';
 
-import MainNavContainer from './components/MainNav/containers/MainNavContainer';
+import MainNav from './components/MainNav/containers/MainNavContainer';
 import NotiBar from './components/NotiBar';
-import MainContentContainer from './components/MainContent/MainContentContainer';
+import MainContent from './components/MainContent/containers/MainContentContainer';
 import WorkingForm from './components/Form/WorkingForm';
 import ConfirmDialog from './components/Modals/ConfirmDialog';
 import LoadingPopup from './components/HOCs/LoadingPopup';
@@ -337,7 +337,7 @@ class App extends React.Component {
 
         return (
             <>
-                <MainContentContainer
+                <MainContent
                     contacts={this.props.contacts}
                     filterState={this.props.filterState}
                     totalContactsAmount={this.props.contacts.length}
@@ -345,9 +345,10 @@ class App extends React.Component {
                     rmItem={this.rmContact}
                     openModalDialog={this.openConfirmDialog}
                     openForm={this.openForm}
-                    toggleMarkedItem={storeActions.toggleMarkedItem} />
+                    toggleMarkedItem={storeActions.toggleMarkedItem}
+                />
                 {notifications}
-                <MainNavContainer
+                <MainNav
                     totalContactsAmount={this.props.contacts.length}
                     openForm={this.openForm}
                     showNoti={storeActions.showNoti}

@@ -1,14 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import store from '../../store';
+import store from '../../../store';
 
-import { getBirthsInWeek, getBirthsInMonth } from '../../helpers/timeHelper';
-import { sortByName } from '../../helpers/sortHelper';
-import * as ls from '../../services/localStorageService';
-import * as storeActions from '../../storeActions';
+import { getBirthsInWeek, getBirthsInMonth } from '../../../helpers/timeHelper';
+import { sortByName } from '../../../helpers/sortHelper';
+import * as ls from '../../../services/localStorageService';
+import * as storeActions from '../../../storeActions';
 
-import MainContent from './MainContent';
+import MainContent  from '../MainContent';
 
 const MainContentContainer = props => {
     const contactsHaveBirthInWeek = getBirthsInWeek(props.contacts);
@@ -24,20 +24,6 @@ const MainContentContainer = props => {
         default:
             filteredContacts = sortByName(props.contacts);
     }
-    const onClickFilter = (filterStateSlug) => {
-        switch (filterStateSlug) {
-            case 'week':
-                storeActions.changeStateToWeek();
-                break;
-            case 'month':
-                storeActions.changeStateToMonth();
-                break;
-            default:
-                storeActions.changeStateToAll();
-                break;
-        }
-    };
-
     const onUploadFile = e => {
         let fileToLoad = e.target.files[0];
 
@@ -60,7 +46,6 @@ const MainContentContainer = props => {
             reader.readAsText(fileToLoad, 'UTF-8');
         }
     };
-
     const onBackupData = e => {
         const store = adbk.redux.store;
         const bodyElem = document.body;
@@ -105,7 +90,6 @@ const MainContentContainer = props => {
             storeActions.showNoti('alert', 'Sorry, your browser does not support this feature.');
         }
     };
-
     const onRestoreData = e => {
         if ('FileReader' in window) {
             document.getElementById('inptFileBtn').click();
@@ -129,7 +113,6 @@ const MainContentContainer = props => {
                 filteredContacts={filteredContacts}
                 birthsInWeekAmount={contactsHaveBirthInWeek.length}
                 birthsInMonthAmount={contactsHaveBirthInMonth.length}
-                onClickFilter={onClickFilter}
                 onRestoreData={onRestoreData}
                 onBackupData={onBackupData}
             />
