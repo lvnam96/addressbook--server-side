@@ -1,33 +1,29 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 import TextInput from './TextInput';
 
 class TextField extends React.PureComponent {
-    render () {
+    render() {
         return (
-            <>
+            <div
+                className={classNames('input-wrapper', {
+                    'no-label': typeof this.props.children === 'undefined',
+                })}>
                 <TextInput {...this.props} />
                 {this.props.children}
-            </>
+            </div>
         );
     }
 }
 
 TextField.propTypes = {
-    type: PropTypes.string.isRequired,
-    value: PropTypes.string.isRequired,
-    handlerChangeInput: PropTypes.func.isRequired,
-    addFilledClass: PropTypes.func.isRequired,
-    checkInputFilled: PropTypes.func.isRequired,
-    required: PropTypes.bool,
-    autoFocus: PropTypes.bool,
-    id: PropTypes.string,
-    className: PropTypes.string,
-    placeholder: PropTypes.string,
-    pattern: PropTypes.string,
-    title: PropTypes.string,
-    children: PropTypes.element,
+    children: PropTypes.element, // label element
+};
+
+TextField.defaultProps = {
+    children: <label />, // label element
 };
 
 export default TextField;

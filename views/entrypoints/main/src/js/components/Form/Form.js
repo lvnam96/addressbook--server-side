@@ -33,7 +33,7 @@ const Form = props => {
                                     handlerChangeInput={props.handlerChangeInput}
                                     addFilledClass={props.addFilledClass}
                                     checkInputFilled={props.checkInputFilled}
-                                    className="form__input-field"
+                                    className="form-control form__input-field"
                                 >
                                     <label className="form__input-label" htmlFor="inputs__name"><span className="form__input-label__text">Name</span></label>
                                 </TextField>
@@ -75,7 +75,7 @@ const Form = props => {
                                     handlerChangeInput={props.handlerChangeInput}
                                     addFilledClass={props.addFilledClass}
                                     checkInputFilled={props.checkInputFilled}
-                                    className="form__input-field"
+                                    className="form-control form__input-field"
                                 >
                                     <label className="form__input-label" htmlFor="inputs__phone"><span className="form__input-label__text">Phone</span></label>
                                 </TextField>
@@ -88,7 +88,7 @@ const Form = props => {
                                     handlerChangeInput={props.handlerChangeInput}
                                     addFilledClass={props.addFilledClass}
                                     checkInputFilled={props.checkInputFilled}
-                                    className="form__input-field"
+                                    className="form-control form__input-field"
                                 >
                                     <label className="form__input-label" htmlFor="inputs__birth"><span className="form__input-label__text">Birth</span></label>
                                 </TextField>
@@ -101,7 +101,7 @@ const Form = props => {
                                     handlerChangeInput={props.handlerChangeInput}
                                     addFilledClass={props.addFilledClass}
                                     checkInputFilled={props.checkInputFilled}
-                                    className="form__input-field"
+                                    className="form-control form__input-field"
                                     placeholder="hello@garyle.me"
                                 >
                                     <label className="form__input-label" htmlFor="inputs__email"><span className="form__input-label__text">Email</span></label>
@@ -115,7 +115,7 @@ const Form = props => {
                                     handlerChangeInput={props.handlerChangeInput}
                                     addFilledClass={props.addFilledClass}
                                     checkInputFilled={props.checkInputFilled}
-                                    className="form__input-field"
+                                    className="form-control form__input-field"
                                     pattern="^https?:\/\/\S*"
                                     placeholder="https://facebook.com/lvnam96"
                                     title="Website's link should start by 'http://'' or 'https://'"
@@ -131,7 +131,7 @@ const Form = props => {
                                     handlerChangeInput={props.handlerChangeInput}
                                     addFilledClass={props.addFilledClass}
                                     checkInputFilled={props.checkInputFilled}
-                                    className="form__input-field"
+                                    className="form-control form__input-field"
                                 >
                                     <label className="form__input-label" htmlFor="inputs__note"><span className="form__input-label__text">Note</span></label>
                                     </TextField>

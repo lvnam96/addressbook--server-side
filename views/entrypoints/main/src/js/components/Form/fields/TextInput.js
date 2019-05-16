@@ -8,8 +8,8 @@ class TextInput extends React.PureComponent {
                 type={this.props.type}
                 value={this.props.value}
                 id={this.props.id}
-                required={this.props.required}
-                autoFocus={this.props.autoFocus}
+                required={!!this.props.required}
+                autoFocus={!!this.props.autoFocus}
                 onChange={this.props.handlerChangeInput}
                 onFocus={this.props.addFilledClass}
                 onBlur={this.props.checkInputFilled}
@@ -28,8 +28,8 @@ TextInput.propTypes = {
     type: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
     handlerChangeInput: PropTypes.func.isRequired,
-    addFilledClass: PropTypes.func.isRequired,
-    checkInputFilled: PropTypes.func.isRequired,
+    addFilledClass: PropTypes.func,
+    checkInputFilled: PropTypes.func,
     id: PropTypes.string,
     className: PropTypes.string,
     placeholder: PropTypes.string,

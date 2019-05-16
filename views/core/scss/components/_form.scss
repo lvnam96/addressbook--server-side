@@ -1,33 +1,150 @@
+%input-label-divider {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background-color: $color--gray;
+}
+
+input::-webkit-input-placeholder {
+    // Chrome/Opera/Safari/Edge
+    color: $color--light-gray;
+}
+
+input::-moz-placeholder {
+    color: $color--light-gray;
+}
+
+input::placeholder {
+    color: $color--light-gray;
+}
+
 .input-wrapper {
     position: relative;
 
-    &::after {
-        content: ' ';
-        background-color: $color--dark-black;
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        height: 1px;
+    label {
+        font-size: small;
+        color: $color--gray;
+        font-weight: bold;
         width: 100%;
-        transform: scale(0, 1);
-        transform-origin: left;
-        @include simpleTransition(transform);
-        z-index: 1;
+        padding-top: 0.1rem;
+        position: relative;
+
+        &::after {
+            @extend %input-label-divider;
+            z-index: 1;
+        }
+
+        &::before {
+            @extend %input-label-divider;
+            background-color: $color--black;
+            z-index: 2;
+            transform: scale(0, 1);
+            transform-origin: left;
+            @include simpleTransition(transform);
+        }
     }
 
-    &:hover::after {
-        transform: scale(1, 1);
+    // &::after {
+    //     content: ' ';
+    //     background-color: $color--black;
+    //     position: absolute;
+    //     bottom: 0;
+    //     left: 0;
+    //     height: 1px;
+    //     width: 100%;
+    //     transform: scale(0, 1);
+    //     transform-origin: left;
+    //     @include simpleTransition(transform);
+    //     z-index: 1;
+    // }
+
+    // &:hover::after {
+    //     transform: scale(1, 1);
+    // }
+
+    &:hover {
+        label {
+            color: $text-color;
+
+            &::before {
+                transform: scale(1);
+            }
+        }
     }
 
     // overwrite bootstrap's default style
     > input {
+        padding-left: 0; // overwrite BS4
+        padding-right: 0; // overwrite BS4
+        width: 100%;
+        background-color: transparent;
         border-radius: 0;
         border: 0;
-        border-bottom: 1px solid $color--gray;
+        outline: none;
+        box-shadow: none;
+
+        &:invalid {
+            ~ label {
+                color: lighten($color--red, 10%);
+
+                &::after {
+                    background-color: lighten($color--red, 10%);
+                }
+            }
+        }
 
         &:focus {
-            border-color: $color--dark-black;
+            border-color: $color--black;
             box-shadow: none;
+            background-color: transparent;
+
+            ~ label {
+                color: $text-color;
+
+                &::after {
+                    background-color: $color--black;
+                }
+            }
         }
     }
+
+    // &.no-label {
+    //     > input {
+    //         border-bottom: 1px solid $color--gray;
+
+    //         &:invalid {
+    //             border-bottom-color: lighten($color--red, 10%);
+    //         }
+
+    //         &:focus {
+    //             // [UX] :focus should take precedence over :invalid
+    //             border-color: $color--black;
+    //             box-shadow: none;
+    //             background-color: transparent;
+    //         }
+
+    //         &::after {
+    //             content: ' ';
+    //             background-color: $color--black;
+    //             position: absolute;
+    //             bottom: 0;
+    //             left: 0;
+    //             height: 1px;
+    //             width: 100%;
+    //             transform: scale(0, 1);
+    //             transform-origin: left;
+    //             @include simpleTransition(transform);
+    //             z-index: 1;
+    //         }
+
+    //         &:hover {
+    //             &::after {
+    //                 transform: scale(1, 1);
+    //             }
+    //         }
+    //     }
+    // }
 }
