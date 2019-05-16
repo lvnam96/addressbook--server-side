@@ -1,5 +1,5 @@
 import React from 'react';
-const { renderToString } = require('react-dom/server');
+import ReactDOMServer from 'react-dom/server';
 import SignInFormContainer from './js/SignInFormContainer';
 
-export default renderToString(<SignInFormContainer />);
+export default ReactDOMServer.renderToString(<SignInFormContainer />);
