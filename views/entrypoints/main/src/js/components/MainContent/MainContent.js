@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Dropdown from 'react-bootstrap/Dropdown';
 
 import ContactsFilter from '../ContactsList/ContactsFilter';
-const ContactsList = React.lazy(() => import('../ContactsList/ContactsList'));
+const ContactsList = React.lazy(() => import(/* webpackPreload: true */ '../ContactsList/ContactsList'));
 
 const MainContent = props => {
     return (

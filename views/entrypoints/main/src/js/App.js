@@ -12,7 +12,7 @@ import MainContent from './components/MainContent/containers/MainContentContaine
 import WorkingForm from './components/Form/WorkingForm';
 import ConfirmDialog from './components/Modals/ConfirmDialog';
 import LoadingPopup from './components/Popup/LoadingPopup';
-const ContactCard = React.lazy(() => import('./components/ContactCard/ContactCard'));
+const ContactCard = React.lazy(() => import(/* webpackPreload: true */ './components/ContactCard/ContactCard'));
 
 const bodyElem = document.body;
 const CONTACT_EDIT_FORM_SLUG = 'contact-edit-form';

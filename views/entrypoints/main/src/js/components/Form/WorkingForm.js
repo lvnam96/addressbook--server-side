@@ -6,7 +6,7 @@ import * as storeActions from '../../storeActions';
 // import FormContainer from './containers/FormContainer';
 // import EditForm from './containers/EditFormContainer';
 import LoadingPopup from '../Popup/LoadingPopup';
-const FormContainer = React.lazy(() => import('./containers/FormContainer'));
+const FormContainer = React.lazy(() => import(/* webpackPreload: true */ './containers/FormContainer'));
 
 const WorkingForm = props => {
     const store = adbk.redux.store;
