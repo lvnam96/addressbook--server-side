@@ -1,46 +1,54 @@
 {
-    "parser": "babel-eslint",
-    "settings": {
-        "react": {
-            "createClass": "createReactClass",
-            "pragma": "React"
-        }
-    },
-    "parserOptions": {
-        "ecmaVersion": 2018,
-        "sourceType": "module",
-        "impliedStrict": true,
-        "ecmaFeatures": {
-            "jsx": true
-        }
-    },
-    "env": {
-        "serviceworker": true,
-        "jasmine": true,
-        "jest": true,
-        "browser": true,
-        "node": true
-    },
-    "extends": [
-        "eslint:recommended",
-        "plugin:react/recommended"
-    ],
-    "plugins": [
-        "babel",
-        "react"
-    ],
-    "globals": {
-        "adbk": true,
-    },
-    "rules": {
-        "no-debugger": "warn",
-        "no-console": "warn",
-        "no-undef": "error",
-        "no-unused-vars": "warn",
-        "semi": ["error", "always"],
-        "react/react-in-jsx-scope": "off",
-        "react/jsx-indent": ["warn", 4],
-        "react/prop-types": "warn",
-        "react/jsx-indent-props": ["warn", "first"]
+  "parser": "babel-eslint",
+  "settings": {
+    "react": {
+      "createClass": "createReactClass",
+      "pragma": "React"
     }
+  },
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module",
+    "impliedStrict": true,
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "env": {
+    "es6": true,
+    "serviceworker": true,
+    "jasmine": true,
+    "jest": true,
+    "browser": true,
+    "node": true
+  },
+  "extends": ["eslint:recommended", "plugin:react/recommended"],
+  "plugins": ["babel", "react", "semistandard-react", "react-hooks"],
+  "globals": {
+    "adbk": true
+  },
+  "rules": {
+    "no-debugger": "warn",
+    "no-console": "warn",
+    "no-undef": "error",
+    "no-unused-vars": "warn",
+    "semi": ["error", "always"],
+    "indent": [
+      "error",
+      2,
+      {
+        "VariableDeclarator": {
+          "var": 2,
+          "let": 2,
+          "const": 3
+        }
+      }
+    ],
+    "space-before-function-paren": ["warn", "always"],
+    "react/react-in-jsx-scope": "off",
+    "react/prop-types": "warn",
+    "react/jsx-indent-props": ["warn", "first"],
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn"
+  }
 }
