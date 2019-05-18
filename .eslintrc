@@ -22,8 +22,8 @@
     "browser": true,
     "node": true
   },
-  "extends": ["eslint:recommended", "plugin:react/recommended"],
-  "plugins": ["babel", "react", "semistandard-react", "react-hooks"],
+  "extends": ["eslint:recommended", "plugin:react/recommended", "standard", "standard-react"],
+  "plugins": ["babel", "react", "react-hooks"],
   "globals": {
     "adbk": true
   },
@@ -44,6 +44,8 @@
         }
       }
     ],
+    "jsx-quotes": ["error", "prefer-double"],
+    "comma-dangle": "off",
     "space-before-function-paren": ["warn", "always"],
     "react/react-in-jsx-scope": "off",
     "react/prop-types": "warn",
