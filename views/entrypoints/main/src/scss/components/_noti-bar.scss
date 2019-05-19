@@ -3,34 +3,33 @@
 \**********************************/
 
 .noti-bar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    padding: 20px;
-    background-color: #59a5e8;// This prop will be set by style attribute
-    color: #fff;
-    font-size: 1rem;
-    z-index: 2147483647;// z-index maximum value
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px;
+  background-color: #59a5e8; // This prop will be set by style attribute
+  color: #fff;
+  font-size: 1rem;
+  z-index: 2147483647; // z-index maximum value
 
-    &__ico {
-        margin-right: 1rem;
-    }
+  &__ico {
+    margin-right: 1rem;
+  }
 
-    &__msg {
+  &__msg {
+  }
 
-    }
+  &__close-btn {
+    font-size: 0.8rem;
+    color: $color--white;
+  }
 
-    &__close-btn {
-        font-size: .8rem;
-        color: $color--white;
-    }
+  &.show {
+    animation: fadeInDown 3s ease-in-out both;
+  }
 
-    &.show {
-        animation: fadeInDown 3s ease-in-out both;
-    }
-
-    &.hide {
-        animation: fadeOutUp .2s ease-in-out forwards;
-    }
+  &.hide {
+    animation: fadeOutUp 0.2s ease-in-out forwards;
+  }
 }

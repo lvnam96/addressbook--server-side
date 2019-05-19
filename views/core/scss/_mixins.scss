@@ -17,6 +17,6 @@
 }
 
 @mixin simpleTransition($prop...) {
-    transition: .2s ease;
-    transition-property: $prop;
+  transition: 0.2s ease;
+  transition-property: $prop;
 }

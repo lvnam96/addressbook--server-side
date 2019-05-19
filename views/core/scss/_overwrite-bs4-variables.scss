@@ -1,24 +1,21 @@
 @import './variables';
 
-$primary: $primary-color!default;
-$secondary: $accent-color!default;
+$primary: $primary-color !default;
+$secondary: $accent-color !default;
 $border-radius: $radius-size !default;
 $border-radius-lg: $radius-size-lg !default;
 $border-radius-sm: $radius-size-sm !default;
 
 $custom-colors: (
-    "orange": $color--orange,
-    "light-gray": $color--light-gray,
-    "gray": $color--gray,
-    "cyan": $color--cyan,
-    "light-blue": $color--light-blue,
-    "green-blue": $color--green-blue,
-    "green": $color--green,
-    "brown": $color--brown,
+  'orange': $color--orange,
+  'light-gray': $color--light-gray,
+  'gray': $color--gray,
+  'cyan': $color--cyan,
+  'light-blue': $color--light-blue,
+  'green-blue': $color--green-blue,
+  'green': $color--green,
+  'brown': $color--brown
 );
 
 $theme-colors: () !default;
-$theme-colors: map-merge(
-    $custom-colors,
-    $theme-colors
-);
+$theme-colors: map-merge($custom-colors, $theme-colors);

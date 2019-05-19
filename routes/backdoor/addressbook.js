@@ -11,7 +11,7 @@ const db = require('../../db/index');
 // });
 
 router.get('/', (req, res, next) => {
-    console.log('GET request to /backdoor/addressbook');
+  console.log('GET request to /backdoor/addressbook');
 });
 
 module.exports = router;

@@ -1,9 +1,7 @@
 // import
 
 class Notification {
-    constructor (noti) {
-        
-    }
+  constructor (noti) {}
 }
 
 export default Notification;

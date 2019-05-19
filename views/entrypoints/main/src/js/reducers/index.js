@@ -4,7 +4,7 @@ import filterState from './filterStateReducer';
 import notiList from './notiListReducer';
 
 export default combineReducers({
-    notiList,
-    contacts,
-    filterState
+  notiList,
+  contacts,
+  filterState,
 });

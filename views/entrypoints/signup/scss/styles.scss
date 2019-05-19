@@ -3,48 +3,45 @@
 @import '../../../core/scss/_mixins.scss';
 
 .body-wrapper > .row {
-    min-height: 100vh;
+  min-height: 100vh;
 }
 
 .signin-form {
+  &__uname {
+  }
 
-    &__uname {
+  &__passwd {
+  }
 
+  &__submit-btn {
+    // background-color: $color--dark-black;
+    // color: $color--white;
+  }
+
+  &__seperator {
+    position: relative;
+
+    .divider {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: -1;
     }
 
-    &__passwd {
-
+    &__text {
+      background-color: $bg-color;
+      font-style: italic;
     }
+  }
 
-    &__submit-btn {
-        // background-color: $color--dark-black;
-        // color: $color--white;
+  &__signup-link {
+    text-transform: uppercase;
+    font-weight: 900;
+    @include simpleTransition(letter-spacing);
+
+    &:hover {
+      letter-spacing: 2px;
     }
-
-    &__seperator {
-        position: relative;
-
-        .divider {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: -1;
-        }
-
-        &__text {
-            background-color: $bg-color;
-            font-style: italic;
-        }
-    }
-
-    &__signup-link {
-        text-transform: uppercase;
-        font-weight: 900;
-        @include simpleTransition(letter-spacing);
-
-        &:hover {
-            letter-spacing: 2px;
-        }
-    }
+  }
 }

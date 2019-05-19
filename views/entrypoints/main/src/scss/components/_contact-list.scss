@@ -2,96 +2,96 @@
         #PAGE'S MAIN SECTION
 \**********************************/
 .page-title {
-    text-transform: uppercase;
-    font-size: 2.3em;
-    font-weight: 900;
-    text-align: center;
-    padding: .625rem 0;
-    margin-bottom: 20px;
-    color: rgba(255,255,255,.1);
-    font-family: 'SVN-Smirk', sans-serif;
-    text-shadow: 2px 2px 3px rgba(255,255,255,.3);
-    // Get gradient from here: http://www.colorzilla.com/gradient-editor/#40223c+0,42988f+43,b1c592+60,f1ddba+69,fb718a+100
-    background: rgb(64,34,60);
-    background: -webkit-gradient(
-        linear, left top, right top,
-        from(rgba(64,34,60,1)),
-        color-stop(30%, rgba(66,152,143,1)),
-        color-stop(45%, rgba(177,197,146,1)),
-        color-stop(60%, rgba(241,221,186,1)),
-        to(rgba(251,113,138,1))
-    );
-    background: linear-gradient(
-        to right,
-        rgba(64,34,60,1) 0%,
-        rgba(66,152,143,1) 30%,
-        rgba(177,197,146,1) 45%,
-        rgba(241,221,186,1) 60%,
-        rgba(251,113,138,1) 100%
-    );
-    // filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#40223c', endColorstr='$accent-color',GradientType=1 );
-    -webkit-background-clip: text;
-    background-clip: text;
-    background-size: 100%;
-    background-position: center left, top left;
+  text-transform: uppercase;
+  font-size: 2.3em;
+  font-weight: 900;
+  text-align: center;
+  padding: 0.625rem 0;
+  margin-bottom: 20px;
+  color: rgba(255, 255, 255, 0.1);
+  font-family: 'SVN-Smirk', sans-serif;
+  text-shadow: 2px 2px 3px rgba(255, 255, 255, 0.3);
+  // Get gradient from here: http://www.colorzilla.com/gradient-editor/#40223c+0,42988f+43,b1c592+60,f1ddba+69,fb718a+100
+  background: rgb(64, 34, 60);
+  background: -webkit-gradient(
+    linear,
+    left top,
+    right top,
+    from(rgba(64, 34, 60, 1)),
+    color-stop(30%, rgba(66, 152, 143, 1)),
+    color-stop(45%, rgba(177, 197, 146, 1)),
+    color-stop(60%, rgba(241, 221, 186, 1)),
+    to(rgba(251, 113, 138, 1))
+  );
+  background: linear-gradient(
+    to right,
+    rgba(64, 34, 60, 1) 0%,
+    rgba(66, 152, 143, 1) 30%,
+    rgba(177, 197, 146, 1) 45%,
+    rgba(241, 221, 186, 1) 60%,
+    rgba(251, 113, 138, 1) 100%
+  );
+  // filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#40223c', endColorstr='$accent-color',GradientType=1 );
+  -webkit-background-clip: text;
+  background-clip: text;
+  background-size: 100%;
+  background-position: center left, top left;
 }
 
 .settings-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    $size: 2.5rem;
-    width: $size;
-    height: $size;
-    border-radius: 50%;
-    text-decoration: none!important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  $size: 2.5rem;
+  width: $size;
+  height: $size;
+  border-radius: 50%;
+  text-decoration: none !important;
 
-    &:hover {
-        background-color: $color--white;
-    }
+  &:hover {
+    background-color: $color--white;
+  }
 }
 
-.dropdown {// overwrite Bootstrap4's default
+.dropdown {
+  // overwrite Bootstrap4's default
 
-    hr {
-        margin-top: .5rem;
-        margin-bottom: .5rem;
-    }
+  hr {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
 }
 
 .contact-list {
-    font-size: 1rem;
-    // width: 100%;
-    margin: 1em 0;
-    list-style-type: none;
-    overflow-x: hidden;
-    background-color: #ffffff;
-    box-shadow: 0 0 20px -15px rgba(0, 0, 0, .8);
-    padding: .6rem;
-    border-radius: $radius-size;
+  font-size: 1rem;
+  // width: 100%;
+  margin: 1em 0;
+  list-style-type: none;
+  overflow-x: hidden;
+  background-color: #ffffff;
+  box-shadow: 0 0 20px -15px rgba(0, 0, 0, 0.8);
+  padding: 0.6rem;
+  border-radius: $radius-size;
 }
-
-
-
 
 /**********************************\
         #MEDIA QUERIES
 \**********************************/
 
 @media (min-width: $mobile) {
-    .page-title {
-        font-size: 2.5em;
-    }
+  .page-title {
+    font-size: 2.5em;
+  }
 
-    .contact-list {
-        // width: 90%;
-    }
+  .contact-list {
+    // width: 90%;
+  }
 }
 
 @media (min-width: $lg-desktop) {
-    .page-title {
-        font-size: 4em;
-        line-height: .8em;
-        margin: 50px auto;
-    }
+  .page-title {
+    font-size: 4em;
+    line-height: 0.8em;
+    margin: 50px auto;
+  }
 }

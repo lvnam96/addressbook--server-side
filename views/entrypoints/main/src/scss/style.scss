@@ -9,12 +9,12 @@
 
 // Medium devices (desktops, 992px and up)
 @media (min-width: 992px) {
-    .birth-reg-form input {
-        width: 200px;
-        margin: 15px 30px;
+  .birth-reg-form input {
+    width: 200px;
+    margin: 15px 30px;
 
-        &__submitBtn {
-            width: initial;
-        }
+    &__submitBtn {
+      width: initial;
     }
+  }
 }

@@ -6,15 +6,11 @@ import PropTypes from 'prop-types';
 ReactModal.setAppElement(document.getElementsByClassName('body-wrapper')[0]);
 
 const Modal = (props) => {
-    return (
-        <ReactModal {...props}>
-            {props.children}
-        </ReactModal>
-    );
+  return <ReactModal {...props}>{props.children}</ReactModal>;
 };
 
 Modal.propTypes = {
-    isOpen: PropTypes.bool.isRequired
+  isOpen: PropTypes.bool.isRequired,
 };
 
 export default Modal;

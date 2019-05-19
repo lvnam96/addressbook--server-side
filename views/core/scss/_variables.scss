@@ -22,16 +22,16 @@
 /*********************\
 # COLOR
 \*********************/
-$color--brand: #34a7f6;//#34a7f6;// primary
+$color--brand: #4fb9ff; //#34a7f6;// primary
 $color--linkedin: #19408b;
 
-$color--blue: #33adff;//#40a2f7;//#82d4e1;
-$color--green-blue: #19abd1;//#82d4e1;
+$color--blue: #33adff; //#40a2f7;//#82d4e1;
+$color--green-blue: #19abd1; //#82d4e1;
 $color--light-blue: #28a8e0;
 $color--green: #5edd76;
-$color--red: #fb4550;//#F0535C;
+$color--red: #fb4550; //#F0535C;
 $color--pink: #fb718a;
-$color--cyan: #00a79c;//#30d0de;// secondary
+$color--cyan: #00a79c; //#30d0de;// secondary
 $color--orange: #ffa800;
 $color--brown: #6c4c41;
 $color--yellow: #edb102;
@@ -50,29 +50,21 @@ $light-color: $color--light-gray;
 $bg-color: $color--white;
 $text-color: $color--light-black;
 
-
-
-
-
 /*********************\
 # CONFIG
 \*********************/
-$radius-size-sm: .5rem;
+$radius-size-sm: 0.5rem;
 $radius-size: 1rem;
 $radius-size-lg: 1.5rem;
-
-
-
-
 
 /*********************\
 # RESPONSIVE POINTS & SIZE
 \*********************/
 $page-max-width: 1200px;
-$mobile: 512px;// 36rem sm
-$tablet: 768px;// 48rem md
-$desktop: 992px;// 62rem lg
-$lg-desktop: $page-max-width;// 75rem xl
+$mobile: 512px; // 36rem sm
+$tablet: 768px; // 48rem md
+$desktop: 992px; // 62rem lg
+$lg-desktop: $page-max-width; // 75rem xl
 $content-padding-mobile: 10px;
 $content-padding-tablet: 20px;
 
@@ -82,17 +74,13 @@ $content-padding-tablet: 20px;
 // $imgPublicPath: $publicPath + 'imgs/';
 
 @media (min-width: $mobile) {
-
 }
 
 @media (min-width: $tablet) {
-
 }
 
 @media (min-width: $desktop) {
-
 }
 
 @media (min-width: $lg-desktop) {
-
 }

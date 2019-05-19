@@ -1,8 +1,8 @@
 {
-    "editorconfig": true,
-    "end_with_newline": true,
-    "space_after_anon_function": true,
-    "space_after_named_function": true,
-    "preserve_newlines": true,
-    "space_before_conditional": true,
+  "editorconfig": true,
+  "end_with_newline": true,
+  "space_after_anon_function": true,
+  "space_after_named_function": true,
+  "preserve_newlines": true,
+  "space_before_conditional": true
 }

@@ -1,251 +1,218 @@
 {
-    "type": "object",
-    "properties": {
-        "get-all-data": {
-            "required": [
-                "res",
-                "data"
-            ],
-            "properties": {
-                "res": {
-                    "enum": [true],
-                    "type": "boolean"
+  "type": "object",
+  "properties": {
+    "get-all-data": {
+      "required": ["res", "data"],
+      "properties": {
+        "res": {
+          "enum": [true],
+          "type": "boolean"
+        },
+        "data": {
+          "required": ["user", "adrsbook"],
+          "properties": {
+            "user": {
+              "type": "object",
+              "required": [
+                "id",
+                "uname",
+                "facebookId",
+                "birth",
+                "email",
+                "phone",
+                "nicename",
+                "createdOn",
+                "lastLogin"
+              ],
+              "properties": {
+                "id": {
+                  "enum": ["3a5c505e-ffe0-4be2-841b-b1c64c9fbf35"]
                 },
-                "data": {
-                    "required": [
-                        "user",
-                        "adrsbook"
-                    ],
-                    "properties": {
-                        "user": {
-                            "type": "object",
-                            "required": [
-                                "id",
-                                "uname",
-                                "facebookId",
-                                "birth",
-                                "email",
-                                "phone",
-                                "nicename",
-                                "createdOn",
-                                "lastLogin"
-                            ],
-                            "properties": {
-                                "id": {
-                                    "enum": ["3a5c505e-ffe0-4be2-841b-b1c64c9fbf35"]
-                                },
-                                "uname": {
-                                    "faker": "internet.userName",
-                                    "type": "string"
-                                },
-                                "facebookId": {
-                                    "faker": "random.uuid",
-                                    "type": "string"
-                                },
-                                "birth": {
-                                    "faker": "date.past",
-                                    "type": "string"
-                                },
-                                "email": {
-                                    "faker": "internet.email",
-                                    "type": "string"
-                                },
-                                "phone": {
-                                    "faker": "phone.phoneNumberFormat",
-                                    "type": "string"
-                                },
-                                "nicename": {
-                                    "faker": "name.findName",
-                                    "type": "string"
-                                },
-                                "createdOn": {
-                                    "faker": "date.past",
-                                    "type": "string"
-                                },
-                                "lastLogin": {
-                                    "faker": "date.recent",
-                                    "type": "string"
-                                }
-                            }
-                        },
-                        "adrsbook": {
-                            "type": "object",
-                            "required": [
-                                "id",
-                                "accountId",
-                                "name",
-                                "color",
-                                "contacts"
-                            ],
-                            "properties": {
-                                "id": {
-                                    "enum": ["70da56a9-7c59-4451-80a0-8c37654c88dd"]
-                                },
-                                "accountId": {
-                                    "$ref": "#/properties/get-all-data/properties/data/properties/user/properties/id"
-                                },
-                                "name": {
-                                    "faker": "company.companyName",
-                                    "type": "string"
-                                },
-                                "color": {
-                                    "faker": "internet.color",
-                                    "type": "string"
-                                },
-                                "contacts": {
-                                    "$ref": "./mockAPI/schema.contacts.json"
-                                }
-                            }
-                        }
-                    },
-                    "type": "object"
-                }
-            },
-            "type": "object"
-        },
-        "contacts": {
-            "required": [
-                "res",
-                "data"
-            ],
-            "properties": {
-                "res": {
-                    "enum": [true],
-                    "type": "boolean"
+                "uname": {
+                  "faker": "internet.userName",
+                  "type": "string"
                 },
-                "data": {
-                    "$ref": "./mockAPI/schema.contacts.json"
+                "facebookId": {
+                  "faker": "random.uuid",
+                  "type": "string"
+                },
+                "birth": {
+                  "faker": "date.past",
+                  "type": "string"
+                },
+                "email": {
+                  "faker": "internet.email",
+                  "type": "string"
+                },
+                "phone": {
+                  "faker": "phone.phoneNumberFormat",
+                  "type": "string"
+                },
+                "nicename": {
+                  "faker": "name.findName",
+                  "type": "string"
+                },
+                "createdOn": {
+                  "faker": "date.past",
+                  "type": "string"
+                },
+                "lastLogin": {
+                  "faker": "date.recent",
+                  "type": "string"
                 }
+              }
             },
-            "type": "object"
-        },
-        "signup": {
-            "required": [
-                "res"
-            ],
-            "properties": {
-                "res": {
-                    "type": "boolean",
-                    "enum": [true]
+            "adrsbook": {
+              "type": "object",
+              "required": ["id", "accountId", "name", "color", "contacts"],
+              "properties": {
+                "id": {
+                  "enum": ["70da56a9-7c59-4451-80a0-8c37654c88dd"]
+                },
+                "accountId": {
+                  "$ref": "#/properties/get-all-data/properties/data/properties/user/properties/id"
+                },
+                "name": {
+                  "faker": "company.companyName",
+                  "type": "string"
+                },
+                "color": {
+                  "faker": "internet.color",
+                  "type": "string"
+                },
+                "contacts": {
+                  "$ref": "./mockAPI/schema.contacts.json"
                 }
-            },
-            "type": "object"
-        },
-        "signin": {
-            "required": [
-                "res"
-            ],
-            "properties": {
-                "res": {
-                    "type": "boolean",
-                    "enum": [true]
-                }
-            },
-            "type": "object"
-        },
-        "removeAllContacts": {
-            "required": [
-                "res"
-            ],
-            "properties": {
-                "res": {
-                    "type": "boolean",
-                    "enum": [true]
-                }
-            },
-            "type": "object"
-        },
-        "addContact": {
-            "required": [
-                "res"
-            ],
-            "properties": {
-                "res": {
-                    "type": "boolean",
-                    "enum": [true]
-                }
-            },
-            "type": "object"
-        },
-        "editContact": {
-            "required": [
-                "res"
-            ],
-            "properties": {
-                "res": {
-                    "type": "boolean",
-                    "enum": [true]
-                }
-            },
-            "type": "object"
-        },
-        "removeContact": {
-            "required": [
-                "res"
-            ],
-            "properties": {
-                "res": {
-                    "type": "boolean",
-                    "enum": [true]
-                }
-            },
-            "type": "object"
-        },
-        "removeMultipleContacts": {
-            "required": [
-                "res"
-            ],
-            "properties": {
-                "res": {
-                    "type": "boolean",
-                    "enum": [true]
-                }
-            },
-            "type": "object"
-        },
-        "replaceAllContacts": {
-            "required": [
-                "res"
-            ],
-            "properties": {
-                "res": {
-                    "type": "boolean",
-                    "enum": [true]
-                }
-            },
-            "type": "object"
-        },
-        "isUnameUsed": {
-            "required": [
-                "res"
-            ],
-            "properties": {
-                "res": {
-                    "type": "boolean",
-                    "enum": [true]
-                }
-            },
-            "type": "object"
+              }
+            }
+          },
+          "type": "object"
         }
+      },
+      "type": "object"
     },
-    "required": [
-        "get-all-data",
-        "contacts",
-        "signin",
-        "signup",
-        "removeAllContacts",
-        "addContact",
-        "editContact",
-        "removeContact",
-        "removeMultipleContacts",
-        "replaceAllContacts",
-        "isUnameUsed"
-    ],
-    "definitions": {
-        "positiveInt": {
-            "type": "integer",
-            "minimum": 0,
-            "minimumExclusive": true
+    "contacts": {
+      "required": ["res", "data"],
+      "properties": {
+        "res": {
+          "enum": [true],
+          "type": "boolean"
+        },
+        "data": {
+          "$ref": "./mockAPI/schema.contacts.json"
         }
+      },
+      "type": "object"
+    },
+    "signup": {
+      "required": ["res"],
+      "properties": {
+        "res": {
+          "type": "boolean",
+          "enum": [true]
+        }
+      },
+      "type": "object"
+    },
+    "signin": {
+      "required": ["res"],
+      "properties": {
+        "res": {
+          "type": "boolean",
+          "enum": [true]
+        }
+      },
+      "type": "object"
+    },
+    "removeAllContacts": {
+      "required": ["res"],
+      "properties": {
+        "res": {
+          "type": "boolean",
+          "enum": [true]
+        }
+      },
+      "type": "object"
+    },
+    "addContact": {
+      "required": ["res"],
+      "properties": {
+        "res": {
+          "type": "boolean",
+          "enum": [true]
+        }
+      },
+      "type": "object"
+    },
+    "editContact": {
+      "required": ["res"],
+      "properties": {
+        "res": {
+          "type": "boolean",
+          "enum": [true]
+        }
+      },
+      "type": "object"
+    },
+    "removeContact": {
+      "required": ["res"],
+      "properties": {
+        "res": {
+          "type": "boolean",
+          "enum": [true]
+        }
+      },
+      "type": "object"
+    },
+    "removeMultipleContacts": {
+      "required": ["res"],
+      "properties": {
+        "res": {
+          "type": "boolean",
+          "enum": [true]
+        }
+      },
+      "type": "object"
+    },
+    "replaceAllContacts": {
+      "required": ["res"],
+      "properties": {
+        "res": {
+          "type": "boolean",
+          "enum": [true]
+        }
+      },
+      "type": "object"
+    },
+    "isUnameUsed": {
+      "required": ["res"],
+      "properties": {
+        "res": {
+          "type": "boolean",
+          "enum": [true]
+        }
+      },
+      "type": "object"
     }
+  },
+  "required": [
+    "get-all-data",
+    "contacts",
+    "signin",
+    "signup",
+    "removeAllContacts",
+    "addContact",
+    "editContact",
+    "removeContact",
+    "removeMultipleContacts",
+    "replaceAllContacts",
+    "isUnameUsed"
+  ],
+  "definitions": {
+    "positiveInt": {
+      "type": "integer",
+      "minimum": 0,
+      "minimumExclusive": true
+    }
+  }
 }

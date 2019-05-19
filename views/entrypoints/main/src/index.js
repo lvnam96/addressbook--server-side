@@ -11,39 +11,39 @@ import App from './js/App';
 import './scss/style.scss';
 
 const render = (App) => {
-    ReactDOM.render(
-        <AppContainer>
-            <Provider store={adbk.redux.store}>
-                <App />
-            </Provider>
-        </AppContainer>,
-        document.getElementsByClassName('body-wrapper')[0]
-    );
+  ReactDOM.render(
+    <AppContainer>
+      <Provider store={adbk.redux.store}>
+        <App />
+      </Provider>
+    </AppContainer>,
+    document.getElementsByClassName('body-wrapper')[0]
+  );
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-    adbk.init(() => {
-        render(App);
-    });
+  adbk.init(() => {
+    render(App);
+  });
 
-    const saveDataBeforeCloseTab = (e = window.event) => {
-        // if (ls.shouldBeSaved()) {
-            saveToLocalStorage(adbk.redux.store.getState().contacts);
-            // ls.dontSaveAgain();
-        // }
-        // if (e) { e.returnValue = 'Sure?'; }// For IE and Firefox prior to version 4
-        // return 'Sure?';// For Safari
-    };
-    window.addEventListener('beforeunload', saveDataBeforeCloseTab, false);
+  const saveDataBeforeCloseTab = (e = window.event) => {
+    // if (ls.shouldBeSaved()) {
+    saveToLocalStorage(adbk.redux.store.getState().contacts);
+    // ls.dontSaveAgain();
+    // }
+    // if (e) { e.returnValue = 'Sure?'; }// For IE and Firefox prior to version 4
+    // return 'Sure?';// For Safari
+  };
+  window.addEventListener('beforeunload', saveDataBeforeCloseTab, false);
 });
 
 if (process.env.NODE_ENV !== 'production') {
-    window.adbk = adbk;// make adbk global
+  window.adbk = adbk; // make adbk global
 
-    if (module.hot) {
-        module.hot.accept('./js/App.js', () => {
-            const HotReloadedApp = require('./js/App').default;
-            render(HotReloadedApp);
-        });
-    }
+  if (module.hot) {
+    module.hot.accept('./js/App.js', () => {
+      const HotReloadedApp = require('./js/App').default;
+      render(HotReloadedApp);
+    });
+  }
 }

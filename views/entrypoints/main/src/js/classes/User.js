@@ -23,32 +23,30 @@ import axios, { getJSONData, handleFailedRequest } from '../services/requestServ
 // }
 
 class User extends Account {
-    constructor (data) {
-        super(data);
-        this._data = data;
-        this.isActive = data.isActive || true;
-        this.nicename = data.nicename || null;
-        this.birth = data.birth || null;
-        this.phone = data.phone || null;
-        this._isSerializable = this._isSerializable || new Set();
-        for (let keyname of [
-            'isActive', 'nicename', 'birth', 'phone'
-        ]) {
-            this._isSerializable = this._isSerializable.add(keyname);
-        }
+  constructor (data) {
+    super(data);
+    this._data = data;
+    this.isActive = data.isActive || true;
+    this.nicename = data.nicename || null;
+    this.birth = data.birth || null;
+    this.phone = data.phone || null;
+    this._isSerializable = this._isSerializable || new Set();
+    for (let keyname of ['isActive', 'nicename', 'birth', 'phone']) {
+      this._isSerializable = this._isSerializable.add(keyname);
     }
+  }
 
-    static fromJSON (data) {
-        return super.fromJSON(data);
-    }
+  static fromJSON (data) {
+    return super.fromJSON(data);
+  }
 
-    get adrsbook () {
-        return this._adrsbook;
-    }
+  get adrsbook () {
+    return this._adrsbook;
+  }
 
-    init () {
-        return this;
-    }
+  init () {
+    return this;
+  }
 }
 
 export default User;
