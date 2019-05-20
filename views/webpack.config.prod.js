@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 const productionMode = process.env.NODE_ENV === 'production';
 
@@ -173,10 +174,15 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin({
-      dry: true,
+      dry: false,
       cleanOnceBeforeBuildPatterns: ['../public/*.*'],
       dangerouslyAllowCleanPatternsOutsideProject: true,
     }),
+    new CopyPlugin([
+      { from: './assets/manifest.webmanifest', to: '../public/manifest.webmanifest' },
+      { from: './assets/fav/favicon.ico', to: '../public/favicon.ico' },
+      // { from: 'other', to: 'public' },
+    ]),
     new MiniCssExtractPlugin({
       // Thus you can import your Sass modules from `node_modules`.
       // Just prepend them with `~` to tell webpack that this is not a relative import
