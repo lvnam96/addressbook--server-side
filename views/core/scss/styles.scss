@@ -2,7 +2,7 @@
 @import 'extends';
 @import 'mixins';
 //general
-@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,700,900&subset=latin-ext');
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,700,900&subset=latin-ext&display=swap');
 
 $fa-font-path: '~@fortawesome/fontawesome-free/webfonts' !default;
 @import '~@fortawesome/fontawesome-free/scss/fontawesome';
