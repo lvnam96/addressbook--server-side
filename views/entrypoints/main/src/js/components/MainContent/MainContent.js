@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Dropdown from 'react-bootstrap/Dropdown';
+import { Link } from 'react-router-dom';
 
 import ContactsFilter from '../ContactsList/ContactsFilter';
 const ContactsList = React.lazy(() => import(/* webpackPreload: true */ '../ContactsList/ContactsList'));
@@ -43,6 +44,10 @@ const MainContent = (props) => {
                 <i className="fas fa-upload" />
                 &nbsp;&nbsp;Restore
               </Dropdown.Item>
+              {/* <Link className="py-3 py-md-2 dropdown-item" to="/settings">
+                <i className="fas fa-cogs" />
+                &nbsp;&nbsp;Settings
+              </Link> */}
               <hr className="my-2" />
               <Dropdown.Item className="py-3 py-md-2" href="/signout">
                 <i className="fas fa-door-open" />
