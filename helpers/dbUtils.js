@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 // map data from account table in database
 // to obj with right props which class User needs
 const mapUserData = (userDataFromDB) => {

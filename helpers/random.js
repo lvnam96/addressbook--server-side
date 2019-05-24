@@ -8,12 +8,12 @@ const getRandomColor = () => {
 // const chance = require('chance');
 // chance.string({ length: 10 });
 // https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
-const getRandomStr = (string_length) => {
+const getRandomStr = (stringLength) => {
   let text = '';
   const POSSIBLE = '!@#$%^&*()_+-=?|:ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   const POSSIBLE_SCOPE = POSSIBLE.length;
 
-  for (let i = 0; i < string_length; i += 1) {
+  for (let i = 0; i < stringLength; i += 1) {
     text += POSSIBLE.charAt(Math.floor(Math.random() * POSSIBLE_SCOPE));
   }
 

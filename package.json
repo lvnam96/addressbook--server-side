@@ -3,6 +3,7 @@
   "version": "1.0.0-alpha",
   "private": true,
   "scripts": {
+    "test": "jest --passWithNoTests",
     "heroku-postbuild": "npm --prefix ./views install ./views",
     "prepare-dev-frontend": "cd ./views && npm run build:dev",
     "prepare-prod-frontend": "cd ./views && npm run build",
@@ -54,6 +55,7 @@
     "eslint-plugin-react": "^7.13.0",
     "eslint-plugin-react-hooks": "^1.6.0",
     "eslint-plugin-standard": "^4.0.0",
+    "jest": "^24.8.0",
     "nodemon": "^1.19.0",
     "prettier": "^1.17.1",
     "prettier-eslint": "^8.8.2",
