@@ -1,8 +1,7 @@
-> This is server-side implementation of my [pet project](https://github.com/lvnam96/addressBook)
-
-AddressBook
+Contacts Book
 ===
-[![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](https://github.com/standard/standard)
+[![js-semistandard-style](https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg?style=flat-square)](https://github.com/Flet/semistandard)
+[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
 ### Tech stack:
 
@@ -17,16 +16,16 @@ AddressBook
 
 ##### 1. Prepare the database
 
-Change your database credential information at `./db/pool.js` (from line 2 to line 8):
+Change your database credential information at `./db/pool.js`:
 
 ```js
-dbInfo = {
+let configObj = {
     user: 'garyle',// your postgresql user
     host: 'localhost',// most of the time it will be localhost. If you use docker, please check their document
     database: 'adrsbook',// the database that your postgresql user account has rights to manage
     password: 'bdd8OC0qgd',// postgresql user account's password
     port: 5432// port number that your postgresql server is listening
-},
+};
 ```
 
 ##### 2. Create those tables with their schemas:
@@ -89,15 +88,15 @@ npm start
 
 If you make it right, your console will log: `Database is connected!` after you run one of these command to run the development server: `npm start` or:
 
-##### How to deploy the server:
+##### Deploy the server:
 
 ```
 npm run deploy
 ```
 
-### Roadmap
+### [Todo](https://github.com/lvnam96/contactsbook/projects)
 
-[First stable release v1.0.0](https://github.com/lvnam96/addressbook--server-side/projects)
+### [Milestones](https://github.com/lvnam96/contactsbook/milestones)
 
 ### License
-MIT &copy; 2018
+MIT &copy; 2019
