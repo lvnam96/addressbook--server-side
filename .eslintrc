@@ -3,6 +3,7 @@
   "settings": {
     "react": {
       "createClass": "createReactClass",
+      "version": "detect",
       "pragma": "React"
     }
   },
