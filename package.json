@@ -3,7 +3,8 @@
   "version": "1.0.0-alpha",
   "private": true,
   "scripts": {
-    "test": "jest --passWithNoTests",
+    "test:watch": "jest --passWithNoTests --watch",
+    "test": "npm run test:watch",
     "heroku-postbuild": "npm --prefix ./views install ./views",
     "prepare-dev-frontend": "cd ./views && npm run build:dev",
     "prepare-prod-frontend": "cd ./views && npm run build",
@@ -60,6 +61,8 @@
     "prettier": "^1.17.1",
     "prettier-eslint": "^8.8.2",
     "react-axe": "^3.1.0",
+    "superagent": "^5.0.8",
+    "supertest": "^4.0.2",
     "webpack-node-externals": "^1.7.2"
   }
 }
