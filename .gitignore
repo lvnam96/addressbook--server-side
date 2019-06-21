@@ -34,3 +34,6 @@ npm-debug.log
 
 # For Herouku
 .env
+
+# For the first time project installing
+# db/db-config.json

@@ -44,7 +44,7 @@ pool
     console.log('Database is connected!');
   })
   .catch((err) => {
-    client.release();
+    // pool.end(); // client.release();
     console.error('Database connection failed', err.stack);
   });
 
