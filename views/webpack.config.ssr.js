@@ -11,10 +11,10 @@ const isProductionMode = process.env.NODE_ENV !== 'development';
 module.exports = {
   mode: isProductionMode ? 'production' : 'development',
   entry: {
-    // core: ['@babel/polyfill', './core/js/index.js'],
+    // core: './core/js/index.js',
     // App: './entrypoints/main/src/index.js',// for v2.0.0
-    Signin: ['@babel/polyfill', './entrypoints/signin/index.ssr.js'],
-    Signup: ['@babel/polyfill', './entrypoints/signup/index.ssr.js'],
+    Signin: './entrypoints/signin/index.ssr.js',
+    Signup: './entrypoints/signup/index.ssr.js',
   },
   output: {
     library: 'app',

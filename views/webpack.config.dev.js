@@ -9,7 +9,7 @@ const productionMode = process.env.NODE_ENV === 'production';
 module.exports = {
   mode: 'development',
   entry: {
-    core: ['@babel/polyfill', './core/js/index.js'],
+    core: './core/js/index.js',
     App: './entrypoints/main/src/index.js',
     // Signin: './entrypoints/signin/index.js',
     // Signup: './entrypoints/signup/index.js'
