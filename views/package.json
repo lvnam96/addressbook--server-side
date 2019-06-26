@@ -1,7 +1,7 @@
 {
-  "name": "adrsbook-front-end-serverside-rendering",
-  "version": "1.0.0-a",
-  "description": "adrsbook app's front-end using serverside rendering",
+  "name": "contactsbook--front-end",
+  "version": "1.0.0-b",
+  "description": "Front-end source code of a contacts book app",
   "main": "index.js",
   "scripts": {
     "build:ssr": "webpack --config webpack.config.ssr.js",
