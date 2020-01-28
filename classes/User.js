@@ -1,77 +1,70 @@
+const _get = require('lodash/get');
 const serv = require('../services/');
 const db = require('../db/');
 const Account = require('./Account');
-const Addressbook = require('./Addressbook');
-const ContactsList = require('./ContactsList');
+const Cbook = require('./Contactsbook');
+const Clist = require('./ContactsList');
 
 class User extends Account {
-    constructor (data) {
-        super(data);
-        this._adrsbook;
-        this.isActive = data.isActive || data.is_active || true;
-        this.nicename = data.nicename || null;
-        this.birth = data.birth || null;
-        this.phone = data.phone || null;
-        this._isSerializable = this._isSerializable || new Set();
-        for (let keyname of [
-            'isActive', 'nicename', 'birth', 'phone'
-        ]) {
-            this._isSerializable = this._isSerializable.add(keyname);
-        }
+  constructor(data) {
+    super(data);
+    this.nicename = data.nicename || null;
+    this.birth = data.birth || null;
+    this.phone = data.phone || null;
+    this.cbooks = data.cbooks || [];
+    this._meta = data.meta
+      ? {
+        lastActivatedCbookId: _get(data, 'meta.lastActivatedCbookId', null),
+        lastLogin: _get(data, 'meta.lastLogin', new Date()),
+        isActive: _get(data, 'meta.isActive', true),
+      }
+      : {};
+    this._isSerializable = this._isSerializable || new Set();
+    for (const keyname of ['isActive', 'nicename', 'birth', 'phone', 'cbooks', 'meta']) {
+      this._isSerializable = this._isSerializable.add(keyname);
     }
+  }
 
-    toDB () {
-        const jsoned = this.toJSON();
-        jsoned.username = jsoned.uname;
-        jsoned.password = jsoned.passwd;
-        jsoned.facebook_id = jsoned.fbId;
-        jsoned.last_login = jsoned.lastLogin;
-        jsoned.created_on = jsoned.createdOn;
-        jsoned.is_active = jsoned.isActive;
-        return jsoned;
-    }
+  toDB() {
+    const json = super.toDB();
+    return json;
+  }
 
-    static fromJSON (json) {
-        return super.fromJSON(json);
-    }
+  static fromJSON(json) {
+    return super.fromJSON(json);
+  }
 
-    static fromDB (data) {
-        return super.fromDB(data);
-    }
+  static fromDB(data) {
+    return super.fromDB(data);
+  }
 
-    get adrsbook () {
-        return this._adrsbook;
-    }
+  get meta() {
+    return this._meta;
+  }
 
-    init () {
-        return this.loadData().then(data => {
-            this._adrsbook = data.adrsbook
-        }).catch();
-    }
+  async setDefaultCbook(cbookId) {
+    return db.data.updateDefaultCbook(this.id, cbookId);
+  }
 
-    // loadAllContacts (cb) {// load all contacts of all adrsbook of current user
-    //     return db.data.getAllContacts(this.id, cb);
-    // }
+  static signIn(uname, rawPasswd, cb) {
+    super.signIn(uname, rawPasswd, cb);
+  }
 
-    static signIn (uname, rawPasswd, cb) {
-        super.signIn(uname, rawPasswd, cb);
-    }
+  static findById(id, cb) {
+    super.findById(id, cb);
+  }
 
-    static isUnameUsed (uname, cb) {
-        super.isUnameUsed(uname, cb);
-    }
+  static findByUname(uname) {
+    return super.findByUname(uname);
+  }
 
-    static findById (id, cb) {
-        super.findById(id, cb);
-    }
+  static findByEmail(email) {
+    return super.findByEmail(email);
+  }
 
-    static findByUname (uname, cb) {
-        super.findByUname(uname, cb);
-    }
-
-    static signUp (data, cb) {
-        return super.signUp(data, cb);
-    }
+  static signUp(data, cb) {
+    return super.signUp(data, cb);
+  }
 }
 
 module.exports = User;

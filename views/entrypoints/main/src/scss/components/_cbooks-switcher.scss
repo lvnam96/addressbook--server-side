@@ -1,0 +1,42 @@
+.cbooks-switcher {
+  @extend %popup-content-box;
+
+  &-ctner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+  }
+
+  &__header {
+    p {
+      font-size: 1.4rem;
+    }
+  }
+
+  &__cbook {
+    &:hover {
+      background-color: #f7f7f7cc;
+    }
+  }
+}
+
+@media (min-width: $mobile) {
+}
+
+@media (min-width: $tablet) {
+  .cbooks-switcher {
+    &__header {
+      p {
+        font-size: 1.6rem;
+      }
+    }
+  }
+}
+
+@media (min-width: $desktop) {
+}
+
+@media (min-width: $lg-desktop) {
+}

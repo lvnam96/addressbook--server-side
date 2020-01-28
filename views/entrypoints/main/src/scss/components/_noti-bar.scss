@@ -1,0 +1,52 @@
+/**********************************\
+            #NOTI BAR
+\**********************************/
+
+.noti-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px;
+  background-color: $color--blue; // This prop will be set by style attribute
+  color: #fff;
+  font-size: 1rem;
+  z-index: 2147483647; // z-index maximum value
+
+  &__ico {
+    margin-right: 1rem;
+  }
+
+  &__msg {
+  }
+
+  &__close-btn {
+    font-size: 0.8rem;
+    color: $color--white;
+  }
+
+  &.show {
+    animation: fadeInDown 3s ease-in-out both;
+  }
+
+  &.hide {
+    animation: fadeOutUp 0.2s ease-in-out forwards;
+  }
+}
+
+@media (min-width: $mobile) {
+}
+
+@media (min-width: $tablet) {
+  .noti-bar {
+    &__ico {
+      font-size: 1.5rem;
+    }
+  }
+}
+
+@media (min-width: $desktop) {
+}
+
+@media (min-width: $lg-desktop) {
+}

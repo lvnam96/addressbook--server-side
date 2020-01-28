@@ -1,5 +1,7 @@
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
 import React from 'react';
-const { renderToString } = require('react-dom/server');
-import SignInFormContainer from './js/SignInFormContainer';
+import ReactDOMServer from 'react-dom/server';
+import App from './js/App.jsx';
 
-export default renderToString(<SignInFormContainer />);
+export default ReactDOMServer.renderToString(<App />);

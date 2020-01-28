@@ -1,20 +1,23 @@
-@import '_variables.scss';
-@import '_extends.scss';
-@import '_mixins.scss';
+@import 'variables';
+@import 'extends';
+@import 'mixins';
 //general
-@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,700,900&subset=latin-ext');
+@import url('https://fonts.googleapis.com/css?family=Nunito:300,400,600,700,800,900&display=swap&subset=latin-ext,vietnamese');
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,700,900&subset=latin-ext&display=swap');
 
-$fa-font-path: '~@fortawesome/fontawesome-free/webfonts'!default;
-@import '~@fortawesome/fontawesome-free/scss/fontawesome.scss';
-@import '~@fortawesome/fontawesome-free/scss/brands.scss';
-@import '~@fortawesome/fontawesome-free/scss/regular.scss';
-@import '~@fortawesome/fontawesome-free/scss/solid.scss';
-@import '~bootstrap/scss/bootstrap.scss';// @import '../../node_modules/bootstrap/scss/bootstrap.scss';
-// @import '../../node_modules/slick-carousel/slick/slick.scss';
-// @import '../../node_modules/slick-carousel/slick/slick-theme.scss';
-@import '_base.scss';
-@import '_layout.scss';
+$fa-font-path: '~@fortawesome/fontawesome-free/webfonts' !default;
+@import '~@fortawesome/fontawesome-free/scss/fontawesome';
+@import '~@fortawesome/fontawesome-free/scss/brands';
+@import '~@fortawesome/fontawesome-free/scss/regular';
+@import '~@fortawesome/fontawesome-free/scss/solid';
+
+@import 'overwrite-bs4-variables';
+@import '~bootstrap/scss/bootstrap'; // @import '../../node_modules/bootstrap/scss/bootstrap';
+// @import '../../node_modules/slick-carousel/slick/slick';
+// @import '../../node_modules/slick-carousel/slick/slick-theme';
+@import 'base';
+@import 'layout';
 // components
-@import './components/_index.scss';
+@import './components/index';
 // pages
 // @import './pages/manifest';

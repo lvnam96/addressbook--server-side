@@ -1,0 +1,19 @@
+.letter-avt {
+  $avt-size: 70px;
+  display: inline-block;
+
+  &__first-letter {
+    display: inline-block;
+    width: $avt-size;
+    height: $avt-size;
+    text-align: center;
+    white-space: nowrap;
+    border-radius: 50%;
+
+    span {
+      color: #fff;
+      font-size: 2em;
+      line-height: $avt-size;
+    }
+  }
+}

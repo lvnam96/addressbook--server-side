@@ -1,0 +1,59 @@
+/**********************************\
+            #AVATAR
+\**********************************/
+
+.form-popup__avt {
+  height: 80px;
+  width: 100%;
+  text-align: center;
+  position: relative;
+
+  // > img {
+  //     display: inline-block;
+  //     width: 100px;
+  //     height: 100px;
+  //     margin: 0 auto;
+  //     padding: 0;
+  //     border-radius: 50%;
+  //     transform: translate(0,-80px);// 30px (parrent's padding) + 50px (1/2 its height)
+  // }
+
+  &__first-letter {
+    display: inline-block;
+    color: #fff;
+    width: 80px;
+    height: 80px;
+    text-align: center;
+    font-size: 2em;
+    white-space: nowrap;
+    line-height: 80px;
+    border-radius: 50%;
+    margin: 0 auto;
+    padding: 0;
+    z-index: 1;
+    position: absolute;
+    transform: translate(-50%, 0);
+    cursor: pointer;
+  }
+}
+
+@media (min-width: $mobile) {
+  .form-popup__avt {
+    height: 100px;
+
+    &__first-letter {
+      width: 100px;
+      height: 100px;
+      line-height: 100px;
+    }
+  }
+}
+
+@media (min-width: $tablet) {
+}
+
+@media (min-width: $desktop) {
+}
+
+@media (min-width: $lg-desktop) {
+}

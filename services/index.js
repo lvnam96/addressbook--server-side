@@ -1,2 +1,9 @@
-module.exports.passwd = require('./passwdServ');
-module.exports.auth = require('./auth');
+const passwd = require('./passwdServ');
+const auth = require('./auth');
+const jwt = require('./jwt');
+
+module.exports = {
+  passwd,
+  auth,
+  jwt,
+};

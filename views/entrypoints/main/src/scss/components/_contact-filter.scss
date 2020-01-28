@@ -1,0 +1,47 @@
+.contact-filter {
+  // position: -webkit-sticky;
+  // position: sticky;
+  // top: 0;
+  // z-index: 1020;
+
+  &__hint-numb {
+  }
+
+  // OVERWRITE Bootstrap4
+  .page-link {
+    font-size: 0.8rem;
+    cursor: pointer;
+    color: $color--cyan !important;
+    background-color: transparent;
+    border-color: currentColor;
+
+    &:hover {
+      color: $color--cyan !important;
+      background-color: $color--light-gray;
+      border-color: currentColor;
+    }
+  }
+
+  .page-item.active .page-link {
+    color: $color--white !important;
+    background-color: $color--cyan;
+    border-color: $color--cyan;
+    pointer-events: none; // disable after activated
+  }
+}
+
+@media (min-width: $mobile) {
+}
+
+@media (min-width: $tablet) {
+}
+
+@media (min-width: $desktop) {
+  .contact-filter {
+    position: initial;
+    position: static;
+  }
+}
+
+@media (min-width: $lg-desktop) {
+}

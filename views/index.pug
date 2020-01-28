@@ -1,7 +1,7 @@
 extends layout
 
 block pageTitle
-    title= title || 'Address Book'
+    title= title || 'Contacts Book'
 
 block content
     //- if htmlWebpackPlugin
@@ -9,12 +9,13 @@ block content
     //- else
     //-     h1= title
     //- p Welcome to the most fucking awesome AddressBook app
-    //- p Made with #[pre <3] 
+    //- p Made with #[pre <3]
     .body-wrapper
     //- a(href="/signout")
         button.btn.btn-outline-primary.btn-sm.rounded-0 Sign out
 
 block closeHead
+    link(href="https://restcountries.eu", rel="dns-prefetch")
     link(href="/App.css", rel="stylesheet")
 
 block closeBody

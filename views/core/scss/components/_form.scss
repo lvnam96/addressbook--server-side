@@ -1,33 +1,53 @@
+%input-label-divider {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: $color--gray;
+}
+
+input::-webkit-input-placeholder {
+  // Chrome/Opera/Safari/Edge
+  color: $color--light-gray;
+}
+
+input::-moz-placeholder {
+  color: $color--light-gray;
+}
+
+input::placeholder {
+  color: $color--light-gray;
+}
+
+// bs4 class
+.form-group {
+  label {
+  }
+}
+
 .input-wrapper {
-    position: relative;
+}
 
-    &::after {
-        content: ' ';
-        background-color: $color--dark-black;
+.form {
+  &__input-field {
+  }
+
+  &__select-field {
+    &__country-options {
+      position: relative;
+      padding-left: 20px;
+
+      &::before {
+        content: '';
+        width: 20px;
         position: absolute;
-        bottom: 0;
         left: 0;
-        height: 1px;
-        width: 100%;
-        transform: scale(0, 1);
-        transform-origin: left;
-        @include simpleTransition(transform);
-        z-index: 1;
+        top: 50%;
+        transform: translate(0, -50%);
+        background: url('//placehold.it/40x20') center/cover no-repeat;
+      }
     }
-
-    &:hover::after {
-        transform: scale(1, 1);
-    }
-
-    // overwrite bootstrap's default style
-    > input {
-        border-radius: 0;
-        border: 0;
-        border-bottom: 1px solid $color--gray;
-
-        &:focus {
-            border-color: $color--dark-black;
-            box-shadow: none;
-        }
-    }
+  }
 }

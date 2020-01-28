@@ -3,7 +3,7 @@ const acc = require('./account');
 const data = require('./data');
 
 module.exports = {
-    acc,
-    data,
-    poolInitiator
+  acc,
+  data,
+  poolInitiator,
 };

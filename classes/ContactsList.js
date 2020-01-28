@@ -4,54 +4,125 @@ const db = require('../db/');
 const Contact = require('./Contact');
 
 class ContactsList extends Factory {
-    constructor (contactsList) {
-        super(contactsList);
-        this._data = Array.isArray(contactsList) ? contactsList.map((contact) => new Contact(contact)) : null;
-        this._isSerializable = this._isSerializable || new Set();
-        for (let keyname of [
-            'data'
-        ]) {
-            this._isSerializable = this._isSerializable.add(keyname);
-        }
+  constructor (contactsList) {
+    super(contactsList);
+    this._data =
+      Array.isArray(contactsList) && contactsList.length > 0 ? contactsList.map((contact) => new Contact(contact)) : [];
+    this._isSerializable = this._isSerializable || new Set();
+    for (const keyname of ['data']) {
+      this._isSerializable = this._isSerializable.add(keyname);
     }
+  }
 
-    toJSON () {
-        const jsoned = super.toJSON();
-        jsoned.data = this._data.map((contact) => contact.toJSON());
-        return jsoned;
-    }
+  toJSON () {
+    const json = super.toJSON();
+    json.data = this._data.map((contact) => contact.toJSON());
+    return json;
+  }
 
-    static fromJSON (json) {
-        return super.fromJSON(json.data);
-    }
+  toDB () {
+    return this.toJSON();
+  }
 
-    static fromDB (data) {
-        return super.fromDB(data);
-    }
+  static fromJSON (json) {
+    // json: instance of ContactsList
+    return super.fromJSON(json.data);
+  }
 
-    get data () {
-        return this._data;
-    }
+  static fromDB (data) {
+    // data: array of contacts data from db
+    if (Array.isArray(data)) {
+      const preparedData = data.map((contactData) => Contact.fromDB(contactData));
+      return super.fromDB(preparedData);
+    } else throw new Error('Data passed to ContactsList.fromDB() is not an array');
+  }
 
-    find (contactId) {
-        return this._data.find((elem, idx) => elem.id === contactId);
-    }
+  get data () {
+    return this._data;
+  }
 
-    delContact (contactId) {
-        return this.find(contactId).del();
-    }
+  isEmpty () {
+    return Array.isArray(this._data) && this._data.length > 0;
+  }
 
-    editContact (contact) {
-        contact = new Contact(contact);
-        return this.find(contact.id).update(contact);
-    }
+  find (contactId) {
+    return this.isEmpty() ? this._data.find((elem, idx) => elem.id === contactId) : undefined;
+  }
 
-    addContact (newContact) {
-        db.data.addContact(newContact).then(res => {
-            this._data = [...this._data, new Contact(newContact)];
-        }).catch(err => console.error(err));
-        return this;
+  delContact (contactId) {
+    return this.isEmpty() ? this.find(contactId).del() : undefined;
+  }
+
+  delMultiContact (contacts) {
+    if (this.isEmpty()) {
+      const err = new Error('Contacts list is empty! Cannot delete contacts.');
+      console.error(err);
+      return Promise.reject(err);
+    } else {
+      const accId = contacts[0].accId;
+      const cbookId = contacts[0].cbookId;
+      const contactIds = contacts.map((contact) => contact.id);
+      return db.data
+        .removeMultiContacts(accId, cbookId, contactIds)
+        .then((rows) => {
+          return rows.map((rawData) => Contact.fromJSON(rawData));
+        })
+        .catch((err) => {
+          console.error(err);
+          throw err;
+        });
     }
+  }
+
+  static delMultiContact (contacts) {
+    const accId = contacts[0].accId;
+    const cbookId = contacts[0].cbookId;
+    const contactIds = contacts.map((contact) => contact.id);
+    return db.data
+      .removeMultiContacts(accId, cbookId, contactIds)
+      .then((rows) => {
+        return rows.map((rawData) => Contact.fromJSON(rawData));
+      })
+      .catch((err) => {
+        console.error(err);
+        throw err;
+      });
+  }
+
+  delAllContact () {
+    if (this.isEmpty()) {
+      const err = new Error('Contacts list is empty! Cannot delete contacts.');
+      console.error(err);
+      return Promise.reject(err);
+    } else {
+      const accId = this._data[0].accId;
+      const cbookId = this._data[0].cbookId;
+      return ContactsList.delAllContact(accId, cbookId);
+    }
+  }
+
+  // static delAllContact (accId, cbookId) {
+  //   return Contact.deleteAll(accId, cbookId);
+  // }
+
+  // editContact (contact) {
+  //   return this.find(contact.id).update(contact);
+  // }
+
+  // addContact (contactJson) {
+  //   const newContact = new Contact(contactJson);
+  //   return db.data
+  //     .addContact(newContact.toDB())
+  //     .then((contactRawData) => {
+  //       const contact = Contact.fromDB(contactRawData);
+  //       this._data = [...this._data, contact];
+  //       return contact;
+  //     })
+  //     .catch((err) => {
+  //       console.error(err);
+  //       throw err;
+  //     });
+  // }
 }
 
 module.exports = ContactsList;

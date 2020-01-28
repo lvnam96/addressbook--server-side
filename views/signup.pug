@@ -1,34 +1,39 @@
 extends layout
 
 block pageTitle
-    title= title || 'Sign Up | Address Book'
+    title= title || 'Sign Up | Contacts Book'
 
 block content
+  main
     .body-wrapper.container-fluid
-        .row
-            .col-lg-8.col-md-6.order-md-1(style="background: linear-gradient(-45deg, #7c7c7c, #212121);")
-                svg
-            .col-lg-4.col-md-6.order-md-0.d-flex.flex-wrap.align-items-center.justify-content-center
-                .w-100.px-2.px-md-3.px-xl-4(style="max-width: 400px;")
-                    //- if errMsg
-                    //-     .border.border-warning.text-warning.px-2.py-2.mb-3= errMsg
-                    .signup-form-wrapper!= ssr
-                    .text-center.mt-3.mb-4.signin-form__seperator
-                        hr.divider.w-50.p-0.m-0
-                        .d-inline-block.px-2.py-1.signin-form__seperator__text
-                            span or
-                    p.text-center
-                        button.btn.btn-dark.rounded-0.btn-block Sign Up with Google
-                    .text-center Have an account already?
-                        br
-                        a(href="/signin", class="signin-form__signup-link") Sign In
+      .row
+        .col-12.col-lg-8.order-md-1.d-none.d-lg-block(style="background: linear-gradient(-45deg, #7c7c7c, #212121);")
+          svg
+        .col-12.col-lg-4.order-md-0.d-flex.align-items-center.justify-content-center
+          .w-100.px-2.px-md-3.px-xl-4.mx-auto.py-3.py-md-4(style="max-width: 400px;")
+            header
+              h1.font-weight-bold.page-title Sign Up
+            //- if errMsg
+            //-     .border.border-warning.text-warning.px-2.py-2.mb-3= errMsg
+            .mb-4.mb-md-5
+              .signup-form-wrapper.mb-3.mb-md-4!= ssr
+              .text-center.mb-4.signup-form__seperator
+                hr.divider.w-50.p-0.m-0.mx-auto
+                .d-inline-block.px-2.py-1.signup-form__seperator__text
+                  span or
+              p.text-center
+                button.btn.btn-outline-dark.rounded-0.btn-block
+                  span Sign Up with&nbsp;
+                  span(style="font-family: serif;") Google
+              p.text-center Have an account already?
+                br
+                a.signup-form__signin-link(href="/signin") Sign In
 
 block closeHead
     link(href="/Signup.css", rel="stylesheet")
-    link(href="/signin", rel="dns-prefetch")
     link(href="/signin", rel="prefetch")
-    link(href="/Signin.css", rel="preload", as="style")
-    link(href="/Signin.js", rel="preload", as="script")
+    link(href="/Signin.css", rel="prefetch")
+    link(href="/Signin.js", rel="prefetch")
 
 block closeBody
     script(src="/Signup.js")

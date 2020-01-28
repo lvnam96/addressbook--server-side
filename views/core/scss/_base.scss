@@ -1,30 +1,30 @@
 html {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 *,
 *::before,
 *::after {
-    box-sizing: inherit;
+  box-sizing: inherit;
 }
 
 body {
-    font: 16px/1.5 'Source Sans Pro', 'Roboto', 'Helvetica Neue', Helvetica, Tahoma, sans-serif;
-    font-size: 1rem;
-    line-height: inherit;
-    background: $bg-color;
-    color: $text-color;
+  font: 16px/1.5 'Nunito', 'Source Sans Pro', 'Roboto', 'Helvetica Neue', Helvetica, Tahoma, sans-serif;
+  font-size: 1rem;
+  line-height: inherit;
+  background: $bg-color;
+  color: $text-color;
 }
 
 // clearfix hack
 .cf::before,
 .cf::after {
-    content: ' ';
-    display: table;
+  content: ' ';
+  display: table;
 }
 
 .cf::after {
-    clear: both;
+  clear: both;
 }
 
 // Udacity: Responsive web design
@@ -32,17 +32,19 @@ img,
 embed,
 object,
 video {
-    max-width: 100%;
+  max-width: 100%;
 }
 
-button {// at least 40px, Bootstrap4's button's default height is 38px
-    // min-width: 48px;
-    // min-height: 48px;
+button {
+  // at least 40px, Bootstrap4's button's default height is 38px
+  // min-width: 48px;
+  // min-height: 48px;
 }
 
-textarea {// used in Bootstrap4
-    // resize: vertical;
-    // overflow: auto;
+textarea {
+  // used in Bootstrap4 already
+  // resize: vertical;
+  // overflow: auto;
 }
 
 // Modules will scale with document
@@ -52,16 +54,22 @@ nav,
 aside,
 header,
 footer {
-    font-size: 1rem;
-    line-height: 1.5;
+  font-size: 1rem;
+  line-height: 1.5;
 }
 
 // Type will scale with modules
-p {// remember to set the paragraph-column's width to 28-33em
-    font-size: 1em;// default font size
-    line-height: 1.5;
-    // margin-top: 1.125em;// paragraph spacing
-    // margin-bottom: 1.125em;
+p {
+  // remember to set the paragraph-column's width to 28-33em
+  font-size: 1em; // default font size
+  line-height: 1.5;
+  // margin-top: 1.125em;// paragraph spacing
+  // margin-bottom: 1.125em;
+}
+
+p:last-child,
+label:last-child {
+  margin-bottom: 0;
 }
 
 // dl, ul, ol {
@@ -69,45 +77,55 @@ p {// remember to set the paragraph-column's width to 28-33em
 //     margin-bottom: 1.125em;
 // }
 
-p, ul, ol, input, textarea {
-    font-family: 'Source Sans Pro', serif;
+p,
+ul,
+ol,
+input,
+textarea {
+  font-family: 'Nunito', 'Source Sans Pro', 'Roboto', 'Helvetica Neue', Helvetica, Tahoma, sans-serif;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
 }
 
 li,
 q,
 blockquote {
-    font-size: 1em;
+  font-size: 1em;
 }
 
-abbr {// use it for uppercase acronym: CSS, JS,...
-    letter-spacing: -.05em;
+abbr {
+  // use it for uppercase acronym: CSS, JS,...
+  letter-spacing: -0.05em;
 }
 
 blockquote {
-    margin: 2em;
+  margin: 2em;
 
-    cite {
-        display: block;
-        text-align: right;
-    }
+  cite {
+    display: block;
+    text-align: right;
+  }
 }
 
 // http://htmldog.com/references/html/tags/sub/
 // https://i.stack.imgur.com/Ousrm.gif
-sup, sub {
-    font-size: .5em;
+sup,
+sub {
+  font-size: 0.5em;
 }
 
 sup {
-    vertical-align: super;
+  vertical-align: super;
 
-    &.math {
-        vertical-align: .8em;
-    }
+  &.math {
+    vertical-align: 0.8em;
+  }
 }
 
 sub {
-    vertical-align: sub;
+  vertical-align: sub;
 }
 
 // change browser's default settings
@@ -165,28 +183,30 @@ sub {
 //     }
 // }
 
-.delText {// replace <s> by <span class="delText">
-    text-decoration: line-through;
+.delText {
+  // replace <s> by <span class="delText">
+  text-decoration: line-through;
 }
 
-.break-word {// from CSS-Trick, equal to .text-truncate in Bootstrap4
-    // These are technically the same, but use both
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-    -ms-word-break: break-all;
-    // This is the dangerous one in WebKit, as it breaks things wherever
-    word-break: break-all;
-    // Instead use this non-standard one:
-    word-break: break-word;
-    // Adds a hyphen where the word breaks, if supported (No Blink)
-    -ms-hyphens: auto;
-    -moz-hyphens: auto;
-    -webkit-hyphens: auto;
-    hyphens: auto;
+.break-word {
+  // from CSS-Trick, equal to .text-truncate in Bootstrap4
+  // These are technically the same, but use both
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  -ms-word-break: break-all;
+  // This is the dangerous one in WebKit, as it breaks things wherever
+  word-break: break-all;
+  // Instead use this non-standard one:
+  word-break: break-word;
+  // Adds a hyphen where the word breaks, if supported (No Blink)
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
 }
 
 .ellipsis {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }

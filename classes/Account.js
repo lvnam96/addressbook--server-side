@@ -1,125 +1,130 @@
 const Factory = require('./Factory');
 const serv = require('../services/');
 const db = require('../db/');
-const { pool } = db.poolInitiator;
-const randomStr = 0;
+const { getStrongCryptoRandomStr } = require('../helpers/random');
 
 class Account extends Factory {
-    constructor (data) {
-        super(data);
-        this._id = data.id;
-        this._uname = data.uname || data.username;
-        this._passwd = data.passwd || data.password;
-        this.fbId = data.fbId || data.facebookId || data.facebookid || data.facebook_id || null;
-        this.email = data.email || null;
-        this.lastLogin = data.last_login || data.lastLogin || Date.now();
-        this.createdOn = data.created_on || data.createdOn;
-        this._salt = data.salt;
-        this._isSerializable = this._isSerializable || new Set();
-        for (let keyname of [
-            'id', 'uname', 'passwd', 'fbId', 'email', 'lastLogin', 'createdOn'
-        ]) {
-            this._isSerializable = this._isSerializable.add(keyname);
+  constructor(data) {
+    super(data);
+    this._id = data.id;
+    // this._uname = data.uname || data.username;
+    // this._passwd = data.passwd || data.password;
+    // this.fbId = data.fbId || data.facebookId || data.facebookid || data.facebook_id || null;
+    // this.email = data.email || null;
+    this._uname = data.uname;
+    this._passwd = data.passwd;
+    this.fbId = data.fbId || null;
+    this.email = data.email || null;
+    this.createdOn = data.createdOn;
+    this._salt = data.salt;
+    this._isSerializable = this._isSerializable || new Set();
+    for (const keyname of ['id', 'uname', 'passwd', 'fbId', 'email', 'createdOn', 'salt']) {
+      // passwd & salt is needed when creating new account OR changing passwd
+      this._isSerializable = this._isSerializable.add(keyname);
+    }
+  }
+
+  toJSON() {
+    const json = super.toJSON();
+    delete json.passwd; // SECURITY: never send pwd to client
+    delete json.salt; // SECURITY: never send pwd to client
+    return json;
+  }
+
+  static fromJSON(json) {
+    return super.fromJSON(json);
+  }
+
+  static fromDB(data) {
+    return super.fromDB(data);
+  }
+
+  toDB() {
+    const json = super.toDB();
+    // passwd & salt is needed when creating new account OR changing passwd
+    return json;
+  }
+
+  get id() {
+    return this._id;
+  }
+
+  get uname() {
+    return this._uname;
+  }
+
+  changePasswd(newPasswd) {
+    const salt = getStrongCryptoRandomStr();
+    return db.acc.changePasswd(this._id, newPasswd, salt, (err, user) => {
+      if (err) {
+        return console.error(err);
+      }
+      this._passwd = user.passwd;
+    });
+  }
+
+  get passwd() {
+    return this._passwd;
+  }
+
+  get meta() {
+    return this._meta;
+  }
+
+  get salt() {
+    return this._salt;
+  }
+
+  static signIn(uname, rawPasswd, cb) {
+    const CurrentClass = this;
+    const flash = { errMsg: 'Wrong username/password' };
+    CurrentClass.findByUname(uname)
+      .then((user) => {
+        if (user instanceof CurrentClass) {
+          serv.passwd.isRawMatchHashedPasswd(rawPasswd + user.salt, user.passwd, (isMatched) => {
+            if (!isMatched) cb(null, false, flash);
+            else cb(null, user);
+          });
+        } else {
+          cb(null, false, flash);
         }
-    }
+        return user;
+      })
+      .catch((err) => {
+        console.error(err);
+        return cb(err, false, flash);
+      });
+  }
 
-    static fromJSON (json) {
-        return super.fromJSON(json);
-    }
+  static signOut() {}
 
-    static fromDB (data) {
-        return super.fromDB(data);
-    }
+  static findById(id, cb) {
+    const CurrentClass = this;
+    return db.acc.findById(id, (err, userDataConvertedFromDB) => {
+      return err ? cb(err) : cb(null, new CurrentClass(userDataConvertedFromDB));
+    });
+  }
 
-    get id () {
-        return this._id;
-    }
+  static findByUname(uname) {
+    const CurrentClass = this;
+    return db.acc.findByUname(uname).then((res) => {
+      return res instanceof Object ? new CurrentClass(res) : res;
+    });
+  }
 
-    set id (x) { return; }
+  static findByEmail(email) {
+    const CurrentClass = this;
+    return db.acc.findByEmail(email).then((res) => {
+      return res instanceof Object ? new CurrentClass(res) : res;
+    });
+  }
 
-    get uname () {
-        return this._uname;
-    }
-
-    // do NOT allow to change username at the moment
-    // set uname (newUname) {
-    //     Account.isUnameUsed(newUname, (err, isUsed) => {
-    //         if (err) {
-    //             return console.error(err);
-    //         }
-    //         if (isUsed) {
-    //             throw new Error(`Username ${newUname} exists. Please choose another one.`);
-    //         } else {
-    //             db.acc.changeUname(this._id, newUname, user => {
-    //                 this._uname = newUname;
-    //             });
-    //         }
-    //     });
-    // }
-
-    set passwd (newPasswd) {
-        this.changePasswd(newPasswd).then().catch();
-    }
-
-    changePasswd (newPasswd) {
-        return db.acc.changePasswd(this._id, newPasswd, (err, user) => {
-            if (err) {
-                return console.error(err);
-            }
-            this._passwd = user.passwd;
-        });
-    }
-
-    get passwd () {
-        return this._passwd;
-    }
-
-    get salt () {
-        return this._salt;
-    }
-
-    set salt (x) { return; }
-
-    static isUnameUsed (uname, cb) {
-        return db.acc.isUnameUsed(uname, (err, bool) => {
-            const errMsg = err ? 'Error occured while querying database.' : null;
-            cb(errMsg, bool);
-        });
-    }
-
-    static signIn (uname, rawPasswd, cb) {
-        const CurrentClass = this;
-        CurrentClass.findByUname(uname, cb);
-    }
-
-    static signOut () {
-
-    }
-
-    static findById (id, cb) {
-        const CurrentClass = this;
-        db.acc.findById(id, (err, userDataConvertedFromDB) => (
-            err ?
-            cb(err)
-            :
-            cb(null, new CurrentClass(userDataConvertedFromDB))
-        ));
-    }
-
-    static findByUname (uname, cb) {
-        const CurrentClass = this;
-        db.acc.findByUname(uname, (err, userDataConvertedFromDB) => (
-            err ?
-            cb(err)
-            :
-            cb(null, new CurrentClass(userDataConvertedFromDB))
-        ));
-    }
-
-    static signUp (data, cb) {
-        // const CurrentClass = this;
-        return db.acc.regNewAcc(data, cb);
-    }
+  static signUp(json, cb) {
+    json.salt = getStrongCryptoRandomStr();
+    const CurrentClass = this;
+    const newUser = new CurrentClass(json);
+    return db.acc.regAcc(newUser.toDB(), cb);
+  }
 }
 
 module.exports = Account;

@@ -1,0 +1,40 @@
+.confirm-dialog {
+  @extend %popup-content-box;
+
+  &__header {
+    font-weight: bold;
+  }
+
+  &__btn {
+    text-transform: uppercase;
+    font-size: 1.2rem;
+    font-weight: bold;
+
+    &--yes {
+      color: $color--light-blue;
+    }
+
+    &--no {
+      color: $color--pink;
+    }
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+}
+
+@media (min-width: $mobile) {
+}
+
+@media (min-width: $tablet) {
+  .confirm-dialog {
+    padding: 20px 30px;
+  }
+}
+
+@media (min-width: $desktop) {
+}
+
+@media (min-width: $lg-desktop) {
+}

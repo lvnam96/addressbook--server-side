@@ -1,0 +1,70 @@
+/**********************************\
+        #PAGE'S MAIN SECTION
+\**********************************/
+
+
+.settings-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  $size: 2.5rem;
+  width: $size;
+  height: $size;
+  border-radius: 50%;
+  text-decoration: none !important;
+
+  &:hover {
+    background-color: $color--white;
+  }
+}
+
+.dropdown {
+  // overwrite Bootstrap4's default
+
+  hr {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+}
+
+#form_cb-check-all-contacts {
+  position: fixed;
+  top: -99px;
+  left: -99px;
+  z-index: -99;
+  visibility: hidden;
+
+  &:checked + .form__cb-box {
+    background-color: #37939c;
+    // background-clip: content-box;
+    transform: scale(0.8);
+  }
+}
+
+.contact-list {
+  font-size: 1rem;
+  // width: 100%;
+  margin: 1em 0;
+  list-style-type: none;
+  overflow-x: hidden;
+  background-color: #ffffff;
+  box-shadow: 0 0 20px -15px rgba(0, 0, 0, 0.8);
+  padding: 0.6rem;
+  border-radius: $radius-size;
+}
+
+/**********************************\
+        #MEDIA QUERIES
+\**********************************/
+
+@media (min-width: $mobile) {
+
+
+  .contact-list {
+    // width: 90%;
+  }
+}
+
+@media (min-width: $lg-desktop) {
+
+}

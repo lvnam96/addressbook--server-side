@@ -1,0 +1,21 @@
+@import 'variables';
+@import 'mixins';
+@import 'extends';
+
+@import 'keyframes';
+@import 'utils';
+@import './base/index';
+@import './layout/index';
+@import './components/index';
+
+// Medium devices (desktops, 992px and up)
+@media (min-width: 992px) {
+  .birth-reg-form input {
+    width: 200px;
+    margin: 15px 30px;
+
+    &__submitBtn {
+      width: initial;
+    }
+  }
+}

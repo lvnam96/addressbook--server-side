@@ -1,0 +1,76 @@
+.icon-btn {
+  $size: 2rem;
+  line-height: $size;
+  font-size: $size * 0.5;
+  width: $size;
+  height: $size;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  text-decoration: none !important;
+  background-color: transparent;
+  color: $color--gray;
+
+  &:hover {
+    background-color: $color--light-gray;
+    color: $color--white;
+
+    i[class*='fa-'] {
+    }
+  }
+
+  &--dark-bg {
+    &:hover {
+      background-color: $color--white;
+      color: $color--gray;
+    }
+
+    i[class*='fa-'] {
+    }
+  }
+}
+
+a.icon-btn {
+  text-transform: none;
+}
+button.icon-btn {
+  text-transform: none;
+  border: 0;
+}
+
+@media (pointer: fine) {
+  .icon-btn {
+    $size: 1.7rem;
+    line-height: $size;
+    font-size: $size * 0.5;
+    width: $size;
+    height: $size;
+  }
+}
+
+@media (min-width: $mobile) {
+}
+
+@media (min-width: $tablet) {
+  .icon-btn {
+    $size: 2.3rem;
+    line-height: $size;
+    font-size: $size * 0.5;
+    width: $size;
+    height: $size;
+  }
+}
+
+@media (min-width: $desktop) {
+}
+
+@media (min-width: $lg-desktop) {
+  .icon-btn {
+    $size: 2.5rem;
+    line-height: $size;
+    font-size: $size * 0.5;
+    width: $size;
+    height: $size;
+  }
+}

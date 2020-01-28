@@ -1,11 +1,6 @@
 {
   "restartable": "rs",
-  "ignore": [
-    "views/",
-    "public/",
-    ".git",
-    "node_modules/**/node_modules"
-  ],
+  "ignore": ["README.md", "Procfile", ".*", "views/", "public/", ".git", "node_modules/**/node_modules"],
   "verbose": true,
   "execMap": {
     "js": "node --harmony"
@@ -13,17 +8,11 @@
   "events": {
     "restart": "osascript -e 'display notification \"App restarted due to:\n'$FILENAME'\" with title \"nodemon\"'"
   },
-  "watch": [
-    "app.js",
-    "bin/",
-    "db/",
-    "classes/",
-    "helpers/",
-    "routes/",
-    "services/"
-  ],
+  "watch": ["app.js", "bin/", "db/", "classes/", "helpers/", "routes/", "services/"],
   "env": {
-    "NODE_ENV": "development"
+    "FE_DEV_PORT": 2711,
+    "NODE_ENV": "development",
+    "DEV": "true"
   },
   "ext": "js,json"
 }

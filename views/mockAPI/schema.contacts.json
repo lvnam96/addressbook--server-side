@@ -1,91 +1,149 @@
 {
-    "id": "ContactsSchema",
-    "type": "object",
-    "required": [
-        "data"
-    ],
-    "properties": {
-        "data": {
-            "type": "array",
-            "minItems": 1,
-            "maxItems": 1,
-            "items": {
-                "type": "object",
-                "required": [
-                    "id",
-                    "adrsbookId",
-                    "accountId",
-                    "name",
-                    "labels",
-                    "birth",
-                    "note",
-                    "phone",
-                    "website",
-                    "color",
-                    "avatarURL",
-                    "email"
-                ],
-                "properties": {
-                    "id": {
-                        "faker": "random.uuid",
-                        "type": "string"
-                    },
-                    "adrsbookId": {
-                        "enum": ["70da56a9-7c59-4451-80a0-8c37654c88dd"]
-                    },
-                    "accountId": {
-                        "enum": ["3a5c505e-ffe0-4be2-841b-b1c64c9fbf35"]
-                    },
-                    "name": {
-                        "faker": "name.findName",
-                        "type": "string"
-                    },
-                    "labels": {
-                        "minItems": 1,
-                        "maxItems": 3,
-                        "uniqueItems": true,
-                        "items": {
-                            "enum": [
-                                "family",
-                                "coWorker",
-                                "friends"
-                            ],
-                            "type": "string"
-                        },
-                        "type": "array"
-                    },
-                    "birth": {
-                        "enum": [
-                            "Sun Oct 2 2011 14:53:10 GMT+0700 (Indochina Time)"
-                        ],
-                        "type": "string"
-                    },
-                    "note": {
-                        "faker": "lorem.sentence",
-                        "type": "string"
-                    },
-                    "phone": {
-                        "faker": "phone.phoneNumber",
-                        "type": "string"
-                    },
-                    "website": {
-                        "faker": "internet.url",
-                        "type": "string"
-                    },
-                    "color": {
-                        "faker": "internet.color",
-                        "type": "string"
-                    },
-                    "avatarURL": {
-                        "faker": "internet.avatar",
-                        "type": "string"
-                    },
-                    "email": {
-                        "faker": "internet.email",
-                        "type": "string"
-                    }
+  "id": "ContactsSchema",
+  "type": "object",
+  "required": ["res", "data"],
+  "properties": {
+    "res": {
+      "enum": [true],
+      "type": "boolean"
+    },
+    "data": {
+      "type": "array",
+      "minItems": 10,
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "adrsbookId",
+          "accountId",
+          "name",
+          "labels",
+          "birth",
+          "note",
+          "phone",
+          "website",
+          "color",
+          "avatarURL",
+          "email"
+        ],
+        "properties": {
+          "id": {
+            "faker": "random.uuid",
+            "type": "string"
+          },
+          "adrsbookId": {
+            "enum": ["70da56a9-7c59-4451-80a0-8c37654c88dd"]
+          },
+          "accountId": {
+            "enum": ["3a5c505e-ffe0-4be2-841b-b1c64c9fbf35"]
+          },
+          "name": {
+            "faker": "name.findName",
+            "type": "string"
+          },
+          "labels": {
+            "minItems": 0,
+            "maxItems": 3,
+            "uniqueItems": true,
+            "enum": [
+              [
+                {
+                  "label": "Coworkers",
+                  "value": "coworkers"
+                },
+                {
+                  "label": "Friends",
+                  "value": "friends"
                 }
-            }
+              ],
+              [
+                {
+                  "label": "Friends",
+                  "value": "friends"
+                }
+              ],
+              [
+                {
+                  "label": "Family",
+                  "value": "family"
+                },
+                {
+                  "label": "Friends",
+                  "value": "friends"
+                }
+              ]
+            ],
+            "type": "array"
+          },
+          "birth": {
+            "enum": ["Wed Apr 17 1996 00:00:00 GMT+0700 (Indochina Time)"],
+            "type": "string"
+          },
+          "note": {
+            "faker": "lorem.sentence",
+            "type": "string"
+          },
+          "phones": {
+            "minItems": 1,
+            "maxItems": 3,
+            "uniqueItems": true,
+            "items": {
+              "required": ["id", "callingCode", "phoneNumb"],
+              "properties": {
+                "id": {
+                  "faker": "random.uuid",
+                  "type": "string"
+                },
+                "callingCode": {
+                  "enum": ["VN-84", "DE-49", "US-1", "CA-1"],
+                  "type": "string"
+                },
+                "phoneNumb": {
+                  "enum": ["123456789"],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "phone": {
+            "required": ["id", "callingCode", "phoneNumb"],
+            "properties": {
+              "id": {
+                "faker": "random.uuid",
+                "type": "string"
+              },
+              "callingCode": {
+                "enum": ["VN-84", "DE-49", "US-1", "CA-1"],
+                "type": "string"
+              },
+              "phoneNumb": {
+                "enum": ["123456789"],
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "website": {
+            "faker": "internet.url",
+            "type": "string"
+          },
+          "color": {
+            "faker": "internet.color",
+            "type": "string"
+          },
+          "avatarURL": {
+            "faker": "internet.avatar",
+            "type": "string"
+          },
+          "email": {
+            "faker": "internet.email",
+            "type": "string"
+          }
         }
+      }
     }
+  }
 }

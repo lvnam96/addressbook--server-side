@@ -1,0 +1,9 @@
+@import '../../../../core/scss/extends';
+// @import '../../../../core/scss/variables';
+
+%popup-content-box {
+  padding: 1rem; // .contact-card__btns-ctnr & .contact-card__header use this also because of the gray background
+  // box-shadow: 0 0 25px 10px rgba(0, 0, 0, 0.5);
+  background-color: $color--white;
+  border-radius: $radius-size-lg;
+}

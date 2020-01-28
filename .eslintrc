@@ -1,42 +1,55 @@
 {
-    "parser": "babel-eslint",
-    "settings": {
-        "react": {
-            "createClass": "createReactClass",
-            "pragma": "React"
-        }
-    },
-    "parserOptions": {
-        "ecmaVersion": 2018,
-        "sourceType": "module",
-        "impliedStrict": true,
-        "ecmaFeatures": {
-            "jsx": true
-        }
-    },
-    "env": {
-        "serviceworker": true,
-        "jasmine": true,
-        "jest": true,
-        "browser": true,
-        "node": true
-    },
-    "extends": [
-        "eslint:recommended",
-        "plugin:react/recommended"
-    ],
-    "plugins": [
-        "babel",
-        "react"
-    ],
-    "rules": {
-        "no-debugger": "warn",
-        "no-console": "warn",
-        "no-undef": "warn",
-        "semi": ["error", "always"],
-        "react/react-in-jsx-scope": "off",
-        "react/jsx-indent": ["warn", 4],
-        "react/prop-types": "warn",
-        "react/jsx-indent-props": ["warn", "first"]
+  "parser": "babel-eslint",
+  "root": true,
+  // "noInlineConfig": true,
+  // "reportUnusedDisableDirectives": true,
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "impliedStrict": true,
+      "jsx": true
     }
+  },
+  "env": {
+    "es6": true,
+    "jasmine": true,
+    "jest": true,
+    "node": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "standard",
+    "prettier",
+    "prettier/standard",
+    "plugin:node/recommended",
+    "plugin:promise/recommended",
+    "plugin:import/errors",
+    "plugin:import/warnings"
+  ],
+  "plugins": ["prettier", "promise"],
+  "rules": {
+    "prettier/prettier": "warn",
+    "node/no-unsupported-features/es-builtins": 0,
+    "promise/always-return": "warn",
+    "promise/catch-or-return": "warn",
+    "no-debugger": "warn",
+    "no-console": "warn",
+    "no-undef": "error",
+    "no-unused-vars": "warn",
+    "semi": ["error", "always"],
+    "indent": [
+      "error",
+      2,
+      {
+        "SwitchCase": 1, // to match prettier style
+        "VariableDeclarator": {
+          "var": 2,
+          "let": 2,
+          "const": 3
+        }
+      }
+    ],
+    "comma-dangle": "off"
+  }
 }

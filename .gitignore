@@ -29,3 +29,11 @@ node_modules
 
 # Debug log from npm
 npm-debug.log
+
+**/package-lock.json
+
+# For Herouku
+.env
+
+# For the first time project installing
+db/db-config.json

@@ -1,34 +1,37 @@
 extends layout
 
 block pageTitle
-    title= title || 'Sign In | Address Book'
+    title= title || 'Sign In | Contacts Book'
 
 block content
+  main
     .body-wrapper.container-fluid
-        .row
-            .col-lg-8.col-md-6.order-md-1(style="background: linear-gradient(-45deg, #7c7c7c, #212121);")
-                svg
-            .col-lg-4.col-md-6.order-md-0.d-flex.flex-wrap.align-items-center.justify-content-center
-                .w-100.px-2.px-md-3.px-xl-4(style="max-width: 400px;")
-                    .signin-form-wrapper!= ssr
-                    .text-center.mt-3.mb-4.signin-form__seperator
-                        hr.divider.w-50.p-0.m-0
-                        .d-inline-block.px-2.py-1.signin-form__seperator__text
-                            span or
-                    p.text-center
-                        button.btn.btn-dark.rounded-0.btn-block Sign in with Google
-                    .text-center Don't have an account?
-                        br
-                        a(href="/signup", class="signin-form__signup-link") Sign Up
+      .row
+        .col-12.col-lg-8.order-lg-1.d-none.d-lg-block(style="background: linear-gradient(-45deg, #7c7c7c, #212121);")
+          svg
+        .col-12.col-lg-4.order-lg-0.d-flex.flex-wrap.align-items-center.justify-content-center
+          .w-100.px-2.px-md-3.px-xl-4(style="max-width: 400px;")
+            header
+              h1.font-weight-bold.page-title Sign In
+            .signin-form-wrapper.mb-3.mb-md-4!= ssr
+            .text-center.mb-4.signin-form__seperator
+              hr.divider.w-50.p-0.m-0
+              .d-inline-block.px-2.py-1.signin-form__seperator__text
+                span or
+            p.text-center
+              button.btn.btn-dark.rounded-0.btn-block Sign in with Google
+            .text-center Don't have an account?
+              br
+              a.signin-form__signup-link(href="/signup") Sign Up
+  script window.returnedUser = '#[= returnedUser]';
 
 block closeHead
     link(href="/Signin.css", rel="stylesheet")
-    link(href="/signup", rel="dns-prefetch")
-    link(href="/signup", rel="prefetch", as="script")
-    link(href="/Signup.css", rel="preload", as="style")
-    link(href="/Signin.js", rel="preload", as="script")
-    link(href="/App.css", rel="preload", as="style")
-    link(href="/App.js", rel="preload", as="script")
+    link(href="/signup", rel="prefetch")
+    link(href="/Signup.css", rel="prefetch")
+    link(href="/Signin.js", rel="prefetch")
+    link(href="/App.css", rel="prefetch")
+    link(href="/App.js", rel="prefetch")
 
 block closeBody
     script(src="/Signin.js")

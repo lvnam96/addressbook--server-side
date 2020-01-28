@@ -1,0 +1,10 @@
+@import '../../../../core/scss/overwrite-bs4-variables';
+@import './variables';
+
+$primary: $primary-color !default;
+$secondary: $accent-color !default;
+
+$custom-colors: ();
+
+$theme-colors: () !default;
+$theme-colors: map-merge($custom-colors, $theme-colors);

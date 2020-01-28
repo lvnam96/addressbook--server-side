@@ -1,0 +1,24 @@
+.sub-nav {
+  .dropdown-menu {
+    i {
+      color: $color--gray !important;
+    }
+  }
+}
+
+@media (min-width: $mobile) {
+}
+
+@media (min-width: $tablet) {
+}
+
+@media (min-width: $desktop) {
+  .sub-nav {
+    &.fixed-top {
+      margin-left: $desktopNavWidth;
+    }
+  }
+}
+
+@media (min-width: $lg-desktop) {
+}

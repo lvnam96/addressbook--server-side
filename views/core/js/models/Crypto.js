@@ -1,5 +1,5 @@
-import jsSHA from "jssha";
+import jsSHA from 'jssha';
 
 export default {
-    SHA: jsSHA
+  SHA: jsSHA,
 };
