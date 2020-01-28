@@ -2,8 +2,7 @@
 @import 'extends';
 @import 'mixins';
 //general
-@import url('https://fonts.googleapis.com/css?family=Nunito:300,400,600,700,800,900&display=swap&subset=latin-ext,vietnamese');
-@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,700,900&subset=latin-ext&display=swap');
+// fonts import are done in pug template
 
 $fa-font-path: '~@fortawesome/fontawesome-free/webfonts' !default;
 @import '~@fortawesome/fontawesome-free/scss/fontawesome';
