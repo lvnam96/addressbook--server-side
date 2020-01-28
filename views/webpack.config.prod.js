@@ -9,6 +9,10 @@ const CopyPlugin = require('copy-webpack-plugin');
 const productionMode = process.env.NODE_ENV === 'production';
 const publicPath = '/';
 
+const _isEmpty = require('lodash/isEmpty');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const analyzingMode = !_isEmpty(process.env.ANALYZE) ? JSON.parse(process.env.ANALYZE) : false;
+
 module.exports = {
   mode: 'production',
   entry: {
@@ -243,9 +247,9 @@ module.exports = {
     }),
   ],
   performance: {
-    // hints: 'error',
-    // maxEntrypointSize: 400000,
-    // maxAssetSize: 100000
+    hints: 'warning',
+    // maxEntrypointSize: 170000,
+    // maxAssetSize: 100000,
   },
   optimization: {
     splitChunks: {
@@ -253,3 +257,7 @@ module.exports = {
     }, // https://webpack.js.org/plugins/split-chunks-plugin/
   },
 };
+
+if (analyzingMode) {
+  module.exports.plugins.unshift(new BundleAnalyzerPlugin());
+}
