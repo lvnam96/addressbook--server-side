@@ -22,8 +22,8 @@ if (core.status.isDev) {
     });
   }
 
-  var axe = require('react-axe');
-  axe(React, ReactDOM, 1000);
+  // var axe = require('react-axe');
+  // axe(React, ReactDOM, 1000);
 }
 
 // registerServiceWorker();
