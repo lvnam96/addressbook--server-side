@@ -23,10 +23,6 @@
           "lodash": {
             "transform": "lodash/${member}",
             "preventFullImport": true
-          },
-          "react-router": {
-            "transform": "react-router/${member}",
-            "preventFullImport": true
           }
         }],
         // "@babel/plugin-proposal-decorators",
