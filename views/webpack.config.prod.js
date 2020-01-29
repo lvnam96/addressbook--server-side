@@ -31,6 +31,7 @@ module.exports = {
     // don't include these packages/modules in node_modules but use CDN, still have to import in each file
     react: 'React',
     'react-dom': 'ReactDOM',
+    '@sentry/browser': 'Sentry',
   },
   module: {
     rules: [

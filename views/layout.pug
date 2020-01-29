@@ -23,9 +23,10 @@ html(lang="en")
         //- script(src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js", integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM", crossorigin="anonymous")
         if !!htmlWebpackPlugin && !htmlWebpackPlugin.options.prod
             //- THESE LINES ARE COMMENTED OUT B/C OF USING LOCAL react PACKAGES WHEN IN DEVELOPMENT
-            //- script(crossorigin, src="https://unpkg.com/react@^16.12/umd/react.development.js")
-            //- script(crossorigin, src="https://unpkg.com/react-dom@^16.12/umd/react-dom.development.js")
+            //- script(crossorigin="anonymous", src="https://unpkg.com/react@^16.12/umd/react.development.js")
+            //- script(crossorigin="anonymous", src="https://unpkg.com/react-dom@^16.12/umd/react-dom.development.js")
         else
             script(crossorigin="anonymous", src="https://unpkg.com/react@^16.12/umd/react.production.min.js")
             script(crossorigin="anonymous", src="https://unpkg.com/react-dom@^16.12/umd/react-dom.production.min.js")
+            script(crossorigin="anonymous" src="https://browser.sentry-cdn.com/5.11.1/bundle.min.js" integrity="sha384-r7/ZcDRYpWjCNXLUKk3iuyyyEcDJ+o+3M5CqXP5GUGODYbolXewNHAZLYSJ3ZHcV")
         block closeBody
