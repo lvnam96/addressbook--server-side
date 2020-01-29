@@ -1,6 +1,6 @@
 import React from 'react';
-import SHA from 'jssha';
-import debounce from 'lodash/debounce'; // used for queries (should be used for production)
+import SHA from 'jssha/src/sha512';
+import _debounce from 'lodash/debounce'; // used for queries (should be used for production)
 import memoize from 'memoize-one';
 // import Timeout from '../../../../core/js/models/Timeout'; // used for not important tasks: check passwords match (implemented from scratch, used for fun)
 import _isEmpty from 'lodash/isEmpty';
@@ -101,7 +101,7 @@ class SignUpFormContainer extends React.Component {
     });
   };
 
-  checkEmailUsedDebounced = debounce(
+  checkEmailUsedDebounced = _debounce(
     memoize(async (email) => {
       try {
         const json = await this._requestEmailUsed(email);
@@ -120,7 +120,7 @@ class SignUpFormContainer extends React.Component {
     });
   };
 
-  checkUnameUsedDebounced = debounce(
+  checkUnameUsedDebounced = _debounce(
     memoize(async (uname) => {
       // async/await version:
       try {

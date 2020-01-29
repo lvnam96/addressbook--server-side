@@ -227,6 +227,7 @@ module.exports = {
       adbk: path.resolve(__dirname, './entrypoints/main/src/js/controllers/adbk'),
       core: path.resolve(__dirname, './core/js/controllers/index'),
       'react-dom': '@hot-loader/react-dom',
+      'lodash-es': 'lodash',
     },
   },
   plugins: [

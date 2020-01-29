@@ -1,16 +1,17 @@
-import * as Yup from 'yup';
+import object from 'yup/lib/object';
+import string from 'yup/lib/string';
 
 export default (values) => {
-  return Yup.object()
+  return object()
     .shape({
-      uname: Yup.string()
+      uname: string()
         .trim()
         .lowercase()
         .label('Username')
         .min(2)
         .max(50)
         .required(),
-      passwd: Yup.string()
+      passwd: string()
         .label('Password')
         .required(),
     })

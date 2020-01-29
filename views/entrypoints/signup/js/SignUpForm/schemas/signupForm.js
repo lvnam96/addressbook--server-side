@@ -1,19 +1,21 @@
-import * as Yup from 'yup';
+import object from 'yup/lib/object';
+import string from 'yup/lib/string';
+import boolean from 'yup/lib/boolean';
 const REQUIRE_ERROR_MSG = 'This field is required.';
 
-const emailSchema = Yup.string()
+const emailSchema = string()
   .trim()
   .lowercase()
   .email('Please enter a valid email');
-const unameSchema = Yup.string()
+const unameSchema = string()
   .trim()
   .lowercase();
 
 export default (values, checkEmailUsed, checkUnameUsed) => {
   values.useEmailAsUname = typeof values.useEmailAsUname === 'boolean' ? values.useEmailAsUname : false;
-  return Yup.object()
+  return object()
     .shape({
-      useEmailAsUname: Yup.bool().required(REQUIRE_ERROR_MSG),
+      useEmailAsUname: boolean().required(REQUIRE_ERROR_MSG),
       email: emailSchema
         .label('Email')
         .notRequired()
@@ -26,17 +28,17 @@ export default (values, checkEmailUsed, checkUnameUsed) => {
         })
         .when('useEmailAsUname', {
           is: true,
-          then: Yup.string().required(),
+          then: string().required(),
         }),
       uname: unameSchema
         .label('Username')
         .when('useEmailAsUname', {
           is: false,
-          then: Yup.string()
+          then: string()
             .min(2)
             .max(50)
             .required(),
-          otherwise: Yup.string().notRequired(),
+          otherwise: string().notRequired(),
         })
         .test('is-uname-used', 'There is an account using this username', async (val) => {
           const unameAsEmailSchema = unameSchema.email().min(5);
@@ -47,11 +49,11 @@ export default (values, checkEmailUsed, checkUnameUsed) => {
             return !isUnamelUsed;
           } else return true;
         }),
-      passwd: Yup.string()
+      passwd: string()
         .label('Password')
         .min(6)
         .required(),
-      cfPasswd: Yup.string()
+      cfPasswd: string()
         .label('Confirm Password')
         .length(values.passwd.length)
         .test('are-passwds-match', 'Confirm Password must matches password', (val) => val === values.passwd)

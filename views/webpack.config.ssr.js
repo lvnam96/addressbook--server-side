@@ -172,6 +172,7 @@ module.exports = {
     alias: {
       adbk: path.resolve(__dirname, './entrypoints/main/src/js/controllers/adbk'),
       core: path.resolve(__dirname, './core/js/controllers/index'),
+      'lodash-es': 'lodash',
     },
   },
   plugins: [

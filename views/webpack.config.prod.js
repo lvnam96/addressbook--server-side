@@ -5,6 +5,7 @@ const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 
 const productionMode = process.env.NODE_ENV === 'production';
 const publicPath = '/';
@@ -199,9 +200,12 @@ module.exports = {
     alias: {
       adbk: path.resolve(__dirname, './entrypoints/main/src/js/controllers/adbk'),
       core: path.resolve(__dirname, './core/js/controllers/index'),
+      'lodash-es': 'lodash', // https://github.com/GoogleChromeLabs/webpack-libs-optimizations#alias-lodash-es-to-lodash
     },
   },
   plugins: [
+    new LodashModuleReplacementPlugin(),
+    new webpack.ContextReplacementPlugin(/date\-fns[\/\\]/, new RegExp(`[/\\\\\](${['en', 'vi'].join('|')})[/\\\\\]`)),
     new CleanWebpackPlugin({
       dry: false,
       cleanOnceBeforeBuildPatterns: ['../public/*.*'],

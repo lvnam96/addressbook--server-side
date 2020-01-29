@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import SHA from 'jssha';
-// import debounce from 'lodash/debounce';
+import SHA from 'jssha/src/sha512';
+// import _debounce from 'lodash/debounce';
 // import Timeout from '../../../../core/js/models/Timeout';
 import _isEmpty from 'lodash/isEmpty';
 import { withFormik } from 'formik';

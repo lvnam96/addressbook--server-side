@@ -50,6 +50,8 @@
     "core": true
   },
   "rules": {
+    "react/forbid-foreign-prop-types": "error",
+    "import/named": "error",
     "jsx-a11y/no-noninteractive-element-interactions": "warn",
     "jsx-a11y/click-events-have-key-events": "warn",
     "react/jsx-first-prop-new-line": ["warn", "multiline-multiprop"],

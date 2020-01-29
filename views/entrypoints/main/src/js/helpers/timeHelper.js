@@ -1,11 +1,13 @@
 import { sortByDay } from './sortHelper';
 import { formatNumbToStr } from './utilsHelper';
-import { DateTime } from 'luxon';
+import { format } from 'date-fns';
 
-export const displayDateObject = (dateObj, options) => {
-  const birth = DateTime.fromISO(dateObj.toISOString());
-  return birth.toLocaleString(options);
+export const displayDateObject = (dateObj, formatTemplate = 'd MMMM yyyy', options) => {
+  if (dateObj instanceof Date) {
+    return format(dateObj, formatTemplate, options);
+  } else throw new Error('[helper: displayDate] date !instanceof Date');
 };
+export const displayDate = displayDateObject;
 
 export const isLeap = (year) => {
   return !(year % 4 || (year % 100 === 0 && year % 400));
@@ -38,58 +40,6 @@ const t = (() => {
 })();
 
 export const timeObj = t;
-
-export const convertMonthToText = (num) => {
-  const month = parseInt(num);
-  const monthMap = {
-    1: 'Jan',
-    2: 'Feb',
-    3: 'Mar',
-    4: 'Apr',
-    5: 'May',
-    6: 'Jun',
-    7: 'Jul',
-    8: 'Aug',
-    9: 'Sep',
-    10: 'Oct',
-    11: 'Nov',
-    12: 'Dec',
-  };
-  return monthMap[month];
-};
-
-export const displayDate = (date, format) => {
-  let year, month, day;
-  if (date instanceof String) {
-    const birthArr = date.split('-');
-    // TO-DO: get day, month, year based on format
-    switch (format) {
-      case 'YYYY-MM-DD':
-        break;
-      case 'DD-MM-YYYY':
-        break;
-      default:
-        if (/\d{4}-\d{1,2}-\d{1,2}/.test(date)) {
-          // format: YYYY-MM-DD
-          year = birthArr[0];
-          month = convertMonthToText(birthArr[1]);
-          day = birthArr[2];
-        } else {
-          // format: DD-MM-YYYY or MM-DD-YYYY ????
-          year = birthArr[2];
-          month = convertMonthToText(birthArr[1]);
-          day = birthArr[0];
-        }
-    }
-    return `${month} ${day}, ${year}`;
-  } else if (date instanceof Date) {
-    // Old implementation:
-    // year = date.getFullYear();
-    // month = convertMonthToText(date.getMonth() + 1);
-    // return `${convertMonthToText(date.getMonth() + 1)} ${date.getDate()}, ${date.getFullYear()}`;
-    return displayDateObject(date, DateTime.DATE_FULL);
-  } else throw new Error('[helper: displayDate] date !instanceof (String || Date)');
-};
 
 export const convertDateObjToHTMLInputVal = (date) => {
   if (date instanceof Date) {
