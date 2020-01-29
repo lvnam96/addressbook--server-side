@@ -205,7 +205,15 @@ module.exports = {
     },
   },
   plugins: [
-    new LodashModuleReplacementPlugin(),
+    new LodashModuleReplacementPlugin({
+      collections: true,
+      exotics: true,
+      unicode: true,
+      memoizing: true,
+      flattening: true,
+      paths: true,
+      placeholders: true,
+    }),
     new webpack.ContextReplacementPlugin(/date\-fns[\/\\]/, new RegExp(`[/\\\\\](${['en', 'vi'].join('|')})[/\\\\\]`)),
     new CleanWebpackPlugin({
       dry: false,
