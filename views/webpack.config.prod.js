@@ -1,4 +1,6 @@
-/* eslint-disable node/no-unpublished-require */
+const merge = require('webpack-merge');
+const commonConfig = require('./webpack.config.common');
+
 const path = require('path');
 const webpack = require('webpack');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
@@ -7,26 +9,51 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 
-const productionMode = process.env.NODE_ENV === 'production';
-const publicPath = '/';
-
 const _isEmpty = require('lodash/isEmpty');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const analyzingMode = !_isEmpty(process.env.ANALYZE) ? JSON.parse(process.env.ANALYZE) : false;
 
-module.exports = {
+const cssPlugins = [
+  {
+    options: {
+      // publicPath: '../'// by default it use publicPath in webpackOptions.output
+      sourceMap: true,
+      esModule: true,
+    },
+    loader: MiniCssExtractPlugin.loader,
+  },
+  {
+    options: {
+      sourceMap: true,
+    },
+    loader: 'css-loader',
+  },
+  {
+    options: {
+      sourceMap: true,
+    },
+    loader: 'resolve-url-loader',
+  },
+  {
+    options: {
+      ident: 'postcss',
+      plugins: (loader) => [
+        require('postcss-import')({ root: loader.resourcePath }),
+        require('postcss-preset-env')(),
+        require('autoprefixer')(),
+        // require('cssnano')({
+        //     reduceIdents: false,
+        //     safe: true,
+        //     discardComments: { removeAll: true }
+        // })
+      ],
+      sourceMap: true,
+    },
+    loader: 'postcss-loader',
+  },
+];
+const prodConfig = merge(commonConfig, {
   mode: 'production',
-  entry: {
-    core: './core/js/index.js',
-    App: './entrypoints/main/src/index.js',
-    Signin: './entrypoints/signin/index.js',
-    Signup: './entrypoints/signup/index.js',
-  },
-  output: {
-    publicPath, // must be set to solve this issue: https://github.com/webpack/webpack/issues/7417
-    path: path.resolve(__dirname, '../public'),
-    filename: '[name].js', // use entry property names, e.g: Signin.js
-  },
   externals: {
     // don't include these packages/modules in node_modules but use CDN, still have to import in each file
     react: 'React',
@@ -38,11 +65,6 @@ module.exports = {
       {
         test: /\.(ts|js)x?$/,
         exclude: /(node_modules|bower_components|prototype)/,
-        // include: [
-        //     path.resolve(__dirname, './entrypoints/signin'),
-        //     path.resolve(__dirname, './entrypoints/signup')
-        //     // path.resolve(__dirname, 'entrypoints/**')
-        // ],
         options: {
           envName: process.env.BABEL_ENV || process.env.NODE_ENV || 'production',
           configFile: './.babelrc', // must be specified as babel-loader doesnot find it
@@ -52,43 +74,7 @@ module.exports = {
       {
         test: /\.scss$/,
         use: [
-          {
-            options: {
-              // by default it use publicPath in webpackOptions.output
-              // publicPath: '../'
-              sourceMap: true,
-            },
-            loader: MiniCssExtractPlugin.loader,
-          },
-          {
-            options: {
-              sourceMap: true,
-            },
-            loader: 'css-loader',
-          },
-          {
-            options: {
-              sourceMap: true,
-            },
-            loader: 'resolve-url-loader',
-          },
-          {
-            options: {
-              ident: 'postcss',
-              plugins: (loader) => [
-                require('postcss-import')({ root: loader.resourcePath }),
-                require('postcss-preset-env')(),
-                require('autoprefixer')(),
-                // require('cssnano')({
-                //     reduceIdents: false,
-                //     safe: true,
-                //     discardComments: { removeAll: true }
-                // })
-              ],
-              sourceMap: true,
-            },
-            loader: 'postcss-loader',
-          },
+          ...cssPlugins,
           {
             loader: 'sass-loader',
             options: {
@@ -102,45 +88,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: [
-          {
-            options: {
-              // by default it use publicPath in webpackOptions.output
-              // publicPath: '../'
-              sourceMap: true,
-            },
-            loader: MiniCssExtractPlugin.loader,
-          },
-          {
-            options: {
-              sourceMap: true,
-            },
-            loader: 'css-loader',
-          },
-          {
-            options: {
-              sourceMap: true,
-            },
-            loader: 'resolve-url-loader',
-          },
-          {
-            options: {
-              ident: 'postcss',
-              plugins: (loader) => [
-                require('postcss-import')({ root: loader.resourcePath }),
-                require('postcss-preset-env')(),
-                require('autoprefixer')(),
-                // require('cssnano')({
-                //     reduceIdents: false,
-                //     safe: true,
-                //     discardComments: { removeAll: true }
-                // })
-              ],
-              sourceMap: true,
-            },
-            loader: 'postcss-loader',
-          },
-        ],
+        use: [...cssPlugins],
       },
       {
         test: /\.pug$/,
@@ -195,17 +143,9 @@ module.exports = {
       },
     ],
   },
-  devtool: 'source-map', // use 'source-map' for production
-  resolve: {
-    extensions: ['.tsx', '.ts', '.jsx', '.js'],
-    alias: {
-      adbk: path.resolve(__dirname, './entrypoints/main/src/js/controllers/adbk'),
-      core: path.resolve(__dirname, './core/js/controllers/index'),
-      'lodash-es': 'lodash', // https://github.com/GoogleChromeLabs/webpack-libs-optimizations#alias-lodash-es-to-lodash
-    },
-  },
   plugins: [
     new LodashModuleReplacementPlugin({
+      // https://github.com/lodash/lodash-webpack-plugin#feature-sets
       collections: true,
       exotics: true,
       unicode: true,
@@ -214,6 +154,7 @@ module.exports = {
       paths: true,
       placeholders: true,
     }),
+    // eslint-disable-next-line no-useless-escape
     new webpack.ContextReplacementPlugin(/date\-fns[\/\\]/, new RegExp(`[/\\\\\](${['en', 'vi'].join('|')})[/\\\\\]`)),
     new CleanWebpackPlugin({
       dry: false,
@@ -264,13 +205,10 @@ module.exports = {
     // maxEntrypointSize: 170000,
     // maxAssetSize: 100000,
   },
-  optimization: {
-    splitChunks: {
-      // chunks: 'all'
-    }, // https://webpack.js.org/plugins/split-chunks-plugin/
-  },
-};
+});
 
 if (analyzingMode) {
-  module.exports.plugins.unshift(new BundleAnalyzerPlugin());
+  prodConfig.plugins.unshift(new BundleAnalyzerPlugin());
 }
+
+module.exports = prodConfig;

@@ -1,8 +1,10 @@
-/* eslint-disable node/no-unpublished-require */
+const merge = require('webpack-merge');
+const commonConfig = require('./webpack.config.common');
+
 const path = require('path');
 const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const WebpackBar = require('webpackbar');
@@ -10,30 +12,16 @@ const WebpackBar = require('webpackbar');
 // const WriteFilePlugin = require('write-file-webpack-plugin');
 // const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const MediaQueryPlugin = require('media-query-plugin');
-
 // const Dotenv = require('dotenv-webpack');
 
 const productionMode = process.env.NODE_ENV === 'production';
 const DEV_SERVER_PORT = 2711;
-const publicPath = 'http://localhost:' + DEV_SERVER_PORT + '/';
+const publicPath = `http://localhost:${DEV_SERVER_PORT}/`;
 
-module.exports = {
+const devConfig = merge(commonConfig, {
   mode: 'development',
-  entry: {
-    core: './core/js/index.js',
-    App: './entrypoints/main/src/index.js',
-    Signin: './entrypoints/signin/index.js',
-    Signup: './entrypoints/signup/index.js',
-  },
   output: {
     publicPath,
-    path: path.resolve(__dirname, '../public'),
-    filename: '[name].js', // use entry property names, e.g: Signin.js
-  },
-  externals: {
-    // don't include these packages/modules in node_modules but use CDN, still have to import in each file
-    // react: 'React',
-    // 'react-dom': 'ReactDOM',
   },
   module: {
     rules: [
@@ -145,7 +133,6 @@ module.exports = {
           },
         ],
       },
-
       {
         test: /\.(woff2?|eot|ttf|otf)$/i,
         loader: 'url-loader',
@@ -222,12 +209,8 @@ module.exports = {
     contentBase: path.resolve(__dirname, '../public'),
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.jsx', '.js'],
     alias: {
-      adbk: path.resolve(__dirname, './entrypoints/main/src/js/controllers/adbk'),
-      core: path.resolve(__dirname, './core/js/controllers/index'),
       'react-dom': '@hot-loader/react-dom',
-      'lodash-es': 'lodash',
     },
   },
   plugins: [
@@ -268,6 +251,7 @@ module.exports = {
       // hash: true,
       title: 'Sign In',
       prod: false,
+      ssr: require('./ssr/Signin.ssr') ? require('./ssr/Signin.ssr').default : '',
     }),
     new HtmlWebpackPlugin({
       filename: 'signup.html',
@@ -278,12 +262,7 @@ module.exports = {
       // hash: true,
       title: 'Sign Up',
       prod: false,
-    }),
-    new MiniCssExtractPlugin({
-      // Thus you can import your Sass modules from `node_modules`.
-      // Just prepend them with a ~ to tell webpack that this is not a relative import
-      // chunkFilename: "[id].css",
-      filename: '[name].css',
+      ssr: require('./ssr/Signup.ssr') ? require('./ssr/Signup.ssr').default : '',
     }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.ProvidePlugin({
@@ -307,7 +286,6 @@ module.exports = {
     //   safe: true, // load .env.example (defaults to "false" which does not use dotenv-safe)
     // }),
   ],
-  optimization: {
-    splitChunks: {}, // https://webpack.js.org/plugins/split-chunks-plugin/
-  },
-};
+});
+
+module.exports = devConfig;
