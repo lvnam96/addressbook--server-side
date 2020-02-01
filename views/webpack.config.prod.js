@@ -24,6 +24,7 @@ const cssPlugins = [
   },
   {
     options: {
+      // modules: true, // should not be used, see: https://github.com/csstools/postcss-normalize#postcss-import-usage to use the alternative way
       sourceMap: true,
     },
     loader: 'css-loader',
@@ -40,12 +41,11 @@ const cssPlugins = [
       plugins: (loader) => [
         require('postcss-import')({ root: loader.resourcePath }),
         require('postcss-preset-env')(),
-        require('autoprefixer')(),
-        // require('cssnano')({
-        //     reduceIdents: false,
-        //     safe: true,
-        //     discardComments: { removeAll: true }
-        // })
+        require('postcss-flexbugs-fixes')(),
+        // require('stylelint')(), // print warning to console
+        require('postcss-normalize')(),
+        // require('autoprefixer')(), // not necessary if use postcss-preset-env already
+        // require('cssnano')(), // does not work with mini-css-extract-plugin
       ],
       sourceMap: true,
     },
