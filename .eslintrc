@@ -1,5 +1,5 @@
 {
-  "parser": "babel-eslint",
+  // "parser": "babel-eslint",
   "root": true,
   // "noInlineConfig": true,
   // "reportUnusedDisableDirectives": true,
@@ -7,8 +7,7 @@
     "ecmaVersion": 2020,
     "sourceType": "module",
     "ecmaFeatures": {
-      "impliedStrict": true,
-      "jsx": true
+      "impliedStrict": true
     }
   },
   "env": {
