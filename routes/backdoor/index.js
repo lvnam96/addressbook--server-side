@@ -1,17 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../../classes/User');
-const auth = require('../../services/auth');
+const { allowUserAccessing } = require('../../middlewares/auth');
 const cbookRouter = require('./cbook');
 const contactsRouter = require('./contacts');
 const userRouter = require('./user');
 const adbk = require('../../classes/adbk');
-const { extractJWT } = require('../../middlewares/jwt');
-const { extractAndValidateXsrfToken } = require('../../middlewares/csrf');
+const xsrfMiddleware = require('../../middlewares/csrf');
 
 // '/backdoor' route
 
-const middlewares = [extractJWT, auth.allowUserAccessing, extractAndValidateXsrfToken];
+const middlewares = [allowUserAccessing, xsrfMiddleware];
 
 // this route need to be secured (using token) & limited on the amount of requests
 router.get('/is-uname-used', (req, res, next) => {

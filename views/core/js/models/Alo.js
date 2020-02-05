@@ -15,6 +15,8 @@ const customAxiosOptions = {
   timeout: 30000, // default: 0
   // withCredentials: true,
   headers: {},
+  xsrfCookieName: 'XSRF-TOKEN', // default
+  xsrfHeaderName: 'X-XSRF-TOKEN', // default
   // transformRequest: [() => {}],
   // transformResponse: [() => {}],
   baseURL: PROD_DOMAIN + '/',

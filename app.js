@@ -1,6 +1,5 @@
 const express = require('express');
 const path = require('path');
-const fs = require('fs');
 const favicon = require('serve-favicon');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
@@ -13,9 +12,9 @@ const adbk = require('./classes/adbk');
 const compression = require('compression');
 const cors = require('cors');
 // const jwt = require('jsonwebtoken');
-const { ExtractJwt, Strategy: JwtStrategy } = require('passport-jwt');
+// const { ExtractJwt, Strategy: JwtStrategy } = require('passport-jwt');
 
-const isDev = process.env.NODE_ENV === 'development';
+const isDev = adbk.dev.isDev;
 
 const router = require('./routes/index');
 
@@ -32,26 +31,26 @@ passport.use(
     adbk.user.signIn
   )
 );
-passport.use(
-  new JwtStrategy(
-    {
-      jwtFromRequest: ExtractJwt.fromBodyField('jwt'),
-      secretOrKey: adbk.jwt.SECRET_KEY,
-    },
-    (jwtPayload, next) => {
-      adbk.findById(jwtPayload.id, (err, user) => {
-        if (err) {
-          console.error(err);
-          next(err);
-        } else if (user) {
-          next(null, user);
-        } else {
-          next(null, false);
-        }
-      });
-    }
-  )
-);
+// passport.use(
+//   new JwtStrategy(
+//     {
+//       jwtFromRequest: ExtractJwt.fromBodyField('jwt'),
+//       secretOrKey: adbk.jwt.SECRET_KEY,
+//     },
+//     (jwtPayload, next) => {
+//       adbk.user.findById(jwtPayload.id, (err, user) => {
+//         if (err) {
+//           console.error(err);
+//           next(err);
+//         } else if (user) {
+//           next(null, user);
+//         } else {
+//           next(null, false);
+//         }
+//       });
+//     }
+//   )
+// );
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
@@ -67,24 +66,27 @@ app.set('env', process.env.NODE_ENV || 'production');
 app.set('strict routing', false);
 app.set('subdomain offset', 3); // default: 2 for first level subdomains (e.g: a.b.com => a will be extracted). Our subdmains will be second-level subdomains (e.g: c.a.b.com => c will be extracted). Change this if app's domain is changed
 
-app.locals.cookieSecret = fs.readFileSync('./bin/cookie-secret.key', { encoding: 'utf-8' });
+app.locals.cookieSecret = app.locals.cookieSecret || adbk.secret.cookie;
+// app.locals.coreCSS = fs.readFileSync('./public/core.css', { encoding: 'utf-8' }); // do not inline CSS because of advantages of HTTP caching using CSS files
 
-// CORS setup
-const corsOptions = {};
+// do not enable CORS in production (to prevent XSRF attacks), unless for a specific route with a "must" reason & carefully unit tests
+// if CORS is enabled, remember to note the reason in documentation
 if (isDev) {
+  const corsOptions = {};
   // process.env variables provided by ./nodemon.json
   corsOptions.origin = [
     'http://localhost:' + process.env.FE_DEV_PORT,
     'http://localhost:' + (process.env.PORT || 3000),
   ];
-  console.log('CORS is set up for', corsOptions.origin);
+  app.use(cors(corsOptions));
+  // eslint-disable-next-line no-console
+  console.log('CORS is set up for', corsOptions.origin); // notify deployer
 }
-app.use(cors(corsOptions));
 
 if (!isDev) app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger(isDev ? 'dev' : 'common'));
 app.use(compression()); // put compression middleware before any files serving middleware
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public'))); // express.static === require('serve-static')
 app.use(cookieParser(app.locals.cookieSecret));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: isDev })); // parse application/x-www-form-urlencoded for easier testing with Postman or plain HTML form in dev env
@@ -97,11 +99,15 @@ if (!isDev) {
 }
 app.use(
   session({
+    name: 'session.sid',
+    // see https://www.npmjs.com/package/express-session#options for more details of props
     store: new (require('connect-pg-simple')(session))({ pool }),
-    secret: '@$^#c(&)#cn)(#cn#mx)e(#@)', // change this in production
+    // Note Since version 1.5.0, the cookie-parser middleware no longer needs to be used for this module to work. This module now directly reads and writes cookies on req/res. Using cookie-parser may result in issues if the secret is not the same between this module and cookie-parser:
+    secret: [app.locals.cookieSecret, '@$^#c(&)#cn)(#cn#mx)e(#@)'], // use first element to sign, use all to verify
     saveUninitialized: false,
     resave: false,
     cookie: cookiesConfig,
+    rolling: true, // for reset maxAge of session on every request
   })
 ); // this session() middleware must be used BEFORE passport.session()
 app.use(passport.initialize());
@@ -109,14 +115,14 @@ app.use(passport.session());
 
 app.use(
   '*',
-  function requireHTTPS (req, res, next) {
+  function requireHTTPS(req, res, next) {
     // The 'x-forwarded-proto' check is for Heroku
     if (!req.secure && req.get('x-forwarded-proto') !== 'https' && !isDev) {
       return res.redirect('https://' + req.get('host') + req.url);
     }
     next();
   },
-  function filterRequestsFromAllowedHost (req, res, next) {
+  function filterRequestsFromAllowedHost(req, res, next) {
     const host = req.get('host');
     const prodDomains = ['contacts.garyle.me', 'cbook-garyle.herokuapp.com'];
     if (isDev) {

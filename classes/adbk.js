@@ -1,12 +1,18 @@
+const fs = require('fs');
 // const Factory = require('./Factory');
 const User = require('./User');
 const Cbook = require('./Contactsbook');
 const CList = require('./ContactsList');
 const Contact = require('./Contact');
-const serv = require('../services/');
+const { jwt } = require('../services/');
 const db = require('../db/');
 
+// const A_MONTH_IN_MILISECS = 30 * 24 * 60 * 60 * 1000;
+const A_DAY_IN_MILISECS = 24 * 60 * 60 * 1000;
+const TWO_DAY_IN_MILISECS = 2 * A_DAY_IN_MILISECS;
+
 const handleError = (err) => {
+  // eslint-disable-next-line no-console
   console.error(err);
 };
 
@@ -178,34 +184,71 @@ const setDefaultCbook = async (user, cbookId) => {
   }
 };
 
-// CONTROLLER
-const adbk = {
-  jwt: serv.jwt,
-  handleError,
-  user: {
-    signUp,
-    signIn,
-    findById,
-    loadAll: loadAllData,
-    //     activate: activateUser,
-    //     deactivate: deactivateUser
-  },
-  cbook: {
-    create: createCbook,
-    setDefault: setDefaultCbook,
-    update: updateCbook,
-    delete: deleteCbook,
-  },
-  contact: {
-    add: addContact,
-    edit: editContact,
-    del: delContact,
-    delAll: delAllContacts,
-    delMulti: delMultiContacts,
-    import: importContacts,
-    replaceAll: replaceAllContacts,
-    getContactsOfCbook: getContactsOfCbook,
-  },
+const signJWT = (payload) => {
+  return jwt.sign(payload); // return promise contains JWT if resolved
 };
+
+const verifyJWT = (token) => {
+  return jwt.verify(token); // return promise contains { xsrfToken } if resolved
+};
+
+class Controller {
+  constructor() {
+    this.dev = {
+      isDev: process.env.NODE_ENV === 'development',
+    };
+    this.secret = {
+      cookie: fs.readFileSync('./bin/cookie-secret.key', { encoding: 'utf-8' }),
+    };
+    this.jwt = {
+      ...jwt,
+      sign: signJWT,
+      verify: verifyJWT,
+      cookieOption: {
+        signed: true,
+        secure: !(process.env.NODE_ENV === 'development'),
+        path: '/',
+        maxAge: TWO_DAY_IN_MILISECS,
+        httpOnly: true,
+      },
+      cookieName: 'xsrf-jwt',
+    };
+    this.xsrf = {
+      cookieOption: {
+        ...this.jwt.cookieOption,
+        secure: false,
+        httpOnly: false, // allow JS at client to read this cookie
+      },
+    };
+    this.handleError = handleError;
+    this.user = {
+      signUp,
+      signIn,
+      findById,
+      loadAll: loadAllData,
+      // activate: activateUser,
+      // deactivate: deactivateUser,
+    };
+    this.cbook = {
+      create: createCbook,
+      setDefault: setDefaultCbook,
+      update: updateCbook,
+      delete: deleteCbook,
+    };
+    this.contact = {
+      add: addContact,
+      edit: editContact,
+      del: delContact,
+      delAll: delAllContacts,
+      delMulti: delMultiContacts,
+      import: importContacts,
+      replaceAll: replaceAllContacts,
+      getContactsOfCbook: getContactsOfCbook,
+    };
+  }
+}
+
+// CONTROLLER
+const adbk = new Controller();
 
 module.exports = adbk;
