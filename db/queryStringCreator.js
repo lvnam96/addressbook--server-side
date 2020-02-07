@@ -1,9 +1,9 @@
-const { pDB } = require('./pool');
+// const { pDB } = require('./pool');
 // const {
 //   dbUtils: { mapUserData },
 // } = require('../helpers/index');
 
-const pgp = pDB.$config.pgp;
+const pgp = require('pg-promise')(); // should not use require('./pool').pDB.$config.pgp because of tests
 const pgpQueryFormat = pgp.as.format;
 const pgpHelpers = pgp.helpers;
 
@@ -22,33 +22,36 @@ module.exports = {
   },
   getQueryStrToImportContacts: (contacts) => {
     if (!Array.isArray(contacts)) {
-      throw Error('Array of contacts is required');
+      throw new Error('Array of contacts is required');
     }
 
-    const cs = new pgpHelpers.ColumnSet([
+    const cs = new pgpHelpers.ColumnSet(
+      [
+        {
+          name: 'cbook_id',
+          prop: 'cbookId',
+        },
+        {
+          name: 'acc_id',
+          prop: 'accId',
+        },
+        'name',
+        'labels',
+        'birth',
+        'note',
+        'email',
+        'website',
+        'phone',
+        'color',
+        {
+          name: 'avatar_url',
+          prop: 'avatarURL',
+        },
+      ],
       {
-        name: 'cbook_id',
-        prop: 'cbookId',
-      },
-      {
-        name: 'acc_id',
-        prop: 'accId',
-      },
-      'name',
-      'labels',
-      'birth',
-      'note',
-      'email',
-      'website',
-      'phone',
-      'color',
-      {
-        name: 'avatar_url',
-        prop: 'avatarURL',
-      },
-    ], {
-      table: 'contact'
-    });
+        table: 'contact',
+      }
+    );
     // don't use old ID when importing backed up contacts
     return pgpHelpers.insert(contacts, cs, 'contact');
   },

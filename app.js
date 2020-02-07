@@ -1,3 +1,4 @@
+/* eslint-disable promise/no-callback-in-promise */
 const express = require('express');
 const path = require('path');
 const favicon = require('serve-favicon');
@@ -25,10 +26,26 @@ passport.use(
     {
       usernameField: 'uname',
       passwordField: 'passwd',
-      passReqToCallback: true,
+      passReqToCallback: false,
       session: true,
     },
-    adbk.user.signIn
+    (uname, rawPasswd, done) => {
+      const flash = { errMsg: 'Wrong username/password' };
+      adbk.user
+        .signIn(uname, rawPasswd)
+        .then((result) => {
+          // eslint-disable-next-line promise/always-return
+          if (!result) {
+            // if result is falsy: user has been found but passwords didnt match
+            done(null, false, flash);
+          } else {
+            done(null, result);
+          }
+        })
+        .catch((err) => {
+          done(err, false, flash);
+        });
+    }
   )
 );
 // passport.use(
@@ -37,24 +54,41 @@ passport.use(
 //       jwtFromRequest: ExtractJwt.fromBodyField('jwt'),
 //       secretOrKey: adbk.jwt.SECRET_KEY,
 //     },
-//     (jwtPayload, next) => {
-//       adbk.user.findById(jwtPayload.id, (err, user) => {
-//         if (err) {
-//           console.error(err);
-//           next(err);
-//         } else if (user) {
-//           next(null, user);
-//         } else {
-//           next(null, false);
-//         }
-//       });
+//     (jwtPayload, done) => {
+//       adbk.user
+//         .findById(jwtPayload.id)
+//         .then((user) => {
+//           // eslint-disable-next-line promise/always-return
+//           if (user) {
+//             done(null, user);
+//           } else {
+//             done(null, false);
+//           }
+//         })
+//         .catch((err) => {
+//           done(err);
+//         });
 //     }
 //   )
 // );
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
-passport.deserializeUser(adbk.user.findById);
+passport.deserializeUser((id, done) => {
+  adbk.user
+    .findById(id)
+    .then((user) => {
+      // eslint-disable-next-line promise/always-return
+      if (user) {
+        done(null, user);
+      } else {
+        done(null, false);
+      }
+    })
+    .catch((err) => {
+      done(err);
+    });
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -80,7 +114,7 @@ if (isDev) {
   ];
   app.use(cors(corsOptions));
   // eslint-disable-next-line no-console
-  console.log('CORS is set up for', corsOptions.origin); // notify deployer
+  adbk.dev.debug('CORS is set up for: ' + corsOptions.origin.join(', ')); // notify deployer
 }
 
 if (!isDev) app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));

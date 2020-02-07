@@ -24,32 +24,33 @@ router.post('/', (req, res, next) => {
     });
   }
 
-  adbk.user.signUp(signupData, (err, user) => {
-    if (err) {
-      // dev perpose
-      // res.set('Access-Control-Allow-Origin', 'http://localhost:2805');
-      // res.set('Access-Control-Allow-Methods', 'GET, POST, PUT');
-      // res.set('Access-Control-Allow-Headers', 'Content-Type');
-      // error is output in console already in adbk.user.signUp
-      return res.json({ res: false });
-    } else {
-      // login after new user registered successfully: http://www.passportjs.org/docs/login/
+  adbk.user
+    .signUp(signupData)
+    .then((user) => {
+      // to have user automatically signed in after registered successfully: http://www.passportjs.org/docs/login/
       // req.login(user, function (err) {
       //   if (err) {
       //     return next(err);
       //   }
       //   return res.redirect('/users/' + req.user.username);
       // });
-      if (user instanceof User) {
-        user = user.toJSON();
-      }
-      return res.json({
+      const json = {
         res: true,
-        user, // at the moment front-end app is not using this
         redirectLocation: '/signin?returnedUser=' + user.uname,
-      });
-    }
-  });
+      };
+      if (user instanceof User) {
+        json.user = user.toJSON(); // at the moment front-end app is not using this
+      }
+      return res.json(json);
+    })
+    .catch(() => {
+      // dev perpose
+      // res.set('Access-Control-Allow-Origin', 'http://localhost:2805');
+      // res.set('Access-Control-Allow-Methods', 'GET, POST, PUT');
+      // res.set('Access-Control-Allow-Headers', 'Content-Type');
+      // error is output in console already in adbk.user.signUp
+      return res.json({ res: false });
+    });
 });
 
 module.exports = router;

@@ -1,43 +1,70 @@
+/* eslint-disable promise/no-callback-in-promise */
+
+const debugController = require('debug')('contactsbook:server:controller');
 const fs = require('fs');
-// const Factory = require('./Factory');
 const User = require('./User');
 const Cbook = require('./Contactsbook');
 const CList = require('./ContactsList');
 const Contact = require('./Contact');
-const { jwt } = require('../services/');
+const { jwt, passwd } = require('../services/');
 const db = require('../db/');
 
 // const A_MONTH_IN_MILISECS = 30 * 24 * 60 * 60 * 1000;
 const A_DAY_IN_MILISECS = 24 * 60 * 60 * 1000;
 const TWO_DAY_IN_MILISECS = 2 * A_DAY_IN_MILISECS;
 
+const debug = (text) => {
+  debugController(text);
+};
+
 const handleError = (err) => {
   // eslint-disable-next-line no-console
   console.error(err);
 };
 
-const signUp = (json, cb) => {
-  User.signUp(json, (err, rawUserData) => {
-    if (err) {
-      handleError(err);
-    }
+const signUp = async (json) => {
+  try {
+    const rawUserData = await User.signUp(json);
     let user;
     if (rawUserData) {
       user = User.fromJSON(rawUserData).toJSON();
     }
-    return cb(err, user);
-  });
+    return user;
+  } catch (err) {
+    handleError(err);
+    throw err; // something's wrong: hashing password, do transactions in database,...
+  }
 };
 
-const signIn = (req, uname, rawPasswd, done) => {
-  User.signIn(uname, rawPasswd, done);
+const signIn = async (uname, rawPasswd) => {
+  try {
+    const user = await User.findBy('uname', uname);
+    if (!user) {
+      throw new Error(`Cannot find user with username ${uname}`);
+    }
+
+    const { passwd: saltedPasswd } = await passwd.getSaltedPasswd(rawPasswd, user.salt);
+    const isMatched = await passwd.bcrypt.compare(saltedPasswd, user.passwd);
+    return isMatched ? user : null;
+  } catch (err) {
+    handleError(err);
+    throw err; // couldnt find user or something's wrong while querying database
+  }
 };
 
-const findById = (id, done) => {
-  User.findById(id, (err, userObj) => {
-    done(err, userObj);
-  });
+const findUserBy = async (type, val) => {
+  try {
+    const user = await User.findBy(type, val);
+    return user; // could be falsy value (null) because user was not found
+  } catch (err) {
+    handleError(err);
+    throw err; // something's wrong while querying database
+  }
 };
+
+const findById = (id) => findUserBy('id', id);
+const findByUname = (uname) => findUserBy('uname', uname);
+const findByEmail = (email) => findUserBy('email', email);
 
 const addContact = (json) => {
   return Contact.create(json);
@@ -196,6 +223,7 @@ class Controller {
   constructor() {
     this.dev = {
       isDev: process.env.NODE_ENV === 'development',
+      debug,
     };
     this.secret = {
       cookie: fs.readFileSync('./bin/cookie-secret.key', { encoding: 'utf-8' }),
@@ -225,6 +253,8 @@ class Controller {
       signUp,
       signIn,
       findById,
+      findByUname,
+      findByEmail,
       loadAll: loadAllData,
       // activate: activateUser,
       // deactivate: deactivateUser,

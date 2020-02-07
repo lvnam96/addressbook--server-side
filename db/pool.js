@@ -1,11 +1,12 @@
+const debug = require('debug')('contactsbook:server:database');
 const { Pool } = require('pg');
 const dbInfo = require('./dbConfig');
 const pool = new Pool(dbInfo);
 // note: access to pgp without exported via pDB.$config.pgp
 const pgp = require('pg-promise')({
   capSQL: true,
-  error (err, e) {
-    console.error(err);
+  error(err, e) {
+    debug(err);
 
     if (e.cn) {
       // this is a connection-related error
@@ -22,19 +23,19 @@ const pgp = require('pg-promise')({
       // occurred inside a task or transaction
     }
   },
-  connect (client, dc, useCount) {
+  connect(client, dc, useCount) {
     const cp = client.connectionParameters;
-    console.log('Connected to database:', cp.database);
+    debug('Connected to database:', cp.database);
   },
-  disconnect (client, dc) {
+  disconnect(client, dc) {
     const cp = client.connectionParameters;
-    console.log('Disconnecting from database:', cp.database);
+    debug('Disconnecting from database:', cp.database);
   },
 });
 const pDB = pgp(dbInfo);
 
 pool.on('error', (err, client) => {
-  console.error('Unexpected error on idle client', err);
+  debug('Unexpected error on idle client', err);
   throw err; // process.exit(-1);
 });
 
@@ -43,11 +44,12 @@ pool
   .connect()
   .then((client) => {
     client.release();
-    console.log('Database is connected!');
+    debug('Database is connected!');
+    return client;
   })
   .catch((err) => {
     // pool.end(); // client.release();
-    console.error('Database connection failed', err.stack);
+    debug('Database connection failed', err.stack);
   });
 
 module.exports = {
@@ -63,7 +65,7 @@ module.exports = {
           return cb(err);
         }
         const duration = Date.now() - start;
-        console.log(`Executed query: ${text}, Duration: ${duration}ms, Rows: ${res.rows.length}`);
+        debug(`Executed query: ${text}, Duration: ${duration}ms, Rows: ${res.rows.length}`);
         cb(null, res);
       });
     } else {
@@ -82,8 +84,8 @@ module.exports = {
 
       // set a timeout of 5 seconds, after which we will log this client's last query
       const timeout = setTimeout(() => {
-        console.error('A client has been checked out for more than 5 seconds!');
-        console.error(`The last executed query on this client was: ${client.lastQuery}`);
+        debug('A client has been checked out for more than 5 seconds!');
+        debug(`The last executed query on this client was: ${client.lastQuery}`);
       }, 5000);
 
       const release = (err) => {

@@ -19,7 +19,7 @@ const authenticate = (req, res, next) => {
   req.body.uname = req.body.uname.trim().toLowerCase();
   passport.authenticate('local', (err, user, info) => {
     if (err) {
-      // uname is not found
+      // uname is not found or error happens
       return res.json({ res: false });
     }
     if (!user) {

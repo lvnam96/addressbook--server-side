@@ -1,7 +1,10 @@
 const Factory = require('./Factory');
 const serv = require('../services/');
 const db = require('../db/');
-const { getStrongCryptoRandomStr } = require('../helpers/random');
+
+// NOTE: below findBy...() methods all have same behavior:
+// because db.acc.findBy...() can be false positive, means searching in database was success but found nothing (empty array of rows), therfore then()'s callback will get a falsy argument (null)
+// we need to check for the truthy of the argument wherever these methods are used
 
 class Account extends Factory {
   constructor(data) {
@@ -53,14 +56,11 @@ class Account extends Factory {
     return this._uname;
   }
 
-  changePasswd(newPasswd) {
-    const salt = getStrongCryptoRandomStr();
-    return db.acc.changePasswd(this._id, newPasswd, salt, (err, user) => {
-      if (err) {
-        return console.error(err);
-      }
-      this._passwd = user.passwd;
-    });
+  async changePasswd(newPasswd) {
+    const { passwd, salt } = await serv.passwd.getSaltedPasswd(newPasswd);
+    const hashedPasswd = await serv.passwd.bcrypt.hash(passwd);
+    const user = await db.acc.changePasswd(this._id, hashedPasswd, salt);
+    this._passwd = user.passwd;
   }
 
   get passwd() {
@@ -75,55 +75,25 @@ class Account extends Factory {
     return this._salt;
   }
 
-  static signIn(uname, rawPasswd, cb) {
+  static findBy(type, val) {
     const CurrentClass = this;
-    const flash = { errMsg: 'Wrong username/password' };
-    CurrentClass.findByUname(uname)
-      .then((user) => {
-        if (user instanceof CurrentClass) {
-          serv.passwd.isRawMatchHashedPasswd(rawPasswd + user.salt, user.passwd, (isMatched) => {
-            if (!isMatched) cb(null, false, flash);
-            else cb(null, user);
-          });
-        } else {
-          cb(null, false, flash);
-        }
-        return user;
-      })
-      .catch((err) => {
-        console.error(err);
-        return cb(err, false, flash);
+    return db.acc.findBy(type, val).then((res) => {
+      return res instanceof Object ? new CurrentClass(res) : null;
+    });
+  }
+
+  static async signUp(json) {
+    const { passwd, salt } = await serv.passwd.getSaltedPasswd(json.passwd);
+    json.passwd = await serv.passwd.bcrypt.hash(passwd);
+    json.salt = salt;
+    const CurrentClass = this;
+    const userData = new CurrentClass(json).toDB();
+    return new Promise((resolve, reject) => {
+      db.acc.regAcc(userData, (err, rawUserData) => {
+        if (err) reject(err);
+        else resolve(rawUserData);
       });
-  }
-
-  static signOut() {}
-
-  static findById(id, cb) {
-    const CurrentClass = this;
-    return db.acc.findById(id, (err, userDataConvertedFromDB) => {
-      return err ? cb(err) : cb(null, new CurrentClass(userDataConvertedFromDB));
     });
-  }
-
-  static findByUname(uname) {
-    const CurrentClass = this;
-    return db.acc.findByUname(uname).then((res) => {
-      return res instanceof Object ? new CurrentClass(res) : res;
-    });
-  }
-
-  static findByEmail(email) {
-    const CurrentClass = this;
-    return db.acc.findByEmail(email).then((res) => {
-      return res instanceof Object ? new CurrentClass(res) : res;
-    });
-  }
-
-  static signUp(json, cb) {
-    json.salt = getStrongCryptoRandomStr();
-    const CurrentClass = this;
-    const newUser = new CurrentClass(json);
-    return db.acc.regAcc(newUser.toDB(), cb);
   }
 }
 

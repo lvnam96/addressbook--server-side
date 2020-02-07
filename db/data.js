@@ -38,7 +38,7 @@ const getAllData = (accId, cb) => {
     });
   }
 
-  function getUserInfo (cb) {
+  function getUserInfo(cb) {
     return query(queryStringCreator.getUserInfo(accId))
       .then((res) => {
         const newData = {
@@ -53,7 +53,7 @@ const getAllData = (accId, cb) => {
       });
   }
 
-  function getCbookIds (data, cb) {
+  function getCbookIds(data, cb) {
     return query('SELECT * FROM account_contactsbook WHERE acc_id = $1', [accId])
       .then((res) => {
         const newData = {
@@ -68,7 +68,7 @@ const getAllData = (accId, cb) => {
       });
   }
 
-  function getCbooks (data, cb) {
+  function getCbooks(data, cb) {
     const formattedCbookIdsStr = pgpQueryFormat('SELECT * FROM contactsbook WHERE id IN ($1:raw)', [
       formatIdsList(data.cbookIds, true),
     ]);
@@ -86,7 +86,7 @@ const getAllData = (accId, cb) => {
       });
   }
 
-  function getContacts (data, cb) {
+  function getContacts(data, cb) {
     // const asyncGetContactsInCbook = (accId, cbookId) => {
     //   return query(
     //     `SELECT *
@@ -141,7 +141,7 @@ const createCbook = ({ name, color, accId }, cb) => {
 };
 
 const addAccountCbookRelationship = (accId, cbookId, cb) => {
-  const queryStr = 'INSERT INTO account_contactsbook (acc_id, cbook_id) VALUES ($1, $2) RETURNING *';
+  const queryStr = 'INSERT INTO account_contactsbook (acc_id, cbook_id) VALUES ($1, $2) RETURNING *'; // note: createCbook() also implementing this query
   const queryParams = [accId, cbookId];
   if (typeof cb === 'function') {
     return query(queryStr, queryParams, (err, res) => cb(err, res.rows[0]));

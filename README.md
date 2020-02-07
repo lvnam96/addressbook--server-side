@@ -26,9 +26,9 @@ Contacts Book
 <!-- - User roles (maybe different permissions between users of the same role as well): `admin` (for app's settings & stats), `free`|`premium` user *(v2)* -->
 
 #### Security
-- Client hashes password before sending over HTTPS
-- Server receives password MD5 hash from client, then encrypt it using [`bcrypt`](https://github.com/dcodeIO/bcrypt.js) with strongly crypto-randomed salt for each account
-<!-- - XSRF protection using JWT with RSA-512 algorithm *(in development)* -->
+- Client hashes password using SHA512 before sending over HTTPS
+- Server receives hashed password from client, then encrypt it using [`bcrypt`](https://github.com/dcodeIO/bcrypt.js) with strongly crypto-randomed salt for each account
+- Prevent XSRF attacks using JWT following [this](https://github.com/pillarjs/understanding-csrf) & [this](https://stackoverflow.com/questions/27067251/where-to-store-jwt-in-browser-how-to-protect-against-csrf)
 <!-- - Limit submitting times (block IP/MAC address, use Google's reCAPTCHA) *(in development)* -->
 <!-- - Prevent attacks via API requests *(how???)* -->
 

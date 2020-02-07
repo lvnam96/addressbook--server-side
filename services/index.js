@@ -1,4 +1,4 @@
-const passwd = require('./passwdServ');
+const passwd = require('./passwd');
 const jwt = require('./jwt');
 
 module.exports = {

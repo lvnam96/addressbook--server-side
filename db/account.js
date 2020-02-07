@@ -1,14 +1,14 @@
 const { query } = require('./pool');
-const { createCbook, addAccountCbookRelationship } = require('./data');
-const passwdServ = require('../services/passwdServ');
+const { createCbook } = require('./data');
 const {
-  random: { getStrongCryptoRandomStr, getRandomColor },
+  random: { getRandomColor },
   dbUtils: { mapUserData },
 } = require('../helpers/index');
 const waterfall = require('async/waterfall');
 
-function createUserMeta({ userId, cbookId }, cb) {
-  const queryStr = `INSERT INTO meta (
+function regAcc(userData, callback) {
+  function createUserMeta({ userId, cbookId }, cb) {
+    const queryStr = `INSERT INTO meta (
       acc_id,
       last_activated_cbook_id,
       last_login,
@@ -16,22 +16,21 @@ function createUserMeta({ userId, cbookId }, cb) {
     ) VALUES (
       $1, $2, $3, $4
     ) RETURNING *;`;
-  const queryPara = [userId, cbookId, null, true];
+    const queryPara = [userId, cbookId, null, true];
 
-  if (typeof cb === 'function') {
-    return query(queryStr, queryPara, (err, res) => {
-      cb(err, res);
-    });
+    if (typeof cb === 'function') {
+      return query(queryStr, queryPara, (err, res) => {
+        cb(err, res);
+      });
+    }
+    return query(queryStr, queryPara)
+      .then((res) => res)
+      .catch((err) => {
+        throw err;
+      });
   }
-  return query(queryStr, queryPara)
-    .then((res) => res)
-    .catch((err) => {
-      throw err;
-    });
-}
 
-function createNewAcc(userData, cb) {
-  passwdServ.getHash(userData.passwd + userData.salt, (hashedPasswd) => {
+  function createNewAcc(userData, cb) {
     const queryStr = `INSERT INTO account (
       username,
       password,
@@ -47,7 +46,7 @@ function createNewAcc(userData, cb) {
     ) RETURNING *;`;
     const queryPara = [
       userData.uname,
-      hashedPasswd,
+      userData.passwd,
       userData.fbid ? userData.fbid : undefined,
       userData.birth ? userData.birth : undefined,
       userData.email ? userData.email : undefined,
@@ -60,10 +59,8 @@ function createNewAcc(userData, cb) {
     query(queryStr, queryPara, (err, res) => {
       cb(err, res.rows[0]);
     });
-  });
-}
+  }
 
-function regAcc(userData, callback) {
   waterfall(
     [
       (cb) => {
@@ -107,11 +104,6 @@ function regAcc(userData, callback) {
           }
         );
       },
-      // (data, cb) => {
-      //   addAccountCbookRelationship(data.user.id, data.cbook.id, (err, uselessData) => {
-      //     cb(err, data);
-      //   });
-      // },
     ],
     (err, data) => {
       callback(err, data.user);
@@ -126,81 +118,38 @@ function changeUname(id, newUname, cb) {
   });
 }
 
-function changePasswd(id, newPasswd, salt, cb) {
-  passwdServ.getHash(newPasswd + salt, (hashedPasswd) => {
-    query(
-      'UPDATE account SET password = $1, salt = $2 WHERE id = $3 RETURNING *',
-      [hashedPasswd, salt, id],
-      (err, res) => {
-        cb(err, mapUserData(res.rows[0]));
-      }
-    );
+function changePasswd(id, newPasswd, salt) {
+  const queryStr = 'UPDATE account SET password = $1, salt = $2 WHERE id = $3 RETURNING *';
+  const queryPara = [newPasswd, salt, id];
+  return query(queryStr, queryPara).then(({ rows }) => {
+    return mapUserData(rows[0]);
   });
 }
 
-function findById(id, cb) {
-  query('SELECT * FROM account WHERE id = $1', [id], (err, res) => {
-    if (err) {
-      // please do something on UI to let user know about
-      // this f*cking error while querrying database
-      return cb(err);
-    }
-    if (!res.rows[0]) {
-      return cb(new Error(`User ID ${id} is not found!`));
-    }
-    return cb(null, mapUserData(res.rows[0]));
+function findBy(type = 'id', val) {
+  let queryStr;
+  const queryPara = [val];
+  switch (type) {
+    case 'id':
+      queryStr = 'SELECT * FROM account WHERE id = $1';
+      break;
+    case 'uname':
+      queryStr = 'SELECT * FROM account WHERE username = $1;';
+      break;
+    case 'email':
+      queryStr = 'SELECT * FROM account WHERE email = $1;';
+      break;
+    default:
+      throw new Error('"type" agrument is not valid!');
+  }
+  return query(queryStr, queryPara).then(({ rows }) => {
+    return rows.length > 0 ? mapUserData(rows[0]) : false;
   });
-}
-
-function findByUname(uname, cb) {
-  const queryStr = 'SELECT * FROM account WHERE username = $1;';
-  const queryPara = [uname];
-  if (cb) {
-    return query(queryStr, queryPara, (err, res) => {
-      if (err) {
-        // please do something on UI to let user know about
-        // this f*cking error while querrying database
-        return cb(err);
-      }
-      if (res.rows.length === 0) {
-        return cb(null, false);
-      }
-      return cb(null, res.rows.length > 0 ? mapUserData(res.rows[0]) : false);
-    });
-  } else {
-    return query(queryStr, queryPara).then((res) => {
-      return res.rows.length > 0 ? mapUserData(res.rows[0]) : false;
-    });
-  }
-}
-
-function findByEmail(email, cb) {
-  const queryStr = 'SELECT * FROM account WHERE email = $1;';
-  const queryPara = [email];
-  if (cb) {
-    return query(queryStr, queryPara, (err, res) => {
-      if (err) {
-        // please do something on UI to let user know about
-        // this f*cking error while querrying database
-        return cb(err);
-      }
-      if (res.rows.length === 0) {
-        return cb(null, false);
-      }
-      return cb(null, res.rows.length > 0 ? mapUserData(res.rows[0]) : false);
-    });
-  } else {
-    return query(queryStr, queryPara).then((res) => {
-      return res.rows.length > 0 ? mapUserData(res.rows[0]) : false;
-    });
-  }
 }
 
 module.exports = {
   regAcc,
-  findById,
-  findByUname,
-  findByEmail,
+  findBy,
   changeUname,
   changePasswd,
 };

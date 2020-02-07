@@ -12,13 +12,15 @@ class User extends Account {
     this.birth = data.birth || null;
     this.phone = data.phone || null;
     this.cbooks = data.cbooks || [];
-    this._meta = data.meta
-      ? {
+    if (data.meta) {
+      this._meta = {
         lastActivatedCbookId: _get(data, 'meta.lastActivatedCbookId', null),
         lastLogin: _get(data, 'meta.lastLogin', new Date()),
         isActive: _get(data, 'meta.isActive', true),
-      }
-      : {};
+      };
+    } else {
+      this._meta = {};
+    }
     this._isSerializable = this._isSerializable || new Set();
     for (const keyname of ['isActive', 'nicename', 'birth', 'phone', 'cbooks', 'meta']) {
       this._isSerializable = this._isSerializable.add(keyname);
@@ -46,24 +48,12 @@ class User extends Account {
     return db.data.updateDefaultCbook(this.id, cbookId);
   }
 
-  static signIn(uname, rawPasswd, cb) {
-    super.signIn(uname, rawPasswd, cb);
+  static findBy(...args) {
+    return super.findBy(...args);
   }
 
-  static findById(id, cb) {
-    super.findById(id, cb);
-  }
-
-  static findByUname(uname) {
-    return super.findByUname(uname);
-  }
-
-  static findByEmail(email) {
-    return super.findByEmail(email);
-  }
-
-  static signUp(data, cb) {
-    return super.signUp(data, cb);
+  static signUp(...args) {
+    return super.signUp(...args);
   }
 }
 

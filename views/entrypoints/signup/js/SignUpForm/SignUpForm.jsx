@@ -138,7 +138,7 @@ const SignUpForm = (props) => {
         <div className="row align-items-center">
           <div className="col-12 px-0 text-right">
             <button
-              className="btn btn-dark rounded-0 signup-form__submit-btn"
+              className="btn btn-dark rounded-pill signup-form__submit-btn"
               type="submit"
               disabled={isSubmitting || props.isSignedUp || !_isEmpty(errors)}>
               <span className={isSubmitting === true ? 'd-none' : ''}>Sign up</span>
