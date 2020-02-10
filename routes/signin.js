@@ -14,7 +14,7 @@ router.get('/', (req, res, next) => {
   return res.render('signin', {
     returnedUser: query.returnedUser || null,
     ssr: signinFormHTMLString || '',
-    // title: 'Sign In | Contacts Book'
+    nonce: res.locals.nonce,
   });
 });
 

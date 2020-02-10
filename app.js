@@ -12,6 +12,7 @@ const { pool } = require('./db/pool');
 const adbk = require('./classes/adbk');
 const compression = require('compression');
 const cors = require('cors');
+const securityMiddlewares = require('./middlewares/security');
 // const jwt = require('jsonwebtoken');
 // const { ExtractJwt, Strategy: JwtStrategy } = require('passport-jwt');
 
@@ -119,11 +120,15 @@ if (isDev) {
 
 if (!isDev) app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger(isDev ? 'dev' : 'common'));
-app.use(compression()); // put compression middleware before any files serving middleware
+app.use(compression()); // put compression middleware before any files-serving middleware
 app.use(express.static(path.join(__dirname, 'public'))); // express.static === require('serve-static')
 app.use(cookieParser(app.locals.cookieSecret));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: isDev })); // parse application/x-www-form-urlencoded for easier testing with Postman or plain HTML form in dev env
+app.use(
+  bodyParser.urlencoded({
+    extended: isDev, // parse application/x-www-form-urlencoded for easier testing with Postman or plain HTML form in dev env
+  })
+);
 
 const A_MONTH_IN_MILISECS = 30 * 24 * 60 * 60 * 1000;
 const cookiesConfig = { maxAge: A_MONTH_IN_MILISECS }; // 30 days
@@ -147,28 +152,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(
-  '*',
-  function requireHTTPS(req, res, next) {
-    // The 'x-forwarded-proto' check is for Heroku
-    if (!req.secure && req.get('x-forwarded-proto') !== 'https' && !isDev) {
-      return res.redirect('https://' + req.get('host') + req.url);
-    }
-    next();
-  },
-  function filterRequestsFromAllowedHost(req, res, next) {
-    const host = req.get('host');
-    const prodDomains = ['contacts.garyle.me', 'cbook-garyle.herokuapp.com'];
-    if (isDev) {
-      prodDomains.push('localhost:' + process.env.FE_DEV_PORT, 'localhost:' + (process.env.PORT || 3000));
-    }
-    if (prodDomains.includes(host)) {
-      next();
-    } else {
-      next(new Error('This request is sent from a not-allowed domain. Blocked!'));
-    }
-  }
-);
+app.use(securityMiddlewares);
 app.use('/', router);
 
 // catch 404 and forward to error handler

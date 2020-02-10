@@ -24,15 +24,15 @@ block content
               p.text-center Don't have an account?
                 br
                 a.signin-form__signup-link(href="/signup") Sign Up
-  script window.returnedUser = '#[= returnedUser]';
+  script(nonce=nonce) window.returnedUser = '#[= returnedUser]';
 
 block closeHead
-    link(href="/Signin.css", rel="stylesheet")
-    link(href="/signup", rel="prefetch")
-    link(href="/Signup.css", rel="prefetch")
-    link(href="/Signin.js", rel="prefetch")
-    link(href="/App.css", rel="prefetch")
-    link(href="/App.js", rel="prefetch")
+    link(nonce=nonce rel="stylesheet" href="/Signin.css")
+    link(rel="prefetch" href="/signup")
+    link(rel="prefetch" href="/Signup.css")
+    link(rel="prefetch" href="/Signin.js")
+    link(rel="prefetch" href="/App.css")
+    link(rel="prefetch" href="/App.js")
 
 block closeBody
-    script(src="/Signin.js")
+    script(nonce=nonce src="/Signin.js")

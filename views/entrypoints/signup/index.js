@@ -1,3 +1,4 @@
+/* global __webpack_nonce__ */ // eslint-disable-line no-unused-vars
 import 'react-hot-loader';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -11,6 +12,9 @@ const hydrate = (App) => {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
+  // eslint-disable-next-line camelcase,no-global-assign
+  __webpack_nonce__ = window.NONCE_ID; // see "core" entrypoint
+
   hydrate(App);
 });
 

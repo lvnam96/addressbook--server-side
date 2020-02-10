@@ -1,3 +1,4 @@
+/* global __webpack_nonce__ */ // eslint-disable-line no-unused-vars
 // import "@babel/polyfill";
 import 'react-hot-loader';
 import React from 'react';
@@ -40,6 +41,9 @@ if (adbk.status.isDev) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  // eslint-disable-next-line camelcase,no-global-assign
+  __webpack_nonce__ = window.NONCE_ID; // see "core" entrypoint
+
   adbk.init(); // load data from API
   render(App); // render UI w/ empty data, controller will update UI when data is fully loaded
 

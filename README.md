@@ -8,7 +8,6 @@ Contacts Book
 
 ### Tech stack:
 
-- [Passport.js](https://github.com/jaredhanson/passport)
 - [Express.js](https://github.com/expressjs/express)
 - [PostgreSQL](https://github.com/brianc/node-postgres)
 - [React.js](https://github.com/facebook/react)
@@ -31,6 +30,16 @@ Contacts Book
 - Prevent XSRF attacks using JWT following [this](https://github.com/pillarjs/understanding-csrf) & [this](https://stackoverflow.com/questions/27067251/where-to-store-jwt-in-browser-how-to-protect-against-csrf)
 <!-- - Limit submitting times (block IP/MAC address, use Google's reCAPTCHA) *(in development)* -->
 <!-- - Prevent attacks via API requests *(how???)* -->
+- Use `helmet` with its additional middlewares:
+  - Feature-Policy
+  - Content-Security-Policy (CSP) (including nonce)
+    - At the moment report-only mode is used to have an overview of the CSP behavior while testing app in production
+    - Due to [`react-color`](https://github.com/casesandberg/react-color/) is adding inline styles but hasn't support nonce yet, therefore `style-src` directive must have `'unsafe-inline'` but cannot have `'nonce-{random}'`
+- Force SSL (on production)
+- Force request's body to be JSON on API routes (via express.json middleware)
+- Enable HSTS header
+  - Note: cannot submit this site to [Chrome's HSTS preload list](https://hstspreload.org/?domain=contacts.garyle.me) to ensure that it is successfully preloaded (i.e. to get the full protection of the intended configuration) because this app's main domain is a subdomain.
+- Validate host to prevent [DNS Rebinding](https://www.npmjs.com/package/host-validation#what-is-dns-rebinding-and-why-should-i-care)
 
 #### UX (it's important, isn't it? 😊)
 - Key press event listeners (Esc, Enter,...) while opening popups, filling in forms,...
@@ -45,7 +54,7 @@ Contacts Book
   - Replaced modules:
     - `date-fns` instead of `luxon`
 - Code-splitting by using dynamic ESM's `import()`
-- Results:
+- **Results:**
   - Bundle files size:
 
     | Entrypoints  |                 Unoptimized |                   Optimized |

@@ -2,15 +2,15 @@ doctype html
 html(lang="en")
     head
         block pageTitle
-        meta(name="viewport", content="width=device-width, initial-scale=1, shrink-to-fit=no")
+        meta(name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no")
         //- for mobile: (missing manifest.json)
-        link(rel="manifest", href="/manifest.webmanifest")
-        link(href="https://unpkg.com", rel="dns-prefetch")
+        link(rel="manifest" href="/manifest.webmanifest")
+        link(href="https://unpkg.com" rel="dns-prefetch")
         block meta
-        link(href="https://fonts.googleapis.com/css?family=Nunito:300,400,600,700,800,900&display=swap&subset=latin-ext,vietnamese", rel="stylesheet")
+        link(nonce=nonce href="https://fonts.googleapis.com/css?family=Nunito:300,400,600,700,800,900&display=swap&subset=latin-ext,vietnamese" rel="stylesheet")
         //- link(rel="stylesheet", href="https://use.fontawesome.com/releases/v5.11.2/css/all.css", integrity="sha384-O8whS3fhG2OnA5Kas0Y9l3cfpmYjapjI0E4theH4iuMD+pLhbf6JI0jIMfYcK3yZ", crossorigin="anonymous")
         //- link(rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css", integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous")
-        link(href="/core.css", rel="stylesheet")
+        link(nonce=nonce href="/core.css" rel="stylesheet")
         block closeHead
     body
         block openBody
@@ -20,7 +20,9 @@ html(lang="en")
         //- prepare for ES module build (see https://philipwalton.com/articles/deploying-es2015-code-in-production-today/):
         //- script.
           !function(){var e=document,t=e.createElement("script");if(!("noModule"in t)&&"onbeforeload"in t){var n=!1;e.addEventListener("beforeload",function(e){if(e.target===t)n=!0;else if(!e.target.hasAttribute("nomodule")||!n)return;e.preventDefault()},!0),t.type="module",t.src=".",e.head.appendChild(t),t.remove()}}();
-        script(src="/core.js")
+        script(nonce=nonce).
+          window.NONCE_ID = '#[= nonce]';
+        script(nonce=nonce src="/core.js")
         //- script(src="https://code.jquery.com/jquery-3.3.1.slim.min.js", integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo", crossorigin="anonymous")
         //- script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js", integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1", crossorigin="anonymous")
         //- script(src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js", integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM", crossorigin="anonymous")
@@ -29,7 +31,7 @@ html(lang="en")
             //- script(crossorigin="anonymous", src="https://unpkg.com/react@^16.12/umd/react.development.js")
             //- script(crossorigin="anonymous", src="https://unpkg.com/react-dom@^16.12/umd/react-dom.development.js")
         else
-            script(crossorigin="anonymous", src="https://unpkg.com/react@^16.12/umd/react.production.min.js")
-            script(crossorigin="anonymous", src="https://unpkg.com/react-dom@^16.12/umd/react-dom.production.min.js")
-            script(crossorigin="anonymous" src="https://browser.sentry-cdn.com/5.11.1/bundle.min.js" integrity="sha384-r7/ZcDRYpWjCNXLUKk3iuyyyEcDJ+o+3M5CqXP5GUGODYbolXewNHAZLYSJ3ZHcV")
+            script(nonce=nonce crossorigin="anonymous" src="https://unpkg.com/react@^16.12/umd/react.production.min.js")
+            script(nonce=nonce crossorigin="anonymous" src="https://unpkg.com/react-dom@^16.12/umd/react-dom.production.min.js")
+            script(nonce=nonce crossorigin="anonymous" src="https://browser.sentry-cdn.com/5.11.1/bundle.min.js" integrity="sha384-r7/ZcDRYpWjCNXLUKk3iuyyyEcDJ+o+3M5CqXP5GUGODYbolXewNHAZLYSJ3ZHcV")
         block closeBody

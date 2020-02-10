@@ -30,10 +30,10 @@ block content
                 a.signup-form__signin-link(href="/signin") Sign In
 
 block closeHead
-    link(href="/Signup.css", rel="stylesheet")
-    link(href="/signin", rel="prefetch")
-    link(href="/Signin.css", rel="prefetch")
-    link(href="/Signin.js", rel="prefetch")
+    link(nonce=nonce rel="stylesheet" href="/Signup.css")
+    link(rel="prefetch" href="/signin")
+    link(rel="prefetch" href="/Signin.css")
+    link(rel="prefetch" href="/Signin.js")
 
 block closeBody
-    script(src="/Signup.js")
+    script(nonce=nonce src="/Signup.js")

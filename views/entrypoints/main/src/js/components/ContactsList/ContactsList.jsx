@@ -9,7 +9,7 @@ import img from '../../../img/empty-contact-list-placeholder.png';
 // const img = import('../../../img/empty-contact-list-placeholder.png');
 
 const ContactsList = (props) => {
-  const RowRenderer = memo(function RowRenderer ({ index, style }) {
+  const RowRenderer = memo(function RowRenderer({ index, style }) {
     const contactData = props.data[index];
     const contact = new adbk.classes.Contact(contactData);
     // If content is complex, consider rendering a lighter-weight placeholder while scrolling:
@@ -24,7 +24,7 @@ const ContactsList = (props) => {
 
   return props.data.length > 0 ? (
     <div className="contact-list">
-      <AutoSizer disableHeight nonce="'unsafe-inline'">
+      <AutoSizer disableHeight nonce={adbk.status.isDev ? undefined : window.NONCE_ID}>
         {/* how-to doc: https://github.com/bvaughn/react-virtualized/blob/master/docs/usingAutoSizer.md */}
         {({ width }) => (
           <VariableSizeList
@@ -42,8 +42,7 @@ const ContactsList = (props) => {
             estimatedItemSize={64}
             itemSize={() => 64}
             initialScrollOffset={0}
-            width={width}
-          >
+            width={width}>
             {RowRenderer}
           </VariableSizeList>
         )}
@@ -60,8 +59,7 @@ const ContactsList = (props) => {
         className="mb-0 text-muted font-weight-bold"
         style={{
           fontFamily: 'Courier, monospace',
-        }}
-      >
+        }}>
         Looks like you haven&#39;t added any contact yet.
       </p>
     </div>

@@ -11,7 +11,7 @@ const signupFormHTMLString = require('../views/ssr/Signup.ssr.js').default;
 router.get('/', (req, res, next) => {
   return res.render('signup', {
     ssr: signupFormHTMLString || '',
-    // title: 'Sign Up | Contacts Book'
+    nonce: res.locals.nonce,
   });
 });
 
@@ -19,9 +19,7 @@ router.post('/', (req, res, next) => {
   const signupData = req.body;
   signupData.uname = signupData.uname.trim().toLowerCase();
   if (signupData.uname.match(/[^a-z0-9@.-]/gm) !== null) {
-    return res.render('signup', {
-      errMsg: 'Username can only contains alphabet lowercase letters & numbers.',
-    });
+    return next(new Error('Username can only contains alphabet lowercase letters & numbers.'));
   }
 
   adbk.user
