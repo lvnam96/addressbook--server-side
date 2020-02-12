@@ -1,4 +1,4 @@
-import React, { Profiler, Component } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _isEmpty from 'lodash/isEmpty';
 import { Form } from 'formik';
@@ -116,24 +116,6 @@ class CForm extends Component {
   handleChangeLabelField(newValue) {
     this.props.setFieldValue('labels', newValue, true);
   }
-
-  // handleProfilerCallback = (
-  //   id, // the "id" prop of the Profiler tree that has just committed
-  //   phase, // either "mount" (if the tree just mounted) or "update" (if it re-rendered)
-  //   actualDuration, // time spent rendering the committed update
-  //   baseDuration, // estimated time to render the entire subtree without memoization
-  //   startTime, // when React began rendering this update
-  //   commitTime, // when React committed this update
-  //   interactions // the Set of interactions belonging to this update
-  // ) => {
-  //   if (phase === 'update') {
-  //     console.group(id);
-  //     const diffTime = actualDuration - baseDuration;
-  //     if (diffTime > 0) console.log('Possible time improvement: ', diffTime);
-  //     if (interactions.size) console.log('Interactions: ', interactions);
-  //     console.groupEnd();
-  //   }
-  // };
 
   shouldComponentUpdate(nextProps) {
     if (

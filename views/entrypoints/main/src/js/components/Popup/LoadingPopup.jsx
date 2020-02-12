@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Popup from './Popup';
+import Popup from './Popup.jsx';
 import Spinner from '../Spinner/Spinner.jsx';
 
 const LoadingPopup = (props) => (

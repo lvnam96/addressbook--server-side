@@ -1,5 +1,5 @@
 import * as ActionTypes from '../actions/actionTypes/contactsListActionTypes';
-import Contact from '../classes/Contact';
+import Contact from '../../models/Contact';
 
 const initialState = [];
 const contactsListReducer = (state = initialState, action) => {

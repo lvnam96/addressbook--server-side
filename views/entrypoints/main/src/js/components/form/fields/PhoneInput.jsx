@@ -8,8 +8,9 @@ import { extractCallingCode } from '../../../helpers/phoneHelper';
 import _isEmpty from 'lodash/isEmpty';
 import _debounce from 'lodash/debounce';
 import { getCountriesList } from '../../../services/dataService';
-import defaultCountries from '../../ContactForm/containers/countries.json';
+import LoadingIndicator from '../../AsyncLoader/LoadingIndicator.jsx';
 
+// helper:
 const getCallingCodes = (countries = []) => {
   if (!Array.isArray(countries)) {
     throw new Error('Data should be an array');
@@ -30,7 +31,7 @@ const getCallingCodes = (countries = []) => {
   });
   return countryCallingCodes;
 };
-const defaultCallingCodes = getCallingCodes(defaultCountries);
+const defaultCallingCodes = getCallingCodes(); // this will be an empty array
 
 class PhoneInput extends React.Component {
   constructor(props) {
@@ -65,6 +66,7 @@ class PhoneInput extends React.Component {
         })
         .catch((err) => {
           this.debouncedUpdateCallingCodes && this.debouncedUpdateCallingCodes.cancel();
+          delete this.debouncedUpdateCallingCodes;
           adbk.reportError(err);
         });
     }
@@ -72,6 +74,7 @@ class PhoneInput extends React.Component {
 
   componentWillUnmount() {
     this.debouncedUpdateCallingCodes && this.debouncedUpdateCallingCodes.cancel();
+    delete this.debouncedUpdateCallingCodes;
   }
 
   _prepareCountryCodeData() {
@@ -104,7 +107,7 @@ class PhoneInput extends React.Component {
   }
 
   debouncedUpdateCallingCodes = _debounce(() => {
-    // this debouncedUpdateCallingCodes func is only invoked by flush method (because timeout is Infinity)
+    // this debouncedUpdateCallingCodes func is only invoked by its flush method (because timeout is Infinity)
     // when the data is fetched && this component is not unmounted
     // Reason of doing this way:
     // there is a chance to unmount this component before its data is fetched,
@@ -122,43 +125,42 @@ class PhoneInput extends React.Component {
 
   render() {
     const { phone } = this.props;
+    const { callingCodes } = this.state;
     const callingCodeNumb = extractCallingCode(phone.callingCode).numb;
     // const defaultCallingCodes = adbk.extAPI.geolocation.country_code2 + '-' + adbk.extAPI.geolocation.calling_code.substr(1);
-    return (
+    return Array.isArray(callingCodes) && callingCodes.length > 0 ? (
       <div className="input-group">
-        {Array.isArray(this.state.callingCodes) && this.state.callingCodes.length > 0 && (
-          <>
-            <SelectInput
-              name={`callingCode${phone.id}`}
-              value={phone.callingCode}
-              onChange={(e) => {
-                const newPhone = {
-                  ...phone,
-                  callingCode: e.currentTarget.value,
-                };
-                this.props.setFieldValue('phone', newPhone, true);
-              }}
-              onBlur={this.props.onBlur}
-              className="form-control form__input-field"
-              style={{
-                flex: '0 0 auto',
-                width: 'auto',
-              }}>
-              {this.state.callingCodes.map((country) => {
-                const val = country.alpha2Code + '-' + country.phoneNumbPrefix;
-                return (
-                  <option
-                    key={randomUUID()}
-                    value={val}
-                    title={country.name}
-                    className="form__select-field__country-options">
-                    {` ${country.alpha2Code} (+${country.phoneNumbPrefix})`}
-                  </option>
-                );
-              })}
-            </SelectInput>
-          </>
-        )}
+        <>
+          <SelectInput
+            name={`callingCode${phone.id}`}
+            value={phone.callingCode}
+            onChange={(e) => {
+              const newPhone = {
+                ...phone,
+                callingCode: e.currentTarget.value,
+              };
+              this.props.setFieldValue('phone', newPhone, true);
+            }}
+            onBlur={this.props.onBlur}
+            className="form-control form__input-field"
+            style={{
+              flex: '0 0 auto',
+              width: 'auto',
+            }}>
+            {callingCodes.map((country) => {
+              const val = country.alpha2Code + '-' + country.phoneNumbPrefix;
+              return (
+                <option
+                  key={randomUUID()}
+                  value={val}
+                  title={country.name}
+                  className="form__select-field__country-options">
+                  {` ${country.alpha2Code} (+${country.phoneNumbPrefix})`}
+                </option>
+              );
+            })}
+          </SelectInput>
+        </>
         <TextInput
           type="text"
           id="inputs__phone"
@@ -176,6 +178,8 @@ class PhoneInput extends React.Component {
           className="form-control form__input-field"
         />
       </div>
+    ) : (
+      <LoadingIndicator />
     );
   }
 }

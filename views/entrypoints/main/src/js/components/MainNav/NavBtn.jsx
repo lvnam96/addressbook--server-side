@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
@@ -27,6 +27,16 @@ const NavBtn = (props) => {
   // React.forwardRef((props, ref) => {
   return (
     <div
+      role="button"
+      tabIndex="0"
+      onKeyDown={(e) => {
+        if (e.keyCode === 53) {
+        }
+      }}
+      onKeyUp={(e) => {
+        if (e.keyCode === 53) {
+        }
+      }}
       ref={props.btnRef}
       className={classNames('main-nav__item', {
         [props.moreClass]: !!props.moreClass,
@@ -34,8 +44,8 @@ const NavBtn = (props) => {
       onClick={props.onClick}
       onMouseDown={props.onMouseDown}
       onMouseUp={props.onMouseUp}
-      onTouchStart={props.onTouchStart}
-      onTouchEnd={props.onTouchEnd}>
+      onTouchStart={props.onMouseDown}
+      onTouchEnd={props.onMouseUp}>
       <i
         className={classNames('fa', {
           [props.icon]: !!props.icon,
@@ -54,8 +64,6 @@ NavBtn.propTypes = {
   onClick: PropTypes.func.isRequired,
   onMouseDown: PropTypes.func,
   onMouseUp: PropTypes.func,
-  onTouchStart: PropTypes.func,
-  onTouchEnd: PropTypes.func,
   icon: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   inputId: PropTypes.string,
@@ -64,4 +72,4 @@ NavBtn.propTypes = {
   iconStyle: PropTypes.object,
 };
 
-export default NavBtn;
+export default memo(NavBtn);

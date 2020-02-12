@@ -1,28 +1,29 @@
 import _get from 'lodash/get';
 import _isEmpty from 'lodash/isEmpty';
 import * as Sentry from '@sentry/browser';
-// other classes
-import Account from '../classes/Account';
-import Cbook from '../classes/Addressbook';
-import ContactsList from '../classes/ContactsList';
-import Contact from '../classes/Contact';
-import NotificationsList from '../classes/NotificationsList';
-import User from '../classes/User';
-import BooleanTogglers from '../classes/BooleanTogglers';
-import Stack from '../classes/Stack';
+
+// models
+import Account from '../models/Account';
+import Cbook from '../models/ContactsBook';
+import ContactsList from '../models/ContactsList';
+import Contact from '../models/Contact';
+import NotificationsList from '../models/NotificationsList';
+import User from '../models/User';
+import BooleanTogglers from '../models/BooleanTogglers';
+import Stack from '../models/Stack';
 
 // things related to redux
 import { ReactReduxContext } from 'react-redux';
-import reduxStore, { history as routerHistory } from '../store';
-import * as storeActions from '../storeActions';
+import reduxStore, { history as routerHistory } from '../redux/store';
+import * as storeActions from '../redux/storeActions';
 
 // other controllers
 // import contactCtrler from './contactsController';
 // import cbookCtrler from './cbookController';
-import alo from '../../../../../core/js/models/Alo';
 
 // helpers
 import * as ls from '../services/localStorageService';
+import alo, { handleServerResponse, handleFailedRequest } from '../services/httpServices';
 const isCbookExist = (cbookId, cbooks) => {
   const existedCbook = cbooks.find((cbook) => cbook.id === cbookId);
   return existedCbook instanceof Cbook;
@@ -73,73 +74,6 @@ class Adbk {
     emptyObj: Object.freeze({}),
   };
 
-  _setupReduxStore = () => {
-    if (this._status.isDataLoaded) {
-      this.redux.store.dispatch((dispatch, getState) => {
-        dispatch(this.redux.action.user.replaceUser(this.inst.user));
-        dispatch(this.redux.action.contacts.replaceAllContacts(this.inst.contactsList.data));
-        dispatch(this.redux.action.cbooks.replaceAllCbooks(this.inst.cbooks));
-      });
-      delete this.inst; // force all components can only use data in store, this controler does NOT store any data
-    }
-  };
-
-  _loadAndSetupData = () => {
-    if (this._status.isDataLoaded) {
-      return Promise.resolve();
-    }
-
-    return this.alo
-      .get('/backdoor/get-all-data')
-      .then((res) => {
-        const jsonDataFromDB = res.data.data;
-        if (typeof this.inst !== 'object') this.inst = {};
-        this.inst.user = User.fromJSON(jsonDataFromDB.user);
-        this.inst.cbooks = jsonDataFromDB.user.cbooks.map((cbook) => Cbook.fromJSON(cbook));
-        this.inst.contactsList = ContactsList.fromInstanceJSON(jsonDataFromDB.contacts);
-
-        this._status.isDataLoaded = true;
-      })
-      .then(this._setupReduxStore)
-      .catch((err) => {
-        if (err.response) {
-          console.error(err.response);
-        } else console.error(err);
-        // throw new Error('Data fetching was failed!');
-      });
-  };
-
-  init = () => {
-    const locationPromise = this.alo
-      .get('https://api.ipify.org')
-      .then((res) => {
-        return this.alo.get(
-          `https://api.ipgeolocation.io/ipgeo?apiKey=881001c60ada4c4fbc82479d4de6b39d&ip=${res.data}`
-        );
-      })
-      .then((res) => {
-        this.extAPI.geolocation = res.data;
-        return res.data;
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-    const dataPromise = this._loadAndSetupData();
-    return Promise.all([locationPromise, dataPromise]);
-  };
-
-  // use this method to make sure the data is loaded before doing anything: place your tasks in callback of then() of the returned Promise
-  checkDataLoaded = () => {
-    return new Promise((resolve) => {
-      const checkDataLoadedInterval = setInterval(() => {
-        if (this._status.isDataLoaded) {
-          resolve();
-          clearInterval(checkDataLoadedInterval);
-        }
-      }, 200);
-    });
-  };
-
   _handleSuccessResWithDefaultFailCallback = (cb) => {
     if (typeof cb !== 'function') {
       throw new Error('_handleSuccessResWithDefaultFailCallback need to be passed a callback');
@@ -163,6 +97,7 @@ class Adbk {
   };
 
   logErrorToConsole = (...args) => {
+    // eslint-disable-next-line no-console
     console.error(...args);
   };
 
@@ -185,6 +120,71 @@ class Adbk {
 
   notifyServerFailed = (customMsg) => {
     this.showNoti('alert', customMsg || 'Sorry, something on our server is wrong!');
+  };
+
+  _setupReduxStore = (jsonDataFromDB) => {
+    if (this._status.isDataLoaded) {
+      this.redux.store.dispatch((dispatch, getState) => {
+        dispatch(this.redux.action.user.replaceUser(this.inst.user));
+        dispatch(this.redux.action.contacts.replaceAllContacts(this.inst.contactsList.data));
+        dispatch(this.redux.action.cbooks.replaceAllCbooks(this.inst.cbooks));
+      });
+      delete this.inst; // force all components can only use data in store, this controler does NOT store any data
+    }
+  };
+
+  _loadAndSetupData = () => {
+    if (this._status.isDataLoaded) {
+      return Promise.resolve();
+    }
+
+    return this.alo
+      .get('/backdoor/get-all-data')
+      .then(handleServerResponse)
+      .catch(handleFailedRequest)
+      .then((res) => {
+        const jsonDataFromDB = res.data.data;
+        if (typeof this.inst !== 'object') this.inst = {};
+        this.inst.user = User.fromJSON(jsonDataFromDB.user);
+        this.inst.cbooks = jsonDataFromDB.user.cbooks.map((cbook) => Cbook.fromJSON(cbook));
+        this.inst.contactsList = ContactsList.fromInstanceJSON(jsonDataFromDB.contacts);
+
+        this._status.isDataLoaded = true;
+        return jsonDataFromDB;
+      })
+      .then(this._setupReduxStore)
+      .catch((err) => {
+        if (err.response) {
+          this.logErrorToConsole(err.response);
+        } else this.logErrorToConsole(err);
+        // throw new Error('Data fetching was failed!');
+      });
+  };
+
+  init = () => {
+    const locationPromise = this.alo
+      .get('https://api.ipgeolocation.io/ipgeo?apiKey=881001c60ada4c4fbc82479d4de6b39d')
+      .then((res) => {
+        this.extAPI.geolocation = res.data;
+        return res.data;
+      })
+      .catch((err) => {
+        this.logErrorToConsole(err);
+      });
+    const dataPromise = this._loadAndSetupData();
+    return Promise.all([locationPromise, dataPromise]);
+  };
+
+  // use this method to make sure the data is loaded before doing anything: place your tasks in callback of then() of the returned Promise
+  checkDataLoaded = () => {
+    return new Promise((resolve) => {
+      const checkDataLoadedInterval = setInterval(() => {
+        if (this._status.isDataLoaded) {
+          resolve();
+          clearInterval(checkDataLoadedInterval);
+        }
+      }, 200);
+    });
   };
 
   getDefaultCbookId = () => {
@@ -326,6 +326,29 @@ class Adbk {
     } else {
       return this.addNewContact(values);
     }
+  };
+
+  getProfilerCallback = () => {
+    let counter = 0;
+    return (
+      id, // the "id" prop of the Profiler tree that has just committed
+      phase, // either "mount" (if the tree just mounted) or "update" (if it re-rendered)
+      actualDuration, // time spent rendering the committed update
+      baseDuration, // estimated time to render the entire subtree without memoization
+      startTime, // when React began rendering this update
+      commitTime, // when React committed this update
+      interactions // the Set of interactions belonging to this update
+    ) => {
+      if (phase === 'update') {
+        console.group(id);
+        const diffTime = actualDuration - baseDuration;
+        if (diffTime > 0) console.log('Possible time improvement: ', diffTime);
+        if (interactions.size) console.log('Interactions: ', interactions);
+        if (interactions.size) console.log('Amount of re-rendering times: ', counter);
+        console.groupEnd();
+      }
+      counter += 1;
+    };
   };
 }
 

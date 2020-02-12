@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import AsyncLoader from '../AsyncLoader/AsyncLoader.jsx';
-import LoadingPopup from './LoadingPopup';
-import Popup from './Popup';
+import LoadingPopup from './LoadingPopup.jsx';
+import Popup from './Popup.jsx';
 
 const AsyncPopup = (props) => {
   const modalProps = { ...props.modalProps };

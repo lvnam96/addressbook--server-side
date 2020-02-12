@@ -1,5 +1,5 @@
 import * as ActionTypes from '../actions/actionTypes/userActionTypes';
-import User from '../classes/User';
+import User from '../../models/User';
 
 const initialState = {};
 const userReducer = (state = initialState, action) => {

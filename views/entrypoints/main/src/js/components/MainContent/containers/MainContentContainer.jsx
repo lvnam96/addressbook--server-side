@@ -122,7 +122,7 @@ const MainContentContainer = (props) => {
       <div className="file-input-container">
         <input
           ref={fileInputRef}
-          style={{ display: 'none' }}
+          className="d-none"
           type="file"
           id="inptFileBtn"
           accept=".txt"

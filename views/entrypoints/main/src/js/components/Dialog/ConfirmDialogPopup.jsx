@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 // import AsyncModal from '../Modals/AsyncModal.jsx';
-import Popup from '../Popup/Popup';
+import Popup from '../Popup/Popup.jsx';
 import ConfirmDialog from './ConfirmDialog.jsx';
 
 const ConfirmDialogPopup = (props) => {

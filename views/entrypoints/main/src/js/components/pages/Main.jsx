@@ -1,8 +1,8 @@
 import React, { Profiler } from 'react';
 
-import MainNav from '../components/MainNav/containers/MainNavContainer';
-import MainContent from '../components/MainContent/containers/MainContentContainer.jsx';
-import MainPageResolver from '../url-resolvers/MainResolver.jsx';
+import MainNav from '../MainNav/containers/MainNavContainer.jsx';
+import MainContent from '../MainContent/containers/MainContentContainer.jsx';
+import MainPageResolver from '../UrlResolver/MainResolver.jsx';
 
 // const getProfilerCallback = () => {
 //   let counter = 0;

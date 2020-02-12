@@ -7,7 +7,7 @@ import { init as InitSentry } from '@sentry/browser';
 
 import { save as saveToLocalStorage } from './js/services/localStorageService';
 
-import App from './js/App.jsx';
+import App from './js/components/App.jsx';
 
 import './scss/style.scss';
 
@@ -25,12 +25,12 @@ if (adbk.status.isDev) {
   // window.jQuery = $ || jQuery; // make jQuery global in dev browser console
 
   if (module.hot) {
-    module.hot.accept('./js/App.jsx', () => {
-      const HotReloadedApp = require('./js/App.jsx').default;
+    module.hot.accept('./js/components/App.jsx', () => {
+      const HotReloadedApp = require('./js/components/App.jsx').default;
       render(HotReloadedApp);
     });
-    module.hot.accept('./js/reducers', () => {
-      const rootReducer = require('./js/reducers').default;
+    module.hot.accept('./js/redux/reducers', () => {
+      const rootReducer = require('./js/redux/reducers').default;
       adbk.redux.store.replaceReducer(rootReducer(adbk.redux.history));
     });
   }

@@ -5,14 +5,14 @@ import { Route, Switch } from 'react-router';
 import { ConnectedRouter } from 'connected-react-router';
 import { hot } from 'react-hot-loader/root';
 
-import { checkStorageAvailable } from './helpers/checkSupportedFeaturesHelper';
+import { checkStorageAvailable } from '../helpers/checkSupportedFeaturesHelper';
 
-import AppErrorCatcher from './components/ErrorBoundaries/AppErrorBoundary.jsx';
-import Notifications from './components/Notification/Notification.jsx';
-import GlobalConfirmDialog from './components/Dialog/GlobalConfirmDialog.jsx';
-import AsyncLoader from './components/AsyncLoader/AsyncLoader.jsx';
-const SettingsPage = React.lazy(() => import('./pages/Settings'));
-const MainPage = React.lazy(() => import(/* webpackPreload: true */ './pages/Main'));
+import AppErrorCatcher from './ErrorBoundaries/AppErrorBoundary.jsx';
+import Notifications from './Notification/Notification.jsx';
+import GlobalConfirmDialog from './Dialog/GlobalConfirmDialog.jsx';
+import AsyncLoader from './AsyncLoader/AsyncLoader.jsx';
+const SettingsPage = React.lazy(() => import('./pages/Settings.jsx'));
+const MainPage = React.lazy(() => import(/* webpackPreload: true */ './pages/Main.jsx'));
 const redux = adbk.redux;
 
 const App = (props) => {

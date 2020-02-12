@@ -1,9 +1,9 @@
 import _get from 'lodash/get';
 import _isEmpty from 'lodash/isEmpty';
 import * as ActionTypes from './actionTypes/contactsListActionTypes';
-import alo, { handleServerResponse, handleFailedRequest } from '../services/httpServices';
-import ContactsList from '../classes/ContactsList';
-import Contact from '../classes/Contact';
+import alo, { handleServerResponse, handleFailedRequest } from '../../services/httpServices';
+import ContactsList from '../../models/ContactsList';
+import Contact from '../../models/Contact';
 
 export const asyncGetContactsOfCbook = (cbookId) => (dispatch, getState) => {
   if (_isEmpty(cbookId)) {

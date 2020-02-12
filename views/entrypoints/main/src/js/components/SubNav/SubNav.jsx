@@ -5,7 +5,7 @@ import Dropdown from 'react-bootstrap/esm/Dropdown';
 import classNames from 'classnames';
 
 import ContactsFilter from '../ContactsList/ContactsFilter.jsx';
-// import adbk from '../../controllers/adbk';
+import SubNavDropdown from './SubNavDropdown.jsx';
 
 const SubNav = (props) => {
   const selectBtnLabel =
@@ -21,9 +21,6 @@ const SubNav = (props) => {
       </>
     );
 
-  const alertNotFinishedFeature = (e) => {
-    adbk.showNoti('alert', 'This feature is not finished yet!');
-  };
   return (
     <div
       ref={props.subNavRef}
@@ -43,59 +40,12 @@ const SubNav = (props) => {
         />
       </div>
       <div className="col-auto px-0 ml-auto order-md-3">
-        <Dropdown alignRight>
-          <Dropdown.Toggle
-            bsPrefix="a"
-            href="#"
-            variant=""
-            id="dropdown-basic"
-            className="settings-btn"
-            title="Open popup menu">
-            <i className="fas fa-sliders-h" />
-          </Dropdown.Toggle>
-          <Dropdown.Menu className="border-0 shadow" style={{ overflow: 'hidden' }}>
-            <Dropdown.Item className="py-2" onClick={alertNotFinishedFeature}>
-              <i className="fas fa-sort-amount-down" />
-              &nbsp;&nbsp;Sort
-            </Dropdown.Item>
-            <Dropdown.Item className="py-2" onClick={alertNotFinishedFeature}>
-              <i className="fas fa-filter" />
-              &nbsp;&nbsp;More filter
-            </Dropdown.Item>
-            <hr />
-            {props.totalContactsAmount !== 0 && (
-              <Dropdown.Item
-                className="py-2"
-                onClick={
-                  props.numOfCheckedItems !== props.totalContactsAmount
-                    ? adbk.redux.action.contacts.markAllContact
-                    : adbk.redux.action.contacts.unmarkAllContact
-                }>
-                <i className="fas fa-user-check" />
-                &nbsp;&nbsp;
-                {props.numOfCheckedItems !== props.totalContactsAmount ? 'Select all' : 'Unselect all'}
-              </Dropdown.Item>
-            )}
-            <Dropdown.Item className="py-2" onClick={props.onBackupData}>
-              <i className="fas fa-download" />
-              &nbsp;&nbsp;Backup
-            </Dropdown.Item>
-            <Dropdown.Item className="py-2" onClick={props.onRestoreData}>
-              <i className="fas fa-upload" />
-              &nbsp;&nbsp;Restore
-            </Dropdown.Item>
-            <hr />
-            {/* <Link className="py-2 dropdown-item" to="/settings"> */}
-            <Dropdown.Item className="py-2" onClick={alertNotFinishedFeature}>
-              <i className="fas fa-cogs" />
-              &nbsp;&nbsp;Settings
-            </Dropdown.Item>
-            <Dropdown.Item className="py-2" href="/signout">
-              <i className="fas fa-door-open" />
-              &nbsp;&nbsp;Sign out
-            </Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
+        <SubNavDropdown
+          totalContactsAmount={props.totalContactsAmount}
+          numOfCheckedItems={props.numOfCheckedItems}
+          onBackupData={props.onBackupData}
+          onRestoreData={props.onRestoreData}
+        />
       </div>
       {!!props.numOfCheckedItems && (
         <div

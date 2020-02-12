@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import Spinner from '../Spinner/Spinner.jsx';
 
@@ -21,4 +21,4 @@ AsyncLoader.propTypes = {
   fallback: PropTypes.element,
 };
 
-export default AsyncLoader;
+export default memo(AsyncLoader);

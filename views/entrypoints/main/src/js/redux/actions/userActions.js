@@ -1,5 +1,5 @@
 import * as ActionTypes from './actionTypes/userActionTypes';
-import alo, { handleServerResponse, handleFailedRequest } from '../services/httpServices';
+import alo, { handleServerResponse, handleFailedRequest } from '../../services/httpServices';
 
 export const replaceUser = (user) => ({
   type: ActionTypes.REPLACE,

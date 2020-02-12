@@ -1,5 +1,5 @@
 import * as ActionTypes from '../actions/actionTypes/cbooksActionTypes';
-import Cbook from '../classes/Addressbook';
+import Cbook from '../../models/ContactsBook';
 
 const initialState = [];
 const cbooksReducer = (state = initialState, action) => {

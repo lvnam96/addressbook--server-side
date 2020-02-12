@@ -9,24 +9,6 @@ import AsyncCFormPopup from '../ContactForm/AsyncCFormPopup.jsx';
 const MainNav = (props) => {
   return (
     <nav className="sticky-nav">
-      {/*
-    <input style={{ display: 'none' }} type="file" id="inptFileBtn" accept=".txt" onChange={props.handlerUploadFile} />
-    <ul className="backup-restore-sub-nav translatedDown100">
-      <li
-        className="filter-sub-nav__item"
-        id="bckpDataBtn"
-        onClick={props.handlerBackupData}
-        title="Save current data into a text file">
-        Backup
-      </li>
-      <li
-        className="filter-sub-nav__item"
-        id="rstrDataBtn"
-        onClick={props.handlerRestoreData}
-        title="Replace current data by the new one in your backup file">
-        Restore
-      </li>
-    </ul> */}
       <nav className="main-nav">
         <NavBtn
           label={`Contacts Books (${props.totalContactsAmount})`}
@@ -49,20 +31,18 @@ const MainNav = (props) => {
           btnRef={props.delBtnRef}
           onMouseDown={props.setTimer}
           onMouseUp={props.clearTimer}
-          onTouchStart={props.setTimer}
-          onTouchEnd={props.clearTimer}
           onClick={props.onClickDelete}
         />
         {/* <input type="checkbox" id="bckp-rstr-toggle" style={{ display: 'none' }} />
-      <NavBtn
-        isDropdownBtn
-        inputId="bckp-rstr-toggle"
-        label="Backup / Restore"
-        icon="fas fa-save"
-        onClick={props.openBackupRestoreSubNav}
-      />
-      <NavBtn moreClass="backup-btn" label="Backup" icon="fas fa-download" onClick={props.handlerBackupData} />
-      <NavBtn moreClass="restore-btn" label="Restore" icon="fas fa-upload" onClick={props.handlerRestoreData} /> */}
+        <NavBtn
+          isDropdownBtn
+          inputId="bckp-rstr-toggle"
+          label="Backup / Restore"
+          icon="fas fa-save"
+          onClick={props.openBackupRestoreSubNav}
+        />
+        <NavBtn moreClass="backup-btn" label="Backup" icon="fas fa-download" onClick={props.handlerBackupData} />
+        <NavBtn moreClass="restore-btn" label="Restore" icon="fas fa-upload" onClick={props.handlerRestoreData} /> */}
         <NavBtn
           moreClass={classNames({
             'color-blink': props.totalContactsAmount === 0,

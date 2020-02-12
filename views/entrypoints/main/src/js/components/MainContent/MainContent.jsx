@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
@@ -103,4 +103,4 @@ MainContent.propTypes = {
   numOfCheckedItems: PropTypes.number.isRequired,
 };
 
-export default MainContent;
+export default memo(MainContent);

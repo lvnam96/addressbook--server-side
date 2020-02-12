@@ -1,7 +1,5 @@
 import _get from 'lodash/get';
 import Account from './Account';
-import Adrsbook from './Addressbook';
-import ContactsList from './ContactsList';
 
 // IN: obj
 // FROM: json obj from server, old inst, example empty obj

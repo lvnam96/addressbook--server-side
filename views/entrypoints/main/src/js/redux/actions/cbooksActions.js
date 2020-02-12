@@ -1,6 +1,6 @@
 import * as ActionTypes from './actionTypes/cbooksActionTypes';
-import alo, { handleServerResponse, handleFailedRequest } from '../services/httpServices';
-import adbk from '../controllers/adbk';
+import alo, { handleServerResponse, handleFailedRequest } from '../../services/httpServices';
+import Cbook from '../../models/ContactsBook'
 
 // used in adbk when first time load all data
 export const replaceAllCbooks = (cbooks) => ({
@@ -20,7 +20,7 @@ export const asyncAddCbook = (cbook) => (dispatch, getState) => {
     .catch(handleFailedRequest)
     .then((json) => {
       if (json.isSuccess) {
-        const cbook = adbk.classes.Cbook.fromJSON(json.data.cbook);
+        const cbook = Cbook.fromJSON(json.data.cbook);
         dispatch(addCbook(cbook));
       }
       return json;
@@ -39,7 +39,7 @@ export const asyncDeleteCbook = (cbook) => (dispatch, getState) => {
     .catch(handleFailedRequest)
     .then((json) => {
       if (json.isSuccess) {
-        const cbook = adbk.classes.Cbook.fromJSON(json.data.cbook);
+        const cbook = Cbook.fromJSON(json.data.cbook);
         dispatch(deleteCbook(cbook.id));
       }
       return json;
@@ -58,7 +58,7 @@ export const asyncEditCbook = (cbook) => (dispatch, getState) => {
     .catch(handleFailedRequest)
     .then((json) => {
       if (json.isSuccess) {
-        const cbook = adbk.classes.Cbook.fromJSON(json.data.cbook);
+        const cbook = Cbook.fromJSON(json.data.cbook);
         dispatch(editCbook(cbook));
       }
       return json;

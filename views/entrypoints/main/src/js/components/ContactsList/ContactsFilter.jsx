@@ -1,19 +1,19 @@
-import React from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 const ContactsFilter = (props) => {
   const onClickFilter = (filterStateSlug) => {
     switch (filterStateSlug) {
-    case 'week':
-      adbk.redux.action.filterState.changeStateToWeek();
-      break;
-    case 'month':
-      adbk.redux.action.filterState.changeStateToMonth();
-      break;
-    default:
-      adbk.redux.action.filterState.changeStateToAll();
-      break;
+      case 'week':
+        adbk.redux.action.filterState.changeStateToWeek();
+        break;
+      case 'month':
+        adbk.redux.action.filterState.changeStateToMonth();
+        break;
+      default:
+        adbk.redux.action.filterState.changeStateToAll();
+        break;
     }
   };
   const onClickShowAll = (e) => {
@@ -58,4 +58,4 @@ ContactsFilter.propTypes = {
   birthsInMonthAmount: PropTypes.number.isRequired,
 };
 
-export default ContactsFilter;
+export default memo(ContactsFilter);

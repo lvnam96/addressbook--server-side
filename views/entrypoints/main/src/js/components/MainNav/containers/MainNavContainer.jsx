@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import MainNav from '../MainNav';
+import MainNav from '../MainNav.jsx';
 
-class MainNavContainer extends React.Component {
-  constructor (props) {
+class MainNavContainer extends PureComponent {
+  constructor(props) {
     super(props);
     this.state = {
       isOpenCreateContactForm: false,
@@ -28,7 +28,7 @@ class MainNavContainer extends React.Component {
     this.closeCreateContactForm = this.closeCreateContactForm.bind(this);
   }
 
-  static get propTypes () {
+  static get propTypes() {
     return {
       contacts: PropTypes.arrayOf(PropTypes.instanceOf(adbk.classes.Contact).isRequired).isRequired,
     };
@@ -50,27 +50,27 @@ class MainNavContainer extends React.Component {
   //     // filterBtnGroup.classList.toggle('translatedDown200');
   // }
 
-  onClickCbookSwitcher (e) {
+  onClickCbookSwitcher(e) {
     this.openCbookSwitcherModal();
   }
 
-  openCbookSwitcherModal () {
+  openCbookSwitcherModal() {
     this.setState({
       isShowCbookSwitcher: true,
     });
   }
 
-  closeCbookSwitcherModal (e) {
+  closeCbookSwitcherModal(e) {
     this.setState({
       isShowCbookSwitcher: false,
     });
   }
 
-  onClickAddNewContact (e) {
+  onClickAddNewContact(e) {
     this.openCreateContactForm();
   }
 
-  delAllContacts () {
+  delAllContacts() {
     // if data is empty already, no need to do anything
     if (this.props.contacts.length === 0) {
       adbk.showNoti('alert', 'There is no data left. Is it bad?');
@@ -89,7 +89,7 @@ class MainNavContainer extends React.Component {
     );
   }
 
-  setTimer (e) {
+  setTimer(e) {
     const handleLongPress = () => {
       this.delAllContacts();
       // this.isLongPressActivated = true;// DEAR PAST ME: WHY THIS SHOULD BE IMPLEMENTED????? WHAT IS THE POINT?
@@ -97,7 +97,7 @@ class MainNavContainer extends React.Component {
     this.pressDelAllTimer = setTimeout(handleLongPress, 600);
   }
 
-  clearTimer (e) {
+  clearTimer(e) {
     // DEAR PAST ME: WHY THIS SHOULD BE IMPLEMENTED????? WHAT IS THE POINT?
     // if (this.isLongPressActivated) {
     //   const captureClick = (e) => {
@@ -113,7 +113,7 @@ class MainNavContainer extends React.Component {
     this.pressDelAllTimer = null;
   }
 
-  onClickDelete (e) {
+  onClickDelete(e) {
     const numOfCheckedItems = this.props.contacts.filter((contact) => contact.isMarked).length;
     if (numOfCheckedItems > 0) {
       adbk.openConfirmDialog((res) => {
@@ -125,19 +125,19 @@ class MainNavContainer extends React.Component {
     }
   }
 
-  openCreateContactForm () {
+  openCreateContactForm() {
     this.setState({
       isOpenCreateContactForm: true,
     });
   }
 
-  closeCreateContactForm () {
+  closeCreateContactForm() {
     this.setState({
       isOpenCreateContactForm: false,
     });
   }
 
-  render () {
+  render() {
     const numOfCheckedItems = this.props.contacts.filter((contact) => contact.isMarked).length;
     return (
       <MainNav
