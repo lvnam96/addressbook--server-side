@@ -1,1 +1,1 @@
-defaults
+defaults and not IE 11 and not OperaMini all and not Safari 5.1 and >=0.07%
