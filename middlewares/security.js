@@ -39,14 +39,14 @@ const setupCSP = (req, res, next) => {
     const directives = {
       upgradeInsecureRequests: true,
       defaultSrc: ["'self'"],
-      connectSrc: ["'self'", 'api.ipify.org', 'api.ipgeolocation.io', 'restcountries.eu'],
+      connectSrc: ["'self'", 'https://api.ipgeolocation.io', 'https://restcountries.eu'],
       imgSrc: ["'self'", 'data:'],
-      fontSrc: ["'self'", 'fonts.gstatic.com', 'data:'],
+      fontSrc: ["'self'", 'https://fonts.gstatic.com', 'data:'],
       scriptSrc: [
         "'self'",
         "'strict-dynamic'",
-        'unpkg.com',
-        'browser.sentry-cdn.com',
+        'https://unpkg.com',
+        'https://browser.sentry-cdn.com',
         "'unsafe-inline'",
         `'nonce-${nonce}'`,
       ],
@@ -59,15 +59,12 @@ const setupCSP = (req, res, next) => {
       // manifestSrc: ["'self'"],
       // workerSrc: ["'self'"],
       // childSrc: ["'self'"],
-      reportUri: adbk.dev.isDev
-        ? `http://${req.get('host')}/log/csp-report`
-        : 'https://contacts.garyle.me/log/csp-report',
+      reportUri: 'https://contacts.garyle.me/log/csp-report',
     };
-    if (!adbk.dev.isDev) {
-      ['connectSrc', 'imgSrc', 'fontSrc', 'scriptSrc', 'styleSrc'].forEach((directive) => {
-        directives[directive].push('https:');
-      });
-      directives.styleSrc.push(`'nonce-${nonce}'`);
+    if (adbk.dev.isDev) {
+      directives.scriptSrc.push("'unsafe-eval'");
+      directives.reportUri = `http://${req.get('host')}/log/csp-report`;
+      // directives.styleSrc.push(`'nonce-${nonce}'`);
     }
     return directives;
   };
