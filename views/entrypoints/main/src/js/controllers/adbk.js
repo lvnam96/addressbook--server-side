@@ -158,8 +158,12 @@ class Adbk {
   };
 
   reportError = (error, errorInfo) => {
-    this._reportToSentry(errorInfo);
-    console.error(error);
+    this._reportToSentry(errorInfo || error);
+    this.logErrorToConsole(error);
+  };
+
+  logErrorToConsole = (...args) => {
+    console.error(...args);
   };
 
   openConfirmDialog = (...args) => {

@@ -1,14 +1,11 @@
-export const getFirstLetterOf = (name) => {
+export const getFirstLetterOf = (name = '') => {
   if (typeof name === 'string') {
-    // eslint-disable-next-line no-control-regex
-    const firstNotSpecialCharPtrn = /[^\u0000-\u007F]|[0-9a-zA-Z]/g;
-    let firstLetter;
+    let firstLetter = '?';
     name = name.trim();
     if (name !== '') {
-      const firstLetterIdx = name.search(firstNotSpecialCharPtrn);
-      firstLetter = firstLetterIdx !== -1 ? name[firstLetterIdx].toUpperCase() : '?';
-    } else {
-      firstLetter = '?';
+      // eslint-disable-next-line no-control-regex
+      const firstLetterIdx = name.search(/[^\u0000-\u007F]|[0-9a-zA-Z]/g); // get the first not-special-character in string
+      firstLetter = firstLetterIdx !== -1 ? name[firstLetterIdx].toUpperCase() : firstLetter;
     }
     return firstLetter;
   } else {

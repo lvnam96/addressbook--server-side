@@ -2,17 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import SketchColorPicker from '../SketchColorPicker.jsx';
-import InputFeedback from './InputFeedback';
-import TextInput from './TextInput';
+import InputFeedback from './InputFeedback.jsx';
+import TextInput from './TextInput.jsx';
 
 class ColorField extends React.PureComponent {
-  render () {
+  render() {
     // const inputProps = { ...this.props };
     // delete inputProps.children;
     // delete inputProps.msg;
-    const selectedRGBA = `rgba(${this.props.color.r}, ${this.props.color.g}, ${this.props.color.b}, ${
-      this.props.color.a
-    })`;
+    const selectedRGBA = `rgba(${this.props.color.r}, ${this.props.color.g}, ${this.props.color.b}, ${this.props.color.a})`;
     return (
       <>
         <div className="form-group">

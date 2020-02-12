@@ -2,20 +2,20 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-import TextInput from '../form/fields/TextInput';
+import TextInput from '../form/fields/TextInput.jsx';
 // import FormLabel from '../form/FormLabel.jsx';
 import SketchColorPicker from '../form/SketchColorPicker.jsx';
 import IconBtn from '../buttons/IconBtn.jsx';
 import { getCSSColorString } from '../../helpers/utilsHelper';
 
 class CbookForm extends React.PureComponent {
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.changeColor = this.changeColor.bind(this);
   }
 
-  static get propTypes () {
+  static get propTypes() {
     return {
       isOpenInPopup: PropTypes.bool,
       isInlineForm: PropTypes.bool,
@@ -24,11 +24,11 @@ class CbookForm extends React.PureComponent {
     };
   }
 
-  changeColor (newColor) {
+  changeColor(newColor) {
     this.props.setFieldValue('color', newColor, true);
   }
 
-  render () {
+  render() {
     const {
       values,
       touched,
@@ -56,8 +56,7 @@ class CbookForm extends React.PureComponent {
                     style={{
                       borderColor: colorStr,
                       backgroundColor: colorStr,
-                    }}
-                  >
+                    }}>
                     <i className="fas fa-address-book" />
                   </label>
                 </SketchColorPicker>
@@ -79,8 +78,7 @@ class CbookForm extends React.PureComponent {
           <div
             className={classNames('col-auto pl-1', {
               'pr-1': isNeedToClose,
-            })}
-          >
+            })}>
             <p className="mb-0">
               <IconBtn type="submit" className={classNames('font-weight-bold', { disabled: isSubmitting })}>
                 <i className="fas fa-check text-success" />
@@ -92,8 +90,7 @@ class CbookForm extends React.PureComponent {
               <p className="text-right mb-0">
                 <IconBtn
                   className={classNames('font-weight-bold', { disabled: isSubmitting })}
-                  onClick={this.props.handleClose}
-                >
+                  onClick={this.props.handleClose}>
                   <i className="fas fa-times text-danger" />
                 </IconBtn>
               </p>

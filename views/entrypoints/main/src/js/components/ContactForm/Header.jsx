@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 
 import IconBtn from '../buttons/IconBtn.jsx';
@@ -10,8 +10,8 @@ const CFormHeader = (props) => {
         <div className="col">
           <h3 className="font-weight-bold form-popup__title">{props.title}</h3>
         </div>
-        <div className="col-auto" onClick={props.onClose}>
-          <IconBtn className="d-flex align-items-center justify-content-center">
+        <div className="col-auto">
+          <IconBtn className="d-flex align-items-center justify-content-center" onClick={props.onClose}>
             <i className="fa fa-times" />
           </IconBtn>
         </div>
@@ -26,4 +26,4 @@ CFormHeader.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
-export default CFormHeader;
+export default memo(CFormHeader);

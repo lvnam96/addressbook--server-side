@@ -1,26 +1,85 @@
-import React from 'react';
+import React, { Profiler, Component } from 'react';
 import PropTypes from 'prop-types';
 import _isEmpty from 'lodash/isEmpty';
+import { Form } from 'formik';
+import memoize from 'memoize-one';
 
 import Header from './Header.jsx';
 import LetterAvatar from './LetterAvatar.jsx';
-import TextField from '../form/fields/TextField';
+import TextField from '../form/fields/TextField.jsx';
 import MultiCreatableSelectField from '../form/fields/MultiCreatableSelectField.jsx';
-import InputFeedback from '../form/fields/InputFeedback';
+import InputFeedback from '../form/fields/InputFeedback.jsx';
 import PhoneInput from '../form/fields/PhoneInput.jsx';
 import SliderColorPicker from '../form/SliderColorPicker.jsx';
 import { getFirstLetterOf } from '../../helpers/findHelper';
 import { convertDateObjToHTMLInputVal } from '../../helpers/timeHelper';
 import Footer from './Footer.jsx';
+import FormikErrorMessage from '../form/fields/FormikErrorMessage.jsx';
 
-class CForm extends React.Component {
+const memoizedGetFirstLetterOf = memoize(getFirstLetterOf);
+
+const inputProps = {
+  name: {
+    type: 'text',
+    id: 'input--name',
+    required: true,
+    name: 'name',
+    className: 'form__input-field',
+  },
+  birth: {
+    type: 'date',
+    id: 'input--birth',
+    name: 'birth',
+    className: 'form__input-field',
+    placeholder: 'yyyy-mm-dd',
+  },
+  email: {
+    type: 'email',
+    id: 'input--email',
+    name: 'email',
+    className: 'form__input-field',
+    placeholder: 'hello@garyle.me',
+    title: "Your URL must start by 'http://'' or 'https://'",
+  },
+  website: {
+    type: 'url',
+    id: 'input--website',
+    name: 'website',
+    className: 'form__input-field',
+    placeholder: 'https://facebook.com/lvnam96',
+    title: "Your URL must start by 'http://'' or 'https://'",
+  },
+  note: {
+    type: 'text',
+    id: 'input--note',
+    name: 'note',
+    className: 'form__input-field',
+    title: "Your URL must start by 'http://'' or 'https://'",
+  },
+};
+const defaultLabels = [
+  {
+    label: 'Coworkers',
+    value: 'coworkers',
+  },
+  {
+    label: 'Family',
+    value: 'family',
+  },
+  {
+    label: 'Friends',
+    value: 'friends',
+  },
+];
+
+class CForm extends Component {
   constructor(props) {
     super(props);
 
     this.handleChangeColor = this.handleChangeColor.bind(this);
     // this.addNewPhoneInputField = this.addNewPhoneInputField.bind(this);
-    this.onChangeBirth = this.onChangeBirth.bind(this);
-    this.onClose = this.onClose.bind(this);
+    this.handleChangeBirth = this.handleChangeBirth.bind(this);
+    this.handleClose = this.handleClose.bind(this);
     this.handleChangeLabelField = this.handleChangeLabelField.bind(this);
   }
 
@@ -45,17 +104,48 @@ class CForm extends React.Component {
   //   );
   // }
 
-  onChangeBirth(e) {
+  handleChangeBirth(e) {
     const date = e.target.value.length > 0 ? new Date(e.target.value) : null; // check ../schemas/contactSchema.js
     this.props.setFieldValue('birth', date, true);
   }
 
-  onClose(e) {
+  handleClose(e) {
     this.props.handleClose();
   }
 
   handleChangeLabelField(newValue) {
     this.props.setFieldValue('labels', newValue, true);
+  }
+
+  // handleProfilerCallback = (
+  //   id, // the "id" prop of the Profiler tree that has just committed
+  //   phase, // either "mount" (if the tree just mounted) or "update" (if it re-rendered)
+  //   actualDuration, // time spent rendering the committed update
+  //   baseDuration, // estimated time to render the entire subtree without memoization
+  //   startTime, // when React began rendering this update
+  //   commitTime, // when React committed this update
+  //   interactions // the Set of interactions belonging to this update
+  // ) => {
+  //   if (phase === 'update') {
+  //     console.group(id);
+  //     const diffTime = actualDuration - baseDuration;
+  //     if (diffTime > 0) console.log('Possible time improvement: ', diffTime);
+  //     if (interactions.size) console.log('Interactions: ', interactions);
+  //     console.groupEnd();
+  //   }
+  // };
+
+  shouldComponentUpdate(nextProps) {
+    if (
+      this.props.isSubmitting !== nextProps.isSubmitting ||
+      this.props.countryCallingCodes !== nextProps.countryCallingCodes ||
+      this.props.values !== nextProps.values ||
+      this.props.touched !== nextProps.touched ||
+      this.props.errors !== nextProps.errors
+    ) {
+      return true;
+    }
+    return false;
   }
 
   render() {
@@ -65,54 +155,44 @@ class CForm extends React.Component {
       errors,
       handleChange,
       handleBlur,
-      handleSubmit,
-      handleReset,
-      // isSubmitting,
+      // handleSubmit,
+      // handleReset,
+      isSubmitting,
       // resetForm,
-      // setFieldValue,
+      setFieldValue,
     } = this.props; // extract props from Formik
-    const firstLetter = getFirstLetterOf(values.name || '');
+    const firstLetter = memoizedGetFirstLetterOf(values.name || '');
 
     return (
-      <form onSubmit={handleSubmit} onReset={handleReset} className="cform">
-        <Header title={this.props.title} onClose={this.onClose} />
+      <Form className="cform">
+        <Header title={this.props.title} onClose={this.handleClose} />
         <main className="cform__body">
           <div className="mb-3 cform__avt-ctnr">
-            <SliderColorPicker type="hex" color={values.color} changeColor={this.handleChangeColor}>
+            <SliderColorPicker type="hex" color={values.color} onChangeColor={this.handleChangeColor}>
               <LetterAvatar color={values.color} firstLetter={firstLetter} className="mb-3" />
             </SliderColorPicker>
           </div>
           <div className="form-row">
             <div className="col-12 col-md-6">
               <TextField
-                msg={touched.name && errors.name ? errors.name : ''}
-                type="text"
-                id="input--name"
-                required
-                name="name"
+                inputProps={inputProps.name}
                 value={values.name}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                className="form-control form__input-field">
-                <label className="" htmlFor="input--name">
-                  <span className="">Name</span>
-                </label>
+                label="Name"
+                labelFor="input--name">
+                <FormikErrorMessage name="name" />
               </TextField>
             </div>
             <div className="col-12 col-md-6">
               <TextField
-                msg={touched.birth && errors.birth ? errors.birth : ''}
-                type="date"
-                id="input--birth"
-                name="birth"
+                inputProps={inputProps.birth}
                 value={values.birth instanceof Date ? convertDateObjToHTMLInputVal(values.birth) : ''}
-                onChange={this.onChangeBirth}
+                onChange={this.handleChangeBirth}
                 onBlur={handleBlur}
-                className="form-control form__input-field"
-                placeholder="yyyy-mm-dd">
-                <label className="" htmlFor="input--birth">
-                  <span className="">Birth</span>
-                </label>
+                label="Birth"
+                labelFor="input--birth">
+                <FormikErrorMessage name="birth" />
               </TextField>
             </div>
           </div>
@@ -124,21 +204,8 @@ class CForm extends React.Component {
               id="input--labels"
               name="labels"
               defaultValue={values.labels}
-              options={[
-                {
-                  label: 'Coworkers',
-                  value: 'coworkers',
-                },
-                {
-                  label: 'Family',
-                  value: 'family',
-                },
-                {
-                  label: 'Friends',
-                  value: 'friends',
-                },
-              ]}
-              handleChange={this.handleChangeLabelField}
+              options={defaultLabels}
+              onChange={this.handleChangeLabelField}
               onBlur={handleBlur}
             />
           </div>
@@ -146,62 +213,46 @@ class CForm extends React.Component {
             <label className="" htmlFor="input--labels">
               <span className="">Phone</span>
             </label>
-            <PhoneInput phone={values.phone} props={this.props} countries={this.props.countryCallingCodes} />
-            {errors['phone.phoneNumb'] && <InputFeedback msg={errors['phone.phoneNumb']} color="pink" />}
+            <PhoneInput phone={values.phone} onBlur={handleBlur} setFieldValue={setFieldValue} />
+            {/* <FormikErrorMessage name="phone.phoneNumb" /> */}
+            {errors['phone.phoneNumb'] && <InputFeedback msg={errors['phone.phoneNumb']} />}
           </div>
           <div className="form-row">
             <div className="col-12 col-md">
               <TextField
-                msg={touched.email && errors.email ? errors.email : ''}
-                type="email"
-                id="input--email"
-                name="email"
+                inputProps={inputProps.email}
                 value={values.email}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                className="form-control form__input-field"
-                placeholder="hello@garyle.me"
-                title="Your URL must start by 'http://'' or 'https://'">
-                <label className="" htmlFor="input--email">
-                  <span className="">Email</span>
-                </label>
+                label="Email"
+                labelFor="input--email">
+                <FormikErrorMessage name="email" />
               </TextField>
             </div>
             <div className="col-12 col-md">
               <TextField
-                msg={touched.website && errors.website ? errors.website : ''}
-                type="url"
-                id="input--website"
-                name="website"
+                inputProps={inputProps.website}
                 value={values.website}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                className="form-control form__input-field"
-                placeholder="https://facebook.com/lvnam96"
-                title="Your URL must start by 'http://'' or 'https://'">
-                <label className="" htmlFor="input--website">
-                  <span className="">Website</span>
-                </label>
+                label="Website"
+                labelFor="input--website">
+                <FormikErrorMessage name="website" />
               </TextField>
             </div>
           </div>
           <TextField
-            msg={touched.note && errors.note ? errors.note : ''}
-            type="text"
-            id="input--note"
-            name="note"
+            inputProps={inputProps.note}
             value={values.note}
             onChange={handleChange}
             onBlur={handleBlur}
-            className="form-control form__input-field"
-            title="Your URL must start by 'http://'' or 'https://'">
-            <label className="" htmlFor="input--note">
-              <span className="">Note</span>
-            </label>
+            label="Note"
+            labelFor="input--note">
+            <FormikErrorMessage name="note" />
           </TextField>
         </main>
-        <Footer onClose={this.onClose} isSubmitBtnDisabled={!touched && !_isEmpty(errors)} />
-      </form>
+        <Footer onClose={this.handleClose} isSubmitBtnDisabled={(touched && !_isEmpty(errors)) || isSubmitting} />
+      </Form>
     );
   }
 }
@@ -216,16 +267,17 @@ CForm.propTypes = {
     })
   ),
   title: PropTypes.string.isRequired,
-  handleClose: PropTypes.func,
+  handleClose: PropTypes.func.isRequired,
   // Formik's props:
   values: PropTypes.object.isRequired,
   handleChange: PropTypes.func.isRequired,
   handleBlur: PropTypes.func.isRequired,
-  handleSubmit: PropTypes.func.isRequired,
-  handleReset: PropTypes.func.isRequired,
+  // handleSubmit: PropTypes.func.isRequired,
+  // handleReset: PropTypes.func.isRequired,
   setFieldValue: PropTypes.func.isRequired,
   touched: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired,
+  isSubmitting: PropTypes.bool.isRequired,
 };
 
 CForm.defaultProps = {

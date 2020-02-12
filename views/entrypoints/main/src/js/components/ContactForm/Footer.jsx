@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 
 const CFormFooter = (props) => {
@@ -28,4 +28,4 @@ CFormFooter.propTypes = {
   isSubmitBtnDisabled: PropTypes.bool.isRequired,
 };
 
-export default CFormFooter;
+export default memo(CFormFooter);

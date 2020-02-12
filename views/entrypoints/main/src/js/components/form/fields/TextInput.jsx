@@ -7,7 +7,19 @@ class TextInput extends React.PureComponent {
       disabled: PropTypes.bool,
       required: PropTypes.bool,
       autoFocus: PropTypes.bool,
-      type: PropTypes.string,
+      type: PropTypes.oneOf([
+        'text',
+        'email',
+        'password',
+        'tel',
+        'number',
+        'date',
+        'datetime-local',
+        'search',
+        'time',
+        'url',
+        'week',
+      ]),
       value: PropTypes.string.isRequired,
       onChange: PropTypes.func.isRequired,
       onFocus: PropTypes.func,
@@ -23,7 +35,7 @@ class TextInput extends React.PureComponent {
   render() {
     const props = { ...this.props };
     delete props.children; // <input/> cannot receive prop `children`
-    return <input {...props} id={this.props.id} />;
+    return <input {...props} />;
   }
 }
 TextInput.defaultProps = {

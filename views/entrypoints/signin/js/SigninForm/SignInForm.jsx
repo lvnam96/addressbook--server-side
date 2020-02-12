@@ -3,8 +3,40 @@ import PropTypes from 'prop-types';
 // import classNames from 'classnames';
 import _isEmpty from 'lodash/isEmpty';
 import { Form } from 'formik';
+import memoizeOne from 'memoize-one';
 
-import TextField from '../../../main/src/js/components/form/fields/TextField';
+import TextField from '../../../main/src/js/components/form/fields/TextField.jsx';
+import FormikErrorMessage from '../../../main/src/js/components/form/fields/FormikErrorMessage.jsx';
+
+const inputProps = {
+  uname: {
+    type: 'text',
+    id: 'signin-form__uname-input',
+    name: 'uname',
+    className: 'form-control signin-form__uname',
+    autoComplete: 'username',
+    placeholder: 'johndoe123',
+  },
+  passwd: {
+    id: 'signin-form__passwd-input',
+    type: 'password',
+    name: 'passwd',
+    className: 'form-control signin-form__passwd',
+    autoComplete: 'current-password',
+    placeholder: 'v!he^pD%LUn#3w',
+  },
+};
+
+const unameLabelRenderer = memoizeOne(() => (
+  <label className="form__input-label" htmlFor="signin-form__uname-input">
+    <span className="form__input-label__text">Username</span>
+  </label>
+));
+const passwdLabelRenderer = memoizeOne(() => (
+  <label className="form__input-label" htmlFor="signin-form__passwd-input">
+    <span className="form__input-label__text">Password</span>
+  </label>
+));
 
 const SignInForm = (props) => {
   const {
@@ -23,36 +55,22 @@ const SignInForm = (props) => {
     <Form className="signin-form">
       <div>
         <TextField
-          msg={touched.email && errors.email ? errors.email : ''}
-          type="text"
-          id="signin-form__uname-input"
-          name="uname"
+          inputProps={inputProps.uname}
           value={values.uname}
           onChange={handleChange}
           onBlur={handleBlur}
-          className="form-control signin-form__uname"
-          autoComplete="username"
-          placeholder="johndoe123">
-          <label className="form__input-label" htmlFor="signin-form__uname-input">
-            <span className="form__input-label__text">Username</span>
-          </label>
+          label={unameLabelRenderer()}>
+          <FormikErrorMessage name="uname" />
         </TextField>
       </div>
       <div>
         <TextField
-          msg={touched.passwd && errors.passwd ? errors.passwd : ''}
-          id="signin-form__passwd-input"
-          type="password"
-          name="passwd"
+          inputProps={inputProps.passwd}
           value={values.passwd}
           onChange={handleChange}
           onBlur={handleBlur}
-          className="form-control signin-form__passwd"
-          autoComplete="current-password"
-          placeholder="v!he^pD%LUn#3w">
-          <label className="form__input-label" htmlFor="signin-form__passwd-input">
-            <span className="form__input-label__text">Password</span>
-          </label>
+          label={passwdLabelRenderer()}>
+          <FormikErrorMessage name="passwd" />
         </TextField>
       </div>
       <div className="">
@@ -89,14 +107,14 @@ const SignInForm = (props) => {
 };
 
 SignInForm.propTypes = {
+  isWrongUnameOrPasswd: PropTypes.bool.isRequired,
+  isSignedIn: PropTypes.bool.isRequired,
+  submitingTimes: PropTypes.number.isRequired,
+  // Formik's props:
   values: PropTypes.shape({
     uname: PropTypes.string.isRequired,
     passwd: PropTypes.string.isRequired,
   }),
-  isWrongUnameOrPasswd: PropTypes.bool.isRequired,
-  isSignedIn: PropTypes.bool.isRequired,
-  submitingTimes: PropTypes.number.isRequired,
-
   touched: PropTypes.objectOf(PropTypes.bool).isRequired,
   errors: PropTypes.objectOf(PropTypes.string).isRequired,
   isSubmitting: PropTypes.bool.isRequired,

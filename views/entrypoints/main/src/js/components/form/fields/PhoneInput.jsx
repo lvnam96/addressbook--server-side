@@ -1,56 +1,150 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import _isEmpty from 'lodash/isEmpty';
 
 import SelectInput from './SelectInput';
-import TextInput from './TextInput';
+import TextInput from './TextInput.jsx';
 import { randomUUID } from '../../../helpers/utilsHelper';
 import { extractCallingCode } from '../../../helpers/phoneHelper';
+import _isEmpty from 'lodash/isEmpty';
+import _debounce from 'lodash/debounce';
+import { getCountriesList } from '../../../services/dataService';
+import defaultCountries from '../../ContactForm/containers/countries.json';
+
+const getCallingCodes = (countries = []) => {
+  if (!Array.isArray(countries)) {
+    throw new Error('Data should be an array');
+  }
+  const countryCallingCodes = [];
+  countries.forEach((country) => {
+    const { name, callingCodes, flag, alpha2Code } = country;
+    callingCodes.forEach((code) => {
+      if (code) {
+        countryCallingCodes.push({
+          name,
+          phoneNumbPrefix: code,
+          flag,
+          alpha2Code,
+        });
+      }
+    });
+  });
+  return countryCallingCodes;
+};
+const defaultCallingCodes = getCallingCodes(defaultCountries);
 
 class PhoneInput extends React.Component {
-  // phone = {
-  //   id: string,
-  //   callingCode: string,
-  //   phoneNumb: string,
-  // };
-  static get propTypes () {
-    return {
-      phone: PropTypes.object.isRequired,
-      props: PropTypes.object,
-      countries: PropTypes.array.isRequired,
+  constructor(props) {
+    super(props);
+    this.state = {
+      callingCodes: _isEmpty(adbk.extAPI.countryCallingCodes) ? defaultCallingCodes : adbk.extAPI.countryCallingCodes,
     };
   }
 
-  shouldComponentUpdate (nextProps) {
-    if (nextProps.phone !== this.props.phone || nextProps.countries !== this.props.countries) return true;
+  static get propTypes() {
+    return {
+      phone: PropTypes.shape({ id: PropTypes.string, callingCode: PropTypes.string, phoneNumb: PropTypes.string })
+        .isRequired, // phone = { id: string, callingCode: string, phoneNumb: string };
+      onBlur: PropTypes.func.isRequired,
+      setFieldValue: PropTypes.func.isRequired,
+    };
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextProps.phone !== this.props.phone || nextState.callingCodes !== this.state.callingCodes) return true;
     return false;
   }
 
-  render () {
-    const { phone, props, countries } = this.props;
+  componentDidMount() {
+    if (this.state.callingCodes === defaultCallingCodes) {
+      this.debouncedUpdateCallingCodes(); // debounced by "infinity" seconds
+
+      this._prepareCountryCodeData()
+        .then((callingCodes) => {
+          this.debouncedUpdateCallingCodes && this.debouncedUpdateCallingCodes.flush(); // this code is still executed after data is fetched, but the task (setState) will not run
+          return callingCodes;
+        })
+        .catch((err) => {
+          this.debouncedUpdateCallingCodes && this.debouncedUpdateCallingCodes.cancel();
+          adbk.reportError(err);
+        });
+    }
+  }
+
+  componentWillUnmount() {
+    this.debouncedUpdateCallingCodes && this.debouncedUpdateCallingCodes.cancel();
+  }
+
+  _prepareCountryCodeData() {
+    return getCountriesList()
+      .then((res) => {
+        if (res.isSuccess) {
+          let callingCodes;
+          try {
+            callingCodes = getCallingCodes(res.data);
+          } catch (err) {
+            throw new Error('There is an error. Please report to developer. Thank you!');
+          }
+          adbk.extAPI.countryCallingCodes = callingCodes;
+
+          return callingCodes;
+        } else {
+          throw new Error(res.errMsg);
+        }
+      })
+      .catch((err) => {
+        adbk.showNoti('error', err.message);
+        adbk.reportError(err, err.stack);
+      });
+
+    // const countryCallingCodes = React.lazy(() => import(/* webpackPreload: true */ 'https://restcountries.eu/rest/v2/all'));
+    // adbk.extAPI.countryCallingCodes = countryCallingCodes;
+    // this.setState({
+    //   countryCallingCodes,
+    // });
+  }
+
+  debouncedUpdateCallingCodes = _debounce(() => {
+    // this debouncedUpdateCallingCodes func is only invoked by flush method (because timeout is Infinity)
+    // when the data is fetched && this component is not unmounted
+    // Reason of doing this way:
+    // there is a chance to unmount this component before its data is fetched,
+    // we need a way to cancel the then() method of resolved promise
+    // (there is no way to cancel a resolved promise in vanilla JS)
+    this.setState(
+      {
+        callingCodes: adbk.extAPI.countryCallingCodes,
+      },
+      () => {
+        delete this.debouncedUpdateCallingCodes;
+      }
+    );
+  }, Infinity);
+
+  render() {
+    const { phone } = this.props;
     const callingCodeNumb = extractCallingCode(phone.callingCode).numb;
-    // const defaultCallingCode = adbk.extAPI.geolocation.country_code2 + '-' + adbk.extAPI.geolocation.calling_code.substr(1);
+    // const defaultCallingCodes = adbk.extAPI.geolocation.country_code2 + '-' + adbk.extAPI.geolocation.calling_code.substr(1);
     return (
       <div className="input-group">
-        {Array.isArray(countries) && countries.length > 0 && (
+        {Array.isArray(this.state.callingCodes) && this.state.callingCodes.length > 0 && (
           <>
             <SelectInput
               name={`callingCode${phone.id}`}
-              value={phone.callingCode} // value={_isEmpty(phone.callingCode) ? defaultCallingCode : phone.callingCode}
+              value={phone.callingCode}
               onChange={(e) => {
                 const newPhone = {
-                  ...props.values.phone,
+                  ...phone,
                   callingCode: e.currentTarget.value,
                 };
-                props.setFieldValue('phone', newPhone, true);
+                this.props.setFieldValue('phone', newPhone, true);
               }}
-              onBlur={props.handleBlur}
+              onBlur={this.props.onBlur}
               className="form-control form__input-field"
               style={{
                 flex: '0 0 auto',
                 width: 'auto',
               }}>
-              {countries.map((country) => {
+              {this.state.callingCodes.map((country) => {
                 const val = country.alpha2Code + '-' + country.phoneNumbPrefix;
                 return (
                   <option
@@ -63,14 +157,6 @@ class PhoneInput extends React.Component {
                 );
               })}
             </SelectInput>
-            {/* <Select
-              value={values.callingCode}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              options={props.countries}
-              getOptionValue={(options) => options.phoneNumbPrefix}
-              getOptionLabel={(options) => options.phoneNumbPrefix}
-            /> */}
           </>
         )}
         <TextInput
@@ -80,15 +166,13 @@ class PhoneInput extends React.Component {
           value={(callingCodeNumb ? '+' + callingCodeNumb : '') + phone.phoneNumb}
           onChange={(e) => {
             const newPhone = {
-              ...props.values.phone,
+              ...phone,
               phoneNumb: e.currentTarget.value.substr(callingCodeNumb.length + 1),
             };
 
-            props.setFieldValue('phone', newPhone, true);
+            this.props.setFieldValue('phone', newPhone, true);
           }}
-          onBlur={props.handleBlur}
-          // addFilledClass={props.addFilledClass}
-          // checkInputFilled={props.checkInputFilled}
+          onBlur={this.props.onBlur}
           className="form-control form__input-field"
         />
       </div>
