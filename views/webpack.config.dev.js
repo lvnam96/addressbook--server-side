@@ -41,7 +41,7 @@ const devConfig = merge(commonConfig, {
         // ],
         options: {
           envName: process.env.BABEL_ENV || process.env.NODE_ENV || 'development',
-          configFile: './.babelrc', // must be specified as babel-loader doesnot find it
+          configFile: path.resolve(__dirname, './.babelrc'), // must be specified as babel-loader doesnot find it
         },
         loader: 'babel-loader',
       },
@@ -140,7 +140,7 @@ const devConfig = merge(commonConfig, {
     ],
   },
   watchOptions: {
-    ignored: ['ssr/**/*', 'node_modules'],
+    ignored: [path.resolve(__dirname, 'ssr/**/*'), path.resolve(__dirname, 'node_modules')],
     poll: 1000, // Check for changes every second
   },
   devtool: 'inline-source-map', // use 'source-map' for production
@@ -191,7 +191,7 @@ const devConfig = merge(commonConfig, {
       },
     },
     // publicPath,
-    public: 'http://localhost:' + DEV_SERVER_PORT,
+    public: `http://localhost:${DEV_SERVER_PORT}`, // cannot have slash at the end
     historyApiFallback: {
       index: '/',
       rewrites: [{ from: /\/signout/, to: '/signout' }],
@@ -217,7 +217,7 @@ const devConfig = merge(commonConfig, {
     new WebpackBar(),
     new CleanWebpackPlugin({
       dry: false,
-      cleanOnceBeforeBuildPatterns: ['../public/*.*'],
+      cleanOnceBeforeBuildPatterns: [path.resolve(__dirname, '../public/*.*')],
       dangerouslyAllowCleanPatternsOutsideProject: true,
     }),
     // new WriteFilePlugin({
@@ -227,12 +227,18 @@ const devConfig = merge(commonConfig, {
     //   useHashIndex: false,
     // }),
     new CopyWebpackPlugin([
-      { from: './assets/manifest.webmanifest', to: '../public/manifest.webmanifest' },
-      { from: './assets/fav/favicon.ico', to: '../public/favicon.ico' },
+      {
+        from: path.resolve(__dirname, './assets/manifest.webmanifest'),
+        to: path.resolve(__dirname, '../public/manifest.webmanifest'),
+      },
+      {
+        from: path.resolve(__dirname, './assets/fav/favicon.ico'),
+        to: path.resolve(__dirname, '../public/favicon.ico'),
+      },
     ]),
     new HtmlWebpackPlugin({
       filename: 'index.html',
-      template: './index.pug',
+      template: path.resolve(__dirname, './index.pug'),
       inject: false,
       chunks: [], // added manually in pug templates
       // favicon: '../public/favicon.ico',
@@ -244,25 +250,29 @@ const devConfig = merge(commonConfig, {
     }),
     new HtmlWebpackPlugin({
       filename: 'signin.html',
-      template: './signin.pug',
+      template: path.resolve(__dirname, './signin.pug'),
       chunks: [], // added manually in pug templates
       // favicon: '../public/favicon.ico',
       // minify: true,
       // hash: true,
       title: 'Sign In',
       prod: false,
-      ssr: require('./ssr/Signin.ssr') ? require('./ssr/Signin.ssr').default : '',
+      ssr: require(path.resolve(__dirname, './ssr/Signin.ssr'))
+        ? require(path.resolve(__dirname, './ssr/Signin.ssr')).default
+        : '',
     }),
     new HtmlWebpackPlugin({
       filename: 'signup.html',
-      template: './signup.pug',
+      template: path.resolve(__dirname, './signup.pug'),
       chunks: [], // added manually in pug templates
       // favicon: '../public/favicon.ico',
       // minify: true,
       // hash: true,
       title: 'Sign Up',
       prod: false,
-      ssr: require('./ssr/Signup.ssr') ? require('./ssr/Signup.ssr').default : '',
+      ssr: require(path.resolve(__dirname, './ssr/Signup.ssr'))
+        ? require(path.resolve(__dirname, './ssr/Signup.ssr')).default
+        : '',
     }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.ProvidePlugin({

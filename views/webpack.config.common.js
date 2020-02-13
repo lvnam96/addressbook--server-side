@@ -1,14 +1,14 @@
 const path = require('path');
-const webpack = require('webpack');
+// const webpack = require('webpack');
 
 const publicPath = '/';
 
 module.exports = {
   entry: {
-    core: './core/js/index.js',
-    App: './entrypoints/main/src/index.js',
-    Signin: './entrypoints/signin/index.js',
-    Signup: './entrypoints/signup/index.js',
+    core: path.resolve(__dirname, './core/js/index.js'),
+    App: path.resolve(__dirname, './entrypoints/main/src/index.js'),
+    Signin: path.resolve(__dirname, './entrypoints/signin/index.js'),
+    Signup: path.resolve(__dirname, './entrypoints/signup/index.js'),
   },
   output: {
     publicPath, // must be set to solve this issue with import() on nested routes: https://github.com/webpack/webpack/issues/7417
@@ -25,6 +25,7 @@ module.exports = {
   },
   devtool: 'source-map', // use 'source-map' for production
   // optimization: {
+  //   runtimeChunk: 'single', // https://webpack.js.org/guides/caching/
   //   splitChunks: {
   //     chunks: 'all',
   //   }, // https://webpack.js.org/plugins/split-chunks-plugin/

@@ -158,12 +158,18 @@ const prodConfig = merge(commonConfig, {
     new webpack.ContextReplacementPlugin(/date\-fns[\/\\]/, new RegExp(`[/\\\\\](${['en', 'vi'].join('|')})[/\\\\\]`)),
     new CleanWebpackPlugin({
       dry: false,
-      cleanOnceBeforeBuildPatterns: ['../public/*.*'],
+      cleanOnceBeforeBuildPatterns: [path.resolve(__dirname, '../public/*.*')],
       dangerouslyAllowCleanPatternsOutsideProject: true,
     }),
     new CopyPlugin([
-      { from: './assets/manifest.webmanifest', to: '../public/manifest.webmanifest' },
-      { from: './assets/fav/favicon.ico', to: '../public/favicon.ico' },
+      {
+        from: path.resolve(__dirname, './assets/manifest.webmanifest'),
+        to: path.resolve(__dirname, '../public/manifest.webmanifest'),
+      },
+      {
+        from: path.resolve(__dirname, './assets/fav/favicon.ico'),
+        to: path.resolve(__dirname, '../public/favicon.ico'),
+      },
     ]),
     new MiniCssExtractPlugin({
       // Thus you can import your Sass modules from `node_modules`.

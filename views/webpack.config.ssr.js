@@ -12,10 +12,10 @@ const isProductionMode = process.env.NODE_ENV !== 'development';
 module.exports = {
   mode: isProductionMode ? 'production' : 'development',
   entry: {
-    // core: './core/js/index.js',
-    // App: './entrypoints/main/src/index.js',// for v2.0.0
-    Signin: './entrypoints/signin/index.ssr.js',
-    Signup: './entrypoints/signup/index.ssr.js',
+    // core: path.resolve(__dirname, './core/js/index.js'),
+    // App: path.resolve(__dirname, './entrypoints/main/src/index.js'),// for v2.0.0
+    Signin: path.resolve(__dirname, './entrypoints/signin/index.ssr.js'),
+    Signup: path.resolve(__dirname, './entrypoints/signup/index.ssr.js'),
   },
   output: {
     library: 'app',
@@ -178,7 +178,7 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin({
       dry: true,
-      cleanOnceBeforeBuildPatterns: ['./ssr/*.*'],
+      cleanOnceBeforeBuildPatterns: [path.resolve(__dirname, './ssr/*.*')],
       dangerouslyAllowCleanPatternsOutsideProject: false,
     }),
     // new MiniCssExtractPlugin({// Thus you can import your Sass modules from `node_modules`.
