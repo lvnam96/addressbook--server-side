@@ -29,12 +29,13 @@ const getRandomStr = (stringLength) => {
 };
 
 const DEFAULT_CRYPTO_STR_LENGTH = 16;
-const getStrongCryptoRandomStr = (size = DEFAULT_CRYPTO_STR_LENGTH) => crypto.randomBytes(size).toString('hex');
-const getStrongCryptoRandomStrAsync = (size = DEFAULT_CRYPTO_STR_LENGTH) =>
+const getStrongCryptoRandomStr = (size = DEFAULT_CRYPTO_STR_LENGTH, strType = 'hex') =>
+  crypto.randomBytes(size).toString(strType);
+const getStrongCryptoRandomStrAsync = (size = DEFAULT_CRYPTO_STR_LENGTH, strType = 'hex') =>
   new Promise((resolve, reject) => {
     crypto.randomBytes(size, (err, buf) => {
       if (err) reject(err);
-      else resolve(buf.toString('hex'));
+      else resolve(buf.toString(strType));
     });
   });
 
