@@ -2,6 +2,7 @@
 
 const debugController = require('debug')('contactsbook:server:controller');
 const fs = require('fs');
+const ms = require('ms');
 const User = require('./User');
 const Cbook = require('./Contactsbook');
 const CList = require('./ContactsList');
@@ -236,7 +237,7 @@ class Controller {
         signed: true,
         secure: !(process.env.NODE_ENV === 'development'),
         path: '/',
-        maxAge: TWO_DAY_IN_MILISECS,
+        maxAge: ms('2d'),
         httpOnly: true,
       },
       cookieName: 'xsrf-jwt',
@@ -246,6 +247,11 @@ class Controller {
         ...this.jwt.cookieOption,
         secure: false,
         httpOnly: false, // allow JS at client to read this cookie
+      },
+    };
+    this.cache = {
+      static: {
+        maxAge: ms('1y'), // time in milliseconds or valid string for `ms` package (express use `ms` internally)
       },
     };
     this.handleError = handleError;
