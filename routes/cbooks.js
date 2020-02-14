@@ -1,13 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const adbk = require('../classes/adbk');
-const { checkValidUUID } = require('../helpers/checker');
+const { isValidUUID } = require('../helpers/checker');
 
 // '/cbooks' route
 
 router.get('/:cbookId', (req, res, next) => {
-  const isValidUUID = checkValidUUID(req.params.cbookId);
-  if (isValidUUID) {
+  if (isValidUUID(req.params.cbookId)) {
     adbk.cbook
       .setDefault(req.user, req.params.cbookId)
       .then(() => {
