@@ -44,7 +44,7 @@ const setupCSP = (req, res, next) => {
       fontSrc: ["'self'", 'https://fonts.gstatic.com', 'data:'],
       scriptSrc: [
         "'self'",
-        "'strict-dynamic'",
+        // "'strict-dynamic'",
         'https://unpkg.com',
         'https://browser.sentry-cdn.com',
         "'unsafe-inline'",
