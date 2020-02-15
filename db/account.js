@@ -1,5 +1,5 @@
 const { query } = require('./pool');
-const { createCbook } = require('./data');
+const { createCbook } = require('./cbook');
 const {
   random: { getRandomColor },
   dbUtils: { mapUserData },
@@ -61,6 +61,7 @@ function regAcc(userData, callback) {
     });
   }
 
+  // convert this to SQL transaction so it can rollback when an error occurs
   waterfall(
     [
       (cb) => {
@@ -97,7 +98,7 @@ function regAcc(userData, callback) {
                 meta: {
                   lastActivatedCbookId: data.cbook.id,
                   lastLogin: null,
-                  is_active: true,
+                  isActive: true,
                 },
               },
             });

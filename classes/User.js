@@ -1,9 +1,6 @@
 const _get = require('lodash/get');
-const serv = require('../services/');
 const db = require('../db/');
 const Account = require('./Account');
-const Cbook = require('./Contactsbook');
-const Clist = require('./ContactsList');
 
 class User extends Account {
   constructor(data) {
@@ -45,7 +42,9 @@ class User extends Account {
   }
 
   async setDefaultCbook(cbookId) {
-    return db.data.updateDefaultCbook(this.id, cbookId);
+    const res = await db.data.updateDefaultCbook(this.id, cbookId);
+    this._meta.lastActivatedCbookId = cbookId;
+    return res;
   }
 
   static findBy(...args) {

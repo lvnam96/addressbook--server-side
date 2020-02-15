@@ -1,5 +1,6 @@
-/* eslint-disable promise/no-callback-in-promise */
-
+const path = require('path');
+const _get = require('lodash/get');
+const _isEmpty = require('lodash/isEmpty');
 const debugController = require('debug')('contactsbook:server:controller');
 const fs = require('fs');
 const ms = require('ms');
@@ -10,9 +11,15 @@ const Contact = require('./Contact');
 const { jwt, passwd } = require('../services/');
 const db = require('../db/');
 
-// const A_MONTH_IN_MILISECS = 30 * 24 * 60 * 60 * 1000;
-const A_DAY_IN_MILISECS = 24 * 60 * 60 * 1000;
-const TWO_DAY_IN_MILISECS = 2 * A_DAY_IN_MILISECS;
+// NOTES ON MAINTAINING FUNCTIONS HERE:
+// - with functions handling API requests, we user handleError directly inside functions here (not passing it to error-handling middleware), then throw that error to let router know that task has been failed
+// - with normal functions handling GET request that users can visit via browser, unless we have a reason for directly handling errors, otherwise we should always pass errors to next(), so the error-handling middleware can let user know an error occurs
+
+/*
+ **************************
+ *** ERRORS & DEBUGGING ***
+ **************************
+ */
 
 const debug = (text) => {
   debugController(text);
@@ -22,6 +29,66 @@ const handleError = (err) => {
   // eslint-disable-next-line no-console
   console.error(err);
 };
+
+/*
+ ******************************
+ *** PERMISSIONS & CHECKING ***
+ ******************************
+ */
+
+const checkUserDefaultCbook = async (user, cbookId) => {
+  const lastActivatedCbookId = _get(user, 'meta.lastActivatedCbookId');
+  if (lastActivatedCbookId) {
+    return lastActivatedCbookId === cbookId;
+  } else {
+    const userMeta = await db.data.getUserMeta(user.id);
+    return userMeta.lastActivatedCbookId === cbookId;
+  }
+};
+
+// "belong" means user can read this cbook, no matter this cbook is a shared one or not
+const checkCbookBelongToUser = async (user, cbookId) => {
+  if (
+    Array.isArray(user.cbooks) &&
+    user.cbooks.length > 1 &&
+    Array.isArray(user.sharedCbooks) &&
+    user.sharedCbooks.length > 1
+  ) {
+    return (
+      user.cbooks.findIndex((cbook) => cbook.id === cbookId) !== -1 ||
+      user.sharedCbooks.findIndex((cbook) => cbook.id === cbookId) !== -1
+    );
+  } else {
+    const userCbookRela = await db.data.getUserCbookRelationship(user.id, cbookId);
+    return !_isEmpty(userCbookRela);
+  }
+};
+
+// return true if this user is the ONLY one can "update" this cbook
+const checkUserOwnCbook = async (user, cbookId) => {
+  if (Array.isArray(user.cbooks) && user.cbooks.length > 1) {
+    return user.cbooks.findIndex((cbook) => cbook.id === cbookId) !== -1;
+  } else {
+    const cbookData = await db.data.getCbook(cbookId);
+    return cbookData.accId === user.id;
+  }
+};
+
+// return true if this user is the ONLY one can "update" the Cbook containing this contact
+const checkUserOwnContact = async (user, cbookId) => {
+  if (Array.isArray(user.cbooks) && user.cbooks.length > 1) {
+    return user.cbooks.findIndex((cbook) => cbook.id === cbookId) !== -1;
+  } else {
+    const cbookData = await db.data.getCbook(cbookId);
+    return cbookData.accId === user.id;
+  }
+};
+
+/*
+ **********************
+ *** AUTHENTICATION ***
+ **********************
+ */
 
 const signUp = async (json) => {
   try {
@@ -63,35 +130,78 @@ const findUserBy = async (type, val) => {
   }
 };
 
-const findById = (id) => findUserBy('id', id);
-const findByUname = (uname) => findUserBy('uname', uname);
-const findByEmail = (email) => findUserBy('email', email);
+const findById = async (id) => findUserBy('id', id);
+const findByUname = async (uname) => findUserBy('uname', uname);
+const findByEmail = async (email) => findUserBy('email', email);
+
+const signJWT = async (payload) => {
+  return jwt.sign(payload); // return promise contains JWT if resolved
+};
+
+const verifyJWT = async (token) => {
+  return jwt.verify(token); // return promise contains { xsrfToken } if resolved
+};
+
+/*
+ *********************
+ *** DATA HANDLING ***
+ *********************
+ */
 
 const addContact = (json) => {
   return Contact.create(json);
 };
 
-const editContact = (json) => {
-  return Contact.update(json);
+const addContact = async (json) => {
+  try {
+    return Contact.create(json);
+  } catch (err) {
+    handleError(err);
+    throw err;
+  }
 };
 
-const delContact = (json) => {
-  return Contact.fromJSON(json).selfDelete();
+const editContact = async (json) => {
+  try {
+    return Contact.update(json);
+  } catch (err) {
+    handleError(err);
+    throw err;
+  }
 };
 
-const delMultiContacts = (accId, arrOfContacts) => {
-  const ids = Array.isArray(arrOfContacts) ? arrOfContacts.map((json) => json.id) : [];
-  return Contact.delete(accId, ids);
+const delContact = async (json) => {
+  try {
+    return Contact.fromJSON(json).selfDelete();
+  } catch (err) {
+    handleError(err);
+    throw err;
+  }
 };
 
-const delAllContacts = (accId, cbookId) => {
-  return Contact.deleteAll(accId, cbookId);
+const delMultiContacts = async (accId, arrOfContacts) => {
+  try {
+    const ids = Array.isArray(arrOfContacts) ? arrOfContacts.map((json) => json.id) : [];
+    return Contact.delete(accId, ids);
+  } catch (err) {
+    handleError(err);
+    throw err;
+  }
+};
+
+const delAllContacts = async (accId, cbookId) => {
+  try {
+    return Contact.deleteAll(accId, cbookId);
+  } catch (err) {
+    handleError(err);
+    throw err;
+  }
 };
 
 // BUG: these too queries should cover this special case: duplicated contacts appear in both database & imported data => 2 resolving way:
 // - remove old ones, then import new ones (replaceAllContacts)
 // - import & modify duplicated ones (importContacts)
-const importContacts = (contacts) => {
+const importContacts = async (contacts) => {
   // special case while importing: there is contact in current cbook:
   // which has 2 more cases as well:
   // 1. there is duplicated contacts appear in both imported list & current cbook
@@ -110,114 +220,126 @@ const importContacts = (contacts) => {
   // Option 3: keep all, import new ones - CREATE multiple contacts with same accId & cbookId
   // if no, just go for it
   contacts = contacts.map((contact) => Contact.fromJSON(contact).toDB());
-  return db.data
-    .importContacts(contacts)
-    .then((rows) => {
-      return rows.map((rawData) => Contact.fromJSON(rawData));
-    })
-    .catch((err) => {
-      handleError(err);
-      throw err;
-    });
+  try {
+    const rows = await db.data.importContacts(contacts);
+    return rows.map((rawData) => Contact.fromJSON(rawData));
+  } catch (err) {
+    handleError(err);
+    throw err;
+  }
 };
 
-const replaceAllContacts = (json, accId, cbookId) => {
+const replaceAllContacts = async (json, accId, cbookId) => {
   const contacts = json.map((contact) => Contact.fromJSON(contact).toDB());
-  return db.data
-    .replaceAllContacts(contacts, accId, cbookId)
-    .then((rows) => {
-      if (Array.isArray(rows) && rows.length > 0) {
-        return rows.map((rawData) => Contact.fromDB(rawData));
-      }
-      return [];
-    })
-    .catch((err) => {
-      handleError(err);
-      throw err;
-    });
+  try {
+    const rows = await db.data.replaceAllContacts(contacts, accId, cbookId);
+    if (Array.isArray(rows) && rows.length > 0) {
+      return rows.map((rawData) => Contact.fromDB(rawData));
+    }
+    return [];
+  } catch (err) {
+    handleError(err);
+    throw err;
+  }
 };
 
-const getContactsOfCbook = (accId, cbookId) => {
-  return db.data
-    .getContactsOfCbook(accId, cbookId)
-    .then(({ rows }) => CList.fromDB(rows))
-    .catch((err) => {
-      handleError(err);
-      throw err;
-    });
+const getContactsOfCbook = async (accId, cbookId) => {
+  try {
+    const rows = await db.data.getContactsOfCbook(cbookId, accId);
+    return CList.fromDB(rows);
+  } catch (err) {
+    handleError(err);
+    throw err;
+  }
 };
 
-const loadAllData = (accId) => {
-  return db.data
-    .getAllData(accId)
-    .then((rawData) => {
-      const user = User.fromDB(rawData.user);
-      user.cbooks = rawData.cbooks.map((cbook) => Cbook.fromDB(cbook));
-      const contacts = new CList(rawData.contacts.map((contact) => Contact.fromDB(contact))); // convert to CList.fromDB(rawData.contacts)
-      const data = {
-        ...rawData,
-        user,
-        contacts,
-      };
-      return data;
-    })
-    .catch((err) => {
-      handleError(err);
-      throw err;
-    });
+const loadAllData = async (accId) => {
+  try {
+    const rawData = await db.data.getAllData(accId);
+    const cbooks = rawData.cbooks.map((cbook) => Cbook.fromDB(cbook));
+    const user = User.fromDB(rawData.user);
+    user.cbooks = cbooks;
+    const contacts = new CList(rawData.contacts.map((contact) => Contact.fromDB(contact))); // convert to CList.fromDB(rawData.contacts)
+    const data = {
+      ...rawData,
+      user,
+      cbooks,
+      contacts,
+    };
+    return data;
+  } catch (err) {
+    handleError(err);
+    throw err;
+  }
 };
 
-const createCbook = (json) => {
-  return Cbook.create(json);
+const createCbook = async (json) => {
+  try {
+    return Cbook.create(json);
+  } catch (err) {
+    handleError(err);
+    throw err;
+  }
 };
 
 const updateCbook = async (user, json) => {
   const accId = user.id;
   const cbookId = json.id;
-  const isCbookBelongToUser = await db.data.checkCbookBelongToUser(accId, cbookId);
-  if (isCbookBelongToUser) {
-    return Cbook.update(accId, json);
-  } else {
-    const err = new Error(`Contactbook ${cbookId} does not belong to user ${accId}`);
+
+  try {
+    const isCbookBelongToUser = await checkUserOwnCbook(user, cbookId);
+    if (isCbookBelongToUser) {
+      return Cbook.update(accId, json);
+    } else {
+      throw new Error(`Contactbook ${cbookId} does not belong to user ${accId}`);
+    }
+  } catch (err) {
     handleError(err);
-    return Promise.reject(err);
+    throw err;
   }
 };
 
-const checkDefaultCbook = async (accId, cbookId) => {
-  const meta = await db.data.getUserMeta(accId);
-  return meta.last_activated_cbook_id === cbookId;
-};
-
+// @condition: requesting user must:
+// - have "updating" permission for this cbook
+// - have another cbook as default cbook AND
 const deleteCbook = async (user, json) => {
   const accId = user.id;
   const cbookId = json.id;
-  const isDefaultCbook = await checkDefaultCbook(accId, cbookId);
-  if (isDefaultCbook) {
-    const err = new Error(`Cannot delete default cbook ${cbookId} of user ${accId}`);
+
+  try {
+    const isDefaultCbook = await checkUserDefaultCbook(user, cbookId);
+    if (isDefaultCbook) {
+      throw new Error(`Cannot delete default cbook ${cbookId} of user ${accId}`);
+    }
+
+    const isCbookBelongToUser = await checkUserOwnCbook(user, cbookId);
+    if (isCbookBelongToUser) {
+      return Cbook.delete(accId, cbookId);
+    } else {
+      throw new Error(`Contactbook ${cbookId} does not belong to user ${accId}`);
+    }
+  } catch (err) {
     handleError(err);
-    return Promise.reject(err);
+    throw err;
   }
-  return Cbook.delete(accId, cbookId);
 };
 
+// @condition: the cbookId must belong to requesting user
 const setDefaultCbook = async (user, cbookId) => {
-  const isCbookBelongToUser = await db.data.checkCbookBelongToUser(user.id, cbookId);
-  if (isCbookBelongToUser) {
-    return user.setDefaultCbook(cbookId);
-  } else {
-    const err = new Error(`Cbook ${cbookId} does not belong to user ${user.id}`);
+  try {
+    const isDefaultCbook = await checkUserDefaultCbook(user, cbookId);
+    if (isDefaultCbook) return Promise.resolve();
+
+    const isCbookBelongToUser = await checkUserOwnCbook(user, cbookId);
+    if (isCbookBelongToUser) {
+      return user.setDefaultCbook(cbookId);
+    } else {
+      throw new Error(`Cbook ${cbookId} does not belong to user ${user.id}`);
+    }
+  } catch (err) {
     handleError(err);
-    return Promise.reject(err);
+    throw err;
   }
-};
-
-const signJWT = (payload) => {
-  return jwt.sign(payload); // return promise contains JWT if resolved
-};
-
-const verifyJWT = (token) => {
-  return jwt.verify(token); // return promise contains { xsrfToken } if resolved
 };
 
 class Controller {
@@ -264,6 +386,13 @@ class Controller {
       loadAll: loadAllData,
       // activate: activateUser,
       // deactivate: deactivateUser,
+    };
+    this.check = {
+      // pay attention using these methods: they are not error-handled because they are supposed to only be helpers for other methods here and other methods are handling errors properly
+      checkUserDefaultCbook,
+      checkCbookBelongToUser,
+      checkUserOwnCbook,
+      checkUserOwnContact,
     };
     this.cbook = {
       create: createCbook,

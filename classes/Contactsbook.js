@@ -23,7 +23,7 @@ const db = require('../db/');
 // }
 
 class ContactBook extends Factory {
-  constructor (data) {
+  constructor(data) {
     super(data);
     this._contactsList = new ContactsList(data.contacts);
     this._id = data.id;
@@ -36,49 +36,49 @@ class ContactBook extends Factory {
     }
   }
 
-  static fromJSON (json) {
+  static fromJSON(json) {
     return super.fromJSON(json);
   }
 
-  static fromDB (data) {
+  static fromDB(data) {
     return super.fromDB(data);
   }
 
-  get contacts () {
+  get contacts() {
     return this._contactsList;
   }
 
-  set contacts (contacts) {
+  set contacts(contacts) {
     this._contactsList = new ContactsList(contacts);
   }
 
-  get id () {
+  get id() {
     return this._id;
   }
 
-  set id (x) {}
+  set id(x) {}
 
-  get accId () {
+  get accId() {
     return this._accId;
   }
 
-  set accId (x) {}
+  set accId(x) {}
 
-  get name () {
+  get name() {
     return this._name;
   }
 
-  set name (newName) {
+  set name(newName) {
     // let server know to modify adrsbook's name
     // then set
     // this._name = newName;
   }
 
-  get color () {
+  get color() {
     return this._color;
   }
 
-  set color (newColor) {
+  set color(newColor) {
     // let server know to modify adrsbook's color
     // then set
     // this._color = newColor;
@@ -89,46 +89,31 @@ class ContactBook extends Factory {
   //     return this;
   // }
 
-  addContact (newData) {
+  addContact(newData) {
     this._contactsList = this._contactsList.add(newData);
     return this;
   }
 
-  rmContact (id) {
+  rmContact(id) {
     this._contactsList = this._contactsList.remove(id);
     return this;
   }
 
-  static create (json) {
+  static async create(json) {
     const cbook = ContactBook.fromJSON(json);
-    return db.data
-      .createCbook(cbook.toDB())
-      .then((cbookRawData) => ContactBook.fromDB(cbookRawData))
-      .catch((err) => {
-        console.error(err);
-        throw err;
-      });
+    const cbookRawData = await db.data.createCbook(cbook.toDB());
+    return ContactBook.fromDB(cbookRawData);
   }
 
-  static update (accId, json) {
+  static async update(accId, json) {
     const cbook = ContactBook.fromJSON(json);
-    return db.data
-      .updateCbook(accId, cbook.toDB())
-      .then((cbookRawData) => ContactBook.fromDB(cbookRawData))
-      .catch((err) => {
-        console.error(err);
-        throw err;
-      });
+    const cbookRawData = await db.data.updateCbook(accId, cbook.toDB());
+    return ContactBook.fromDB(cbookRawData);
   }
 
-  static delete (accId, cbookId) {
-    return db.data
-      .deleteCbook(accId, cbookId)
-      .then((cbookRawData) => ContactBook.fromDB(cbookRawData))
-      .catch((err) => {
-        console.error(err);
-        throw err;
-      });
+  static async delete(accId, cbookId) {
+    const cbookRawData = await db.data.deleteCbook(accId, cbookId);
+    return ContactBook.fromDB(cbookRawData);
   }
 }
 

@@ -17,22 +17,6 @@ const mapUserData = ({
   last_login,
   is_active,
 }) => {
-  // const {
-  //   id,
-  //   username,
-  //   password,
-  //   email,
-  //   facebook_id,
-  //   birth,
-  //   phone,
-  //   nicename,
-  //   created_on,
-  //   salt,
-  //   cbooks,
-  //   last_activated_cbook_id,
-  //   last_login,
-  //   is_active,
-  // } = userDataFromDB;
   return {
     id,
     uname: username,
@@ -42,14 +26,50 @@ const mapUserData = ({
     nicename,
     birth,
     phone,
-    createdOn: created_on,
+    createdOn: new Date(created_on), // because it is a timestamp, not a DATE type
     salt,
     meta: {
       lastActivatedCbookId: last_activated_cbook_id,
-      lastLogin: last_login,
+      lastLogin: new Date(last_login),
       isActive: is_active,
     },
     cbooks,
+  };
+};
+
+const mapCbookData = (data) => {
+  return {
+    ...data,
+    contacts: [],
+    accId: data.acc_id,
+  };
+};
+
+const mapContactData = (data) => {
+  return {
+    ...data,
+    accId: data.acc_id,
+    cbookId: data.cbook_id,
+    labels: JSON.parse(data.labels),
+    avatarURL: data.avatar_url,
+  };
+};
+
+const mapUserMetaData = (data) => {
+  return {
+    ...data,
+    accId: data.acc_id,
+    lastActivatedCbookId: data.last_activated_cbook_id,
+    lastLogin: data.last_login,
+    isActive: data.is_active,
+  };
+};
+
+const mapUserCbookRela = (data) => {
+  return {
+    ...data,
+    accId: data.acc_id,
+    cbookId: data.cbook_id,
   };
 };
 
@@ -60,5 +80,9 @@ const formatIdsList = (ids, isResultString = false) => {
 
 module.exports = {
   mapUserData,
+  mapCbookData,
+  mapContactData,
+  mapUserMetaData,
+  mapUserCbookRela,
   formatIdsList,
 };

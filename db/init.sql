@@ -1,3 +1,4 @@
+-- NOTE: IF TABLE'S SCHEMA IS CHANGED, REMEMBER TO UPDATE '../helpers/dbUtils.js'
 --install extension uuid generator
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE IF NOT EXISTS account (

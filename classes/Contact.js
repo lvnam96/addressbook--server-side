@@ -7,7 +7,7 @@ const { isIterable } = require('../helpers/');
 // Contact.fromDB() & this.toDB()
 
 class Contact extends Factory {
-  constructor (rawData) {
+  constructor(rawData) {
     super(rawData);
     if (!Array.isArray(rawData.labels)) {
       // prepare for bugs with labels
@@ -42,18 +42,18 @@ class Contact extends Factory {
     }
   }
 
-  static fromJSON (json) {
+  static fromJSON(json) {
     return super.fromJSON(json);
   }
 
-  toJSON () {
+  toJSON() {
     const birth = this.birth;
     const json = super.toJSON();
     json.birth = birth;
     return json;
   }
 
-  toDB () {
+  toDB() {
     try {
       const jsoned = this.toJSON();
       jsoned.labels = JSON.stringify(jsoned.labels);
@@ -68,7 +68,7 @@ class Contact extends Factory {
     }
   }
 
-  static fromDB (data) {
+  static fromDB(data) {
     if (typeof data === 'undefined') throw new Error('Argument data is required!');
     data.cbookId = data.cbookId || data.cbook_id;
     data.accId = data.accId || data.acc_id;
@@ -77,17 +77,17 @@ class Contact extends Factory {
     return super.fromDB(data);
   }
 
-  get id () {
+  get id() {
     return this._id;
   }
 
-  set id (x) {}
+  set id(x) {}
 
-  get labels () {
+  get labels() {
     return Array.from(this._labels);
   }
 
-  set labels (labels) {
+  set labels(labels) {
     if (isIterable(labels) && typeof labels !== 'string') {
       this._labels = new Set(labels);
     } else {
@@ -95,73 +95,44 @@ class Contact extends Factory {
     }
   }
 
-  selfDelete () {
+  async selfDelete() {
     // delete this contact in db
     // return promise
-    return db.data
-      .removeContact(this.toDB())
-      .then((contactRawData) => Contact.fromDB(contactRawData))
-      .catch((err) => {
-        console.error(err);
-        throw err;
-      });
+    const contactRawData = await db.data.removeContact(this.toDB());
+    return Contact.fromDB(contactRawData);
   }
 
-  update (data) {
+  update(data) {
     // update some props, not all: (is there any use case for this??? if not, just use static update method)
     // this.name = 'abc';
     // then update this inst into db:
     // return db.data.editContact(this.toDB()).then().catch();
   }
 
-  static update (json) {
+  static async update(json) {
     const contact = Contact.fromJSON(json);
-    return db.data
-      .editContact(contact.toDB())
-      .then((contactRawData) => Contact.fromDB(contactRawData))
-      .catch((err) => {
-        console.error(err);
-        throw err;
-      });
+    const contactRawData = await db.data.editContact(contact.toDB());
+    return Contact.fromDB(contactRawData);
   }
 
-  static create (json) {
+  static async create(json) {
     const newContact = new Contact(json);
-    return db.data
-      .addContact(newContact.toDB())
-      .then((contactRawData) => Contact.fromDB(contactRawData))
-      .catch((err) => {
-        console.error(err);
-        throw err;
-      });
+    const contactRawData = await db.data.addContact(newContact.toDB());
+    return Contact.fromDB(contactRawData);
   }
 
-  static read (json) {
+  static read(json) {
     return Contact.fromDB(json);
   }
 
-  static async delete (accId, ids) {
-    return db.data
-      .removeMultiContacts(accId, ids)
-      .then((rows) => {
-        return rows.map((rawData) => Contact.fromDB(rawData));
-      })
-      .catch((err) => {
-        console.error(err);
-        throw err;
-      });
+  static async delete(accId, ids) {
+    const rows = await db.data.removeMultiContacts(accId, ids);
+    return rows.map((rawData) => Contact.fromDB(rawData));
   }
 
-  static deleteAll (accId, cbookId) {
-    return db.data
-      .removeAllContacts(accId, cbookId)
-      .then((rows) => {
-        return rows.map((rawData) => Contact.fromDB(rawData));
-      })
-      .catch((err) => {
-        console.error(err);
-        throw err;
-      });
+  static async deleteAll(accId, cbookId) {
+    const rows = await db.data.removeAllContacts(accId, cbookId);
+    return rows.map((rawData) => Contact.fromDB(rawData));
   }
 }
 
