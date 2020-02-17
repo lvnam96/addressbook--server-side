@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withFormik } from 'formik';
 import _isEmpty from 'lodash/isEmpty';
+import _isEqual from 'lodash/isEqual';
 
 // import { getRandomHexColor } from '../../helpers/utilsHelper';
 import { yup as yupHelper } from '../../helpers/packageHelper';
@@ -47,7 +48,7 @@ const WrappedForm = withFormik({
     if (!_isEmpty(err)) {
       setErrors(err);
     } else {
-      props.handleSave(copyVal);
+      props.onSave(copyVal);
     }
     setTimeout(() => {
       setSubmitting(false);
@@ -56,19 +57,13 @@ const WrappedForm = withFormik({
   displayName: 'ContactEditingForm',
 })(CbookForm);
 
-class CbookFormContainer extends React.PureComponent {
-  constructor(props) {
-    super(props);
-
-    this.handleSave = this.handleSave.bind(this);
-  }
-
+class CbookFormContainer extends React.Component {
   static get propTypes() {
     return {
       isInlineForm: PropTypes.bool, // for any comp can be displayed a popup
       isOpenInPopup: PropTypes.bool, // for any comp can be displayed a popup
       cbook: PropTypes.instanceOf(adbk.classes.Cbook).isRequired,
-      handleClose: PropTypes.func,
+      handleClose: PropTypes.func.isRequired,
     };
   }
 
@@ -78,13 +73,22 @@ class CbookFormContainer extends React.PureComponent {
     };
   }
 
-  componentDidMount() {}
-
-  handleSave(values) {
-    adbk.handleSaveCbookForm(values).then(() => {
-      this.props.handleClose();
-    });
+  shouldComponentUpdate(nextProps, nextState) {
+    if (_isEqual(nextProps.cbook, nextState.cbook)) {
+      return false;
+    }
+    return true;
   }
+
+  handleClose = () => {
+    this.props.handleClose(this.props.cbook.id);
+  };
+
+  handleSave = (values) => {
+    adbk.handleSaveCbookForm(values).then(() => {
+      this.handleClose();
+    });
+  };
 
   render() {
     return (
@@ -93,8 +97,8 @@ class CbookFormContainer extends React.PureComponent {
         isInlineForm={this.props.isInlineForm}
         title={this.props.title}
         cbook={this.props.cbook}
-        handleSave={this.handleSave}
-        handleClose={this.props.handleClose}
+        onSave={this.handleSave}
+        onClose={this.handleClose}
       />
     );
   }

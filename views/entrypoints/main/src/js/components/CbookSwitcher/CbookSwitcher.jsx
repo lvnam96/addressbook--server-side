@@ -27,14 +27,12 @@ const CbookSwitcher = (props) => {
             <React.Fragment key={cbookId}>
               {props.isShowInlineCbookForm[cbookId] ? (
                 <div className="py-3 px-1 px-md-2">
-                  <CbookFormContainer
-                    cbook={cbook}
-                    isInlineForm
-                    handleClose={() => props.hideInlineCbookForm(cbookId)}
-                  />
+                  <CbookFormContainer cbook={cbook} isInlineForm handleClose={props.hideInlineCbookForm} />
                 </div>
               ) : (
                 <div
+                  role="button"
+                  tabIndex="0"
                   className={classNames('cbooks-switcher__cbook row align-items-center py-3 px-md-2', {
                     'text-gray': !isDefaultCbook,
                   })}

@@ -9,24 +9,18 @@ import IconBtn from '../buttons/IconBtn.jsx';
 import { getCSSColorString } from '../../helpers/utilsHelper';
 
 class CbookForm extends React.PureComponent {
-  constructor(props) {
-    super(props);
-
-    this.changeColor = this.changeColor.bind(this);
-  }
-
   static get propTypes() {
     return {
       isOpenInPopup: PropTypes.bool,
       isInlineForm: PropTypes.bool,
-      handleClose: PropTypes.func,
+      onClose: PropTypes.func,
       setFieldValue: PropTypes.func.isRequired,
     };
   }
 
-  changeColor(newColor) {
+  changeColor = (newColor) => {
     this.props.setFieldValue('color', newColor, true);
-  }
+  };
 
   render() {
     const {
@@ -66,7 +60,6 @@ class CbookForm extends React.PureComponent {
                 type="text"
                 id="input--cbook-name"
                 required
-                autoFocus
                 name="name"
                 value={values.name}
                 onChange={handleChange}
@@ -90,7 +83,7 @@ class CbookForm extends React.PureComponent {
               <p className="text-right mb-0">
                 <IconBtn
                   className={classNames('font-weight-bold', { disabled: isSubmitting })}
-                  onClick={this.props.handleClose}>
+                  onClick={this.props.onClose}>
                   <i className="fas fa-times text-danger" />
                 </IconBtn>
               </p>
