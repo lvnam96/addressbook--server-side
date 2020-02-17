@@ -37,7 +37,7 @@ const setupCSP = (req, res, next) => {
   // this follows strict policy by Gogle: https://csp.withgoogle.com/docs/strict-csp.html
   const setupDirectives = (nonce) => {
     const directives = {
-      upgradeInsecureRequests: true,
+      upgradeInsecureRequests: !adbk.dev.isDev,
       defaultSrc: ["'self'"],
       connectSrc: ["'self'", 'https://api.ipgeolocation.io', 'https://restcountries.eu'],
       imgSrc: ["'self'", 'data:'],
