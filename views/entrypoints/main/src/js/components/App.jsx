@@ -29,7 +29,6 @@ const App = (props) => {
           <ConnectedRouter history={redux.history} context={redux.context}>
             <Switch>
               <Route
-                exact
                 path="/settings"
                 render={({ match, location, history }) => (
                   <AsyncLoader>
@@ -38,8 +37,8 @@ const App = (props) => {
                 )}
               />
               <Route
-                path={['/cbooks/:cbookId?', '/:cbookId?']}
-                render={(routeProps) => (
+                path={['/cbooks/:cbookId', '/']}
+                render={() => (
                   <AsyncLoader>
                     <MainPage />
                   </AsyncLoader>

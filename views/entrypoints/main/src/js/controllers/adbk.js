@@ -20,6 +20,7 @@ import * as storeActions from '../redux/storeActions';
 // other controllers
 // import contactCtrler from './contactsController';
 // import cbookCtrler from './cbookController';
+import urlResolver from './urlResolver';
 
 // helpers
 import * as ls from '../services/localStorageService';
@@ -46,7 +47,6 @@ class Adbk {
   classes = {
     Account,
     Contact,
-    Adrsbook: Cbook,
     Cbook,
     ContactsList,
     NotificationsList,
@@ -55,6 +55,7 @@ class Adbk {
     Stack,
   };
 
+  dataRequiredCallbacks = null;
   extAPI = {};
   alo = alo;
   inst = {};
@@ -66,23 +67,14 @@ class Adbk {
   };
 
   // find a way to have namespaces for methods for better organized controller:
+  url = urlResolver;
   // contactCtrler = contactCtrler;
   // cbookCtrler = cbookCtrler;
+
   sampleData = {
     emptyFunc: () => {},
     emptyArr: Object.freeze([]),
     emptyObj: Object.freeze({}),
-  };
-
-  _handleSuccessResWithDefaultFailCallback = (cb) => {
-    if (typeof cb !== 'function') {
-      throw new Error('_handleSuccessResWithDefaultFailCallback need to be passed a callback');
-    }
-    return (res) => {
-      if (res.isSuccess) {
-        cb();
-      } else this.notifyServerFailed(res.errMsg);
-    };
   };
 
   _reportToSentry = (errorInfo) => {
@@ -122,15 +114,15 @@ class Adbk {
     this.showNoti('alert', customMsg || 'Sorry, something on our server is wrong!');
   };
 
-  _setupReduxStore = (jsonDataFromDB) => {
-    if (this._status.isDataLoaded) {
-      this.redux.store.dispatch((dispatch, getState) => {
-        dispatch(this.redux.action.user.replaceUser(this.inst.user));
-        dispatch(this.redux.action.contacts.replaceAllContacts(this.inst.contactsList.data));
-        dispatch(this.redux.action.cbooks.replaceAllCbooks(this.inst.cbooks));
-      });
-      delete this.inst; // force all components can only use data in store, this controler does NOT store any data
+  _handleSuccessResWithDefaultFailCallback = (cb) => {
+    if (typeof cb !== 'function') {
+      throw new Error('_handleSuccessResWithDefaultFailCallback need to be passed a callback');
     }
+    return (res) => {
+      if (res.isSuccess) {
+        return cb();
+      } else this.notifyServerFailed(res.errMsg);
+    };
   };
 
   _loadAndSetupData = () => {
@@ -143,48 +135,38 @@ class Adbk {
       .then(handleServerResponse)
       .catch(handleFailedRequest)
       .then((res) => {
-        const jsonDataFromDB = res.data.data;
+        const json = res.data.data;
         if (typeof this.inst !== 'object') this.inst = {};
-        this.inst.user = User.fromJSON(jsonDataFromDB.user);
-        this.inst.cbooks = jsonDataFromDB.user.cbooks.map((cbook) => Cbook.fromJSON(cbook));
-        this.inst.contactsList = ContactsList.fromInstanceJSON(jsonDataFromDB.contacts);
+        this.inst.user = User.fromJSON(json.user);
+        this.inst.cbooks = json.user.cbooks.map((cbook) => Cbook.fromJSON(cbook));
+        this.inst.contactsList = ContactsList.fromInstanceJSON(json.contacts);
 
         this._status.isDataLoaded = true;
-        return jsonDataFromDB;
+        return json;
       })
-      .then(this._setupReduxStore)
-      .catch((err) => {
-        if (err.response) {
-          this.logErrorToConsole(err.response);
-        } else this.logErrorToConsole(err);
-        // throw new Error('Data fetching was failed!');
-      });
-  };
-
-  init = () => {
-    const locationPromise = this.alo
-      .get('https://api.ipgeolocation.io/ipgeo?apiKey=881001c60ada4c4fbc82479d4de6b39d')
-      .then((res) => {
-        this.extAPI.geolocation = res.data;
-        return res.data;
-      })
-      .catch((err) => {
-        this.logErrorToConsole(err);
-      });
-    const dataPromise = this._loadAndSetupData();
-    return Promise.all([locationPromise, dataPromise]);
-  };
-
-  // use this method to make sure the data is loaded before doing anything: place your tasks in callback of then() of the returned Promise
-  checkDataLoaded = () => {
-    return new Promise((resolve) => {
-      const checkDataLoadedInterval = setInterval(() => {
+      .then((json) => {
+        // setup Redux store
         if (this._status.isDataLoaded) {
-          resolve();
-          clearInterval(checkDataLoadedInterval);
+          this.redux.store.dispatch((dispatch, getState) => {
+            dispatch(this.redux.action.user.replaceUser(this.inst.user));
+            dispatch(this.redux.action.contacts.replaceAllContacts(this.inst.contactsList.data));
+            dispatch(this.redux.action.cbooks.replaceAllCbooks(this.inst.cbooks));
+          });
+          delete this.inst; // force all components can only use data in store, this controler does NOT store any data
         }
-      }, 200);
-    });
+        return json;
+      });
+  };
+
+  // Pattern: allow consumers on VIEW can hook a "task" into the CONTROLLER, and make sure they are executed under a specific condition (isDataLoaded in this case) that the CONTROLLER knows about
+  // This method replace old checkDataLoaded method (which uses setInterval() to check this._status.isDataLoaded)
+  doTaskAfterDataLoaded = (cb) => {
+    if (this._status.isDataLoaded) {
+      cb();
+    } else {
+      this.dataRequiredCallbacks = this.dataRequiredCallbacks || [];
+      this.dataRequiredCallbacks.push(cb);
+    }
   };
 
   getDefaultCbookId = () => {
@@ -207,12 +189,16 @@ class Adbk {
       if (defaultCbookId !== cbookId) {
         return this.redux.action.user
           .asyncSetDefaultCbook(cbookId)
-          .then(() => {
-            return this.redux.action.contacts.asyncGetContactsOfCbook(cbookId);
+          .then((json) => {
+            // NOTE: this additional step can be skipped if the server supports additional query string, e.g: ?includeContacts=true
+            // NOTE: must check json.isSuccess here as well because the previous task might be failed
+            if (json.isSuccess) return this.redux.action.contacts.asyncGetContactsOfCbook(cbookId);
+            return json;
           })
           .then(
             // this then() belongs to asyncGetContactsOfCbook promise
             this._handleSuccessResWithDefaultFailCallback(() => {
+              this.url.switchCbook(cbookId);
               this.showNoti('success', 'Your default Contacts Book has been changed!');
             })
           );
@@ -226,7 +212,7 @@ class Adbk {
   };
 
   deleteCbook = (cbook) => {
-    if (cbook instanceof adbk.classes.Cbook) {
+    if (cbook instanceof this.classes.Cbook) {
       const defaultCbookId = this.getDefaultCbookId();
       if (cbook.id === defaultCbookId) {
         this.showNoti('alert', "I'm sorry, your default Contacts Book cannot be deleted.", 5000);
@@ -260,7 +246,7 @@ class Adbk {
   };
 
   deleteContact = (contact) => {
-    adbk.showNoti('chat', 'Delete? Sure...');
+    this.showNoti('chat', 'Delete? Sure...');
     return this.redux.action.contacts.asyncRemoveContact(contact).then(
       this._handleSuccessResWithDefaultFailCallback(() => {
         this.showNoti('success', 'Deleted!');
@@ -349,6 +335,38 @@ class Adbk {
       }
       counter += 1;
     };
+  };
+
+  init = async () => {
+    this.url.init();
+
+    try {
+      const locationPromise = this.alo
+        .get('https://api.ipgeolocation.io/ipgeo?apiKey=881001c60ada4c4fbc82479d4de6b39d')
+        .then((res) => {
+          this.extAPI.geolocation = res.data;
+          return res.data;
+        });
+      const dataPromise = this._loadAndSetupData();
+      await Promise.all([locationPromise, dataPromise]);
+      // now data has been loaded, do the queued tasks in this.dataRequiredCallbacks
+      // eslint-disable-next-line promise/always-return
+      if (Array.isArray(this.dataRequiredCallbacks)) {
+        for (const cb of this.dataRequiredCallbacks) {
+          // eslint-disable-next-line promise/no-callback-in-promise
+          typeof cb === 'function' && cb();
+        }
+        this.dataRequiredCallbacks = null;
+      }
+    } catch (err) {
+      if (err.response) {
+        this.logErrorToConsole(err.response);
+      } else this.logErrorToConsole(err);
+    }
+  };
+
+  end = () => {
+    this.url.end();
   };
 }
 

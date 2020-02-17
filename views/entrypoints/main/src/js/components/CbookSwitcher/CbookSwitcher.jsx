@@ -43,9 +43,9 @@ const CbookSwitcher = (props) => {
                     cursor: 'pointer',
                   }}
                   onClick={(e) => {
-                    adbk.redux.store.dispatch(push(`/cbooks/${cbookId}/`));
-                  }}
-                >
+                    // adbk.redux.store.dispatch(push(`/cbooks/${cbookId}/`)); // OR:
+                    adbk.setDefaultCbook(cbookId);
+                  }}>
                   <div className="col-auto">
                     <p className="mb-0 text-center">
                       <i className="fas fa-address-book" style={{ fontSize: '1.3rem' }} />
@@ -95,21 +95,19 @@ const CbookSwitcher = (props) => {
                         </Dropdown.Menu>
                       </Dropdown>
                     </div> */}
-                  <div className="col-auto pr-1" onClick={stopEventBubbling}>
+                  <div role="button" tabIndex="0" className="col-auto pr-1" onClick={stopEventBubbling}>
                     <IconBtn
                       className={classNames('icon-btn--dark-bg font-weight-bold')}
-                      onClick={(e) => props.showInlineCbookForm(cbookId)}
-                    >
+                      onClick={(e) => props.showInlineCbookForm(cbookId)}>
                       <i className="far fa-edit" />
                     </IconBtn>
                   </div>
-                  <div className="col-auto pl-1" onClick={stopEventBubbling}>
+                  <div role="button" tabIndex="0" className="col-auto pl-1" onClick={stopEventBubbling}>
                     <IconBtn
                       className={classNames('icon-btn--dark-bg font-weight-bold')}
                       onClick={(e) => {
                         props.handleDeleteCbook(cbook);
-                      }}
-                    >
+                      }}>
                       <i className="fas fa-times" />
                     </IconBtn>
                   </div>
