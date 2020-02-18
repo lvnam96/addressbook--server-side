@@ -148,10 +148,6 @@ const verifyJWT = async (token) => {
  *********************
  */
 
-const addContact = (json) => {
-  return Contact.create(json);
-};
-
 const addContact = async (json) => {
   try {
     return Contact.create(json);
