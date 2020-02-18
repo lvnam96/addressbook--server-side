@@ -1,5 +1,4 @@
 import _get from 'lodash/get';
-import _isEmpty from 'lodash/isEmpty';
 import * as Sentry from '@sentry/browser';
 
 // models
@@ -271,9 +270,9 @@ class Adbk {
     );
   };
 
-  replaceAllContacts = (json) => {
+  importContacts = (json, mode = 'keep') => {
     const contactsList = this.classes.ContactsList.fromJSON(json);
-    return this.redux.action.contacts.asyncReplaceAllContacts(contactsList).then(
+    return this.redux.action.contacts.asyncImportContacts(contactsList, undefined, mode).then(
       this._handleSuccessResWithDefaultFailCallback(() => {
         ls.save(json);
         this.redux.action.filterState.changeStateToAll();

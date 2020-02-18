@@ -15,14 +15,6 @@ export const filterState = bindActionCreators(filterStateActions, store.dispatch
 export const contacts = bindActionCreators(contactsListActions, store.dispatch);
 export const notifications = bindActionCreators(notiListActions, store.dispatch);
 
-export const asyncReplaceAllContacts = (jsonContacts, adrsbookId = adbk.inst.adrsbook.id) => {
-  return contacts.asyncReplaceAllContacts(jsonContacts, adrsbookId);
-};
-
-export const asyncRemoveAllContacts = (adrsbookId = adbk.inst.adrsbook.id) => {
-  return contacts.asyncRemoveAllContacts(adrsbookId);
-};
-
 export const findContact = (contactId) => {
   return store.getState().contacts.find((contact) => contact.id === contactId);
 };

@@ -78,22 +78,22 @@ router.post('/delete-all', (req, res, next) => {
 
 // TESTED
 router.post('/import', (req, res, next) => {
-  adbk.contact
-    .import(req.body.contacts, req.user.id, req.body.adrsbookId)
-    .then((contacts) => {
-      contacts = contacts.map((contact) => contact.toJSON());
-      res.json({ res: true, contacts });
-      return contacts;
-    })
-    .catch(() => {
-      res.json({ res: false });
-    });
-});
+  const availMode = adbk.contact.import.mode;
+  let importingMode;
+  switch (req.query.mode) {
+    case 'replace':
+      importingMode = availMode.REPLACE_ALL;
+      break;
+    case 'overwrite':
+      importingMode = availMode.OVERWRITE;
+      break;
+    default:
+      importingMode = availMode.KEEP_ALL;
+      break;
+  }
 
-// TESTED
-router.post('/replace-all', (req, res, next) => {
   adbk.contact
-    .replaceAll(req.body.contacts, req.user.id, req.body.cbookId)
+    .import(req.body.contacts, req.user.id, req.body.cbookId, importingMode)
     .then((contacts) => {
       contacts = contacts.map((contact) => contact.toJSON());
       res.json({ res: true, contacts });

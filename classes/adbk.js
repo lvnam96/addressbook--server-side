@@ -198,50 +198,58 @@ const delAllContacts = async (accId, cbookId) => {
   }
 };
 
-// BUG: these too queries should cover this special case: duplicated contacts appear in both database & imported data => 2 resolving way:
-// - remove old ones, then import new ones (replaceAllContacts)
-// - import & modify duplicated ones (importContacts)
-const importContacts = async (contacts) => {
-  // special case while importing: there is contact in current cbook:
-  // which has 2 more cases as well:
+// WORKING (client controller has been setup to test only this function)
+const importingMode = {
+  KEEP_ALL: 'keep all existing contacts, import new (non-duplicated) ones',
+  REPLACE_ALL: 'replace all existing contacts by new ones',
+  OVERWRITE: 'overwrite duplicated contacts, keep the rest, import as new',
+};
+// NOTE: special case: duplicated contacts (which have same id) appear in both database & imported data
+const importContacts = async (json = [], accId, cbookId, mode = importingMode.KEEP_ALL) => {
   // 1. there is duplicated contacts appear in both imported list & current cbook
-  // 1.1 Overwrite duplicates, keep the rest, import the new ones
-  // 1.2 Keep all, import the new ones
+  // - (1) Overwrite duplicates, keep the rest, import the new ones
+  // - (2) Keep all, import AS NEW (this is what importAsNew() does)
+  // - (3) Replace all by the new ones (this is what replaceAllContacts() does)
   // 2. there is no duplicated contacts
-  // 2.1 Overwrite all, import the new ones (what a stupid choice)
-  // 2.2 Keep all, import the new ones
+  // - (2) Keep all, import AS NEW (this is what importAsNew() does)
+  // - (3) Replace all by the new ones (this is what replaceAllContacts() does)
+  // => 3 options (these options should be decided by user)
 
-  // steps:
-  // check whether current cbook has contacts
-  // if yes:
-  // check whether the list has duplicated contacts
-  // if yes, 2 options:
-  // 1.
-  // Option 3: keep all, import new ones - CREATE multiple contacts with same accId & cbookId
-  // if no, just go for it
-  contacts = contacts.map((contact) => Contact.fromJSON(contact).toDB());
+  const contacts = json
+    .map((contact) => {
+      // update obsoleted values in old data
+      return {
+        ...contact,
+        accId,
+        cbookId,
+      };
+    })
+    .map((contact) => Contact.fromJSON(contact).toDB());
   try {
-    const rows = await db.data.importContacts(contacts);
-    return rows.map((rawData) => Contact.fromJSON(rawData));
-  } catch (err) {
-    handleError(err);
-    throw err;
-  }
-};
-
-const replaceAllContacts = async (json, accId, cbookId) => {
-  const contacts = json.map((contact) => Contact.fromJSON(contact).toDB());
-  try {
-    const rows = await db.data.replaceAllContacts(contacts, accId, cbookId);
-    if (Array.isArray(rows) && rows.length > 0) {
-      return rows.map((rawData) => Contact.fromDB(rawData));
+    switch (mode) {
+      case importingMode.REPLACE_ALL: {
+        // (3)
+        const rows = await Contact.replace(contacts, accId, cbookId);
+        return rows.map((rawData) => Contact.fromDB(rawData));
+      }
+      case importingMode.OVERWRITE: // (1)
+        // this feature is not completed because it is implemented in a different way at client-side:
+        // first, import all contacts as new
+        // then, let users choose which contacts should be overwrite and which ones should be kept
+        break;
+      case importingMode.KEEP_ALL: // (2)
+      default: {
+        await Contact.import(contacts, accId, cbookId);
+        const result = await getContactsOfCbook(accId, cbookId);
+        return result.data;
+      }
     }
-    return [];
   } catch (err) {
     handleError(err);
     throw err;
   }
 };
+importContacts.mode = importingMode;
 
 const getContactsOfCbook = async (accId, cbookId) => {
   try {
@@ -407,7 +415,6 @@ class Controller {
       delAll: delAllContacts,
       delMulti: delMultiContacts,
       import: importContacts,
-      replaceAll: replaceAllContacts,
       getContactsOfCbook: getContactsOfCbook,
     };
   }

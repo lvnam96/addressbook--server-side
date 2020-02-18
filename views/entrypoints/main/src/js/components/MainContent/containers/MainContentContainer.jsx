@@ -56,7 +56,7 @@ const MainContentContainer = (props) => {
         (fileLoadedEvent) => {
           const textFromFileLoaded = fileLoadedEvent.target.result;
           const dataParsedFromTextFile = JSON.parse(textFromFileLoaded);
-          adbk.replaceAllContacts(dataParsedFromTextFile);
+          adbk.importContacts(dataParsedFromTextFile);
         },
         false
       );

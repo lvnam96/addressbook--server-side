@@ -150,11 +150,12 @@ export const replaceAllContacts = (data) => ({
   data,
 });
 
-export const asyncReplaceAllContacts = (contactsList, cbookId) => (dispatch, getState) => {
+export const asyncImportContacts = (contactsList, cbookId, mode = 'keep') => (dispatch, getState) => {
+  if (!['overwrite', 'replace', 'keep'].includes(mode)) throw new Error('Invalid importing mode');
   cbookId = cbookId || _get(getState(), 'user.meta.lastActivatedCbookId');
   const contacts = contactsList.toJSON().data;
   return alo
-    .post('/backdoor/contacts/replace-all', {
+    .post(`/backdoor/contacts/import?mode=${mode}`, {
       contacts,
       cbookId,
     })

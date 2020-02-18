@@ -1,6 +1,5 @@
 const { pool, query, getClient, pDB } = require('./pool');
 const { getQueryStrToImportContacts, whereClauseMatchAccAndAdrsbook } = require('./queryStringCreator');
-const queryStringCreator = require('./queryStringCreator');
 const {
   dbUtils: { formatIdsList, mapContactData },
 } = require('../helpers/index');
@@ -54,11 +53,9 @@ const editContact = async ({ id, birth, email, phone, note, name, color, website
 };
 
 const removeContact = async (contact) => {
-  // contact: shape of {
-  //     accId: string
-  //     id: string
-  //     cbookId: string
-  // }
+  // accId: string
+  // id: string
+  // cbookId: string
   const queryStr = 'DELETE FROM contact WHERE acc_id = $1 AND id = $2 AND cbook_id = $3 RETURNING *';
   const queryParams = [contact.accId, contact.id, contact.cbookId];
   const res = await query(queryStr, queryParams);
@@ -87,93 +84,41 @@ const removeAllContacts = async (accId, cbookId) => {
   return handleMultiContactsData(res);
 };
 
-// BUG: these too queries should cover this special case: duplicated contacts appear in both database & imported data => 2 resolving way:
-// - remove old ones, then import new ones (replaceAllContacts)
-// - import & modify duplicated ones (importContacts)
-
-const importContacts = async (contacts) => {
-  const queryStr = getQueryStrToImportContacts(contacts);
-  const res = await query(queryStr);
+const importAsNew = async (contacts = [], accId, cbookId) => {
+  const importQueryStr = `${getQueryStrToImportContacts(contacts)} RETURNING *`;
+  const res = await query(importQueryStr);
   return handleMultiContactsData(res);
-  // getClient((err, client, done) => {
-  //     const shouldAbort = (err) => {
-  //         if (err) {
-  //             console.error('Error in transaction', err.stack);
-  //             client.query('ROLLBACK', (err) => {
-  //                 if (err) {
-  //                     console.error('Error rolling back client', err.stack);
-  //                 }
-  //                 // release the client back to the pool
-  //                 done();
-  //             });
-  //         }
-  //         return !!err;
-  //     }
-  //
-  //     // const contactsbookIds = [];
-  //     // const accountIds = [];
-  //     // const births = [];
-  //     // const emails = [];
-  //     // const phones = [];
-  //     // const notes = [];
-  //     // const names = [];
-  //     // const colors = [];
-  //     // const avtURLs = [];
-  //     for (let contact of data) {
-  //         contactsbookIds.push(contact.cbookId);
-  //         accountIds.push(contact.id);
-  //         births.push(contact.birth);
-  //         emails.push(contact.email);
-  //         phones.push(contact.phone);
-  //         notes.push(contact.note);
-  //         names.push(contact.name);
-  //         colors.push(contact.color);
-  //         avtURLs.push(contact.avtURL);
-  //     }
-  //     let query = 'INSERT INTO contact (cbook_id, acc_id, birth, email, phone, note, name, color, avatar_url) SELECT * FROM UNNEST ($1::uuid[], $2::uuid[], $3::date[], $4::text[], $5::text[], $6::text[], $7::text[], $8::text[], $9::text[])';
-  //     const params = [
-  //         contactsbookIds,
-  //         accountIds,
-  //         births,
-  //         emails,
-  //         phones,
-  //         notes,
-  //         names,
-  //         colors,
-  //         avtURLs
-  //     ];
-  //
-  //     // or use this approach: https://stackoverflow.com/questions/34990186/how-do-i-properly-insert-multiple-rows-into-pg-with-node-postgres
-  //
-  //     client.query('BEGIN', (err, res) => {
-  //         if (shouldAbort(err)) return;
-  //         // const promises = [];
-  //         // for (contact of data) {
-  //         //     const p = client.query('INSERT INTO contact...');
-  //         //     promises.push(p);
-  //         // }
-  //         // Promise.all(promises, () => {
-  //         //
-  //         // });
-  //         client.query(query, params, (err, res) => {
-  //             if (shouldAbort(err)) return;
-  //
-  //         });
-  //     });
-  // });
 };
 
-// BUG: if there is at least 1 contact in db is also in the restored data, this query will be broken
-// error: constraint 'contact pkey' is violented
-const replaceAllContacts = (contacts, accId, cbookId) => {
+const replaceAllContacts = (contacts = [], accId, cbookId) => {
   return pDB.tx('replace-all-contacts', async (t) => {
     const deletedContacts = await t.any('DELETE FROM contact WHERE acc_id = $1 AND cbook_id = $2 RETURNING *', [
       accId,
       cbookId,
     ]);
-    const importQueryStr = `${queryStringCreator.getQueryStrToImportContacts(contacts)} RETURNING *`;
+    const importQueryStr = `${getQueryStrToImportContacts(contacts)} RETURNING *`;
     const rows = await t.any(importQueryStr);
-    return rows;
+    return handleMultiContactsData({ rows });
+  });
+};
+
+// this feature is not completed because it is implemented in a different way at client-side
+// see importContacts() in CONTROLLER to understand why
+const importAndOverwrite = async (contacts = [], accId, cbookId) => {
+  return pDB.tx('import-and-overwrite-duplicated-contacts', async (t) => {
+    // 1. get duplicated contacts
+    const contactsExistingInCbook = (await getContactsOfCbook(accId, cbookId)).data;
+    const duplicatedContacts =
+      Array.isArray(contactsExistingInCbook) &&
+      contactsExistingInCbook.length &&
+      contactsExistingInCbook.filter((contact) => {
+        return contacts.findIndex((importedContact) => importedContact.name === contact.name) >= 0;
+      }) >= 0;
+    const hasDuplicatedContacts = duplicatedContacts.length > 0;
+    if (hasDuplicatedContacts) {
+      // update the duplicated contacts first
+    }
+    // then import the rest
   });
 };
 
@@ -184,6 +129,6 @@ module.exports = {
   removeContact,
   removeMultiContacts,
   removeAllContacts,
-  importContacts,
+  importAsNew,
   replaceAllContacts,
 };

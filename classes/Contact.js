@@ -54,18 +54,14 @@ class Contact extends Factory {
   }
 
   toDB() {
-    try {
-      const jsoned = this.toJSON();
-      jsoned.labels = JSON.stringify(jsoned.labels);
-      jsoned.phone = JSON.stringify(jsoned.phone);
-      // may not need this because queries can be formatted
-      // jsoned.cbook_id = jsoned.cbookId;
-      // jsoned.acc_id = jsoned.accId;
-      // jsoned.avatar_url = jsoned.avatarURL;
-      return jsoned;
-    } catch (err) {
-      console.error(err);
-    }
+    const jsoned = this.toJSON();
+    jsoned.labels = JSON.stringify(jsoned.labels);
+    jsoned.phone = JSON.stringify(jsoned.phone);
+    // may not need this because queries can be formatted
+    // jsoned.cbook_id = jsoned.cbookId;
+    // jsoned.acc_id = jsoned.accId;
+    // jsoned.avatar_url = jsoned.avatarURL;
+    return jsoned;
   }
 
   static fromDB(data) {
@@ -132,6 +128,16 @@ class Contact extends Factory {
 
   static async deleteAll(accId, cbookId) {
     const rows = await db.data.removeAllContacts(accId, cbookId);
+    return rows.map((rawData) => Contact.fromDB(rawData));
+  }
+
+  static async import(contacts, accId, cbookId) {
+    const rows = await db.data.importAsNew(contacts, accId, cbookId);
+    return rows.map((rawData) => Contact.fromDB(rawData));
+  }
+
+  static async replace(contacts, accId, cbookId) {
+    const rows = await db.data.replaceAllContacts(contacts, accId, cbookId);
     return rows.map((rawData) => Contact.fromDB(rawData));
   }
 }
