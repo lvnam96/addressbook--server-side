@@ -21,7 +21,7 @@ coverage
 
 # Compiled binary addons (http://nodejs.org/api/addons.html)
 build/Release
-public/
+#public/
 
 # Dependency directory
 # https://docs.npmjs.com/cli/shrinkwrap#caveats
@@ -32,8 +32,8 @@ npm-debug.log
 
 **/package-lock.json
 
-# For Herouku
+# For Heroku
 .env
 
 # For the first time project installing
-db/db-config.json
+#db/db-config.json
