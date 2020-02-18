@@ -28,8 +28,8 @@ const ContactsList = (props) => {
         {/* how-to doc: https://github.com/bvaughn/react-virtualized/blob/master/docs/usingAutoSizer.md */}
         {({ width }) => (
           <VariableSizeList
-            height={64 * props.data.length}
-            useIsScrolling
+            height={64 * props.data.length + 2} // + 2 is for fixing a weird issue when displaying on Chrome: showing side scrollbar because of lacking of 2px
+            // useIsScrolling
             // onScroll={({ scrollDirection, scrollOffset, scrollUpdateWasRequested }) => {
             //   // scrollDirection is either "forward" or "backward".
             //   // scrollOffset is a number.
