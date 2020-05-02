@@ -13,6 +13,7 @@ const mapUserData = ({
   created_on,
   salt,
   cbooks,
+  sharedCbooks,
   last_activated_cbook_id,
   last_login,
   is_active,
@@ -34,6 +35,7 @@ const mapUserData = ({
       isActive: is_active,
     },
     cbooks,
+    sharedCbooks,
   };
 };
 

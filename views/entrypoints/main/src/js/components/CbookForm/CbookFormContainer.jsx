@@ -50,9 +50,6 @@ const WrappedForm = withFormik({
     } else {
       props.onSave(copyVal);
     }
-    setTimeout(() => {
-      setSubmitting(false);
-    }, 2000);
   },
   displayName: 'ContactEditingForm',
 })(CbookForm);
@@ -73,8 +70,8 @@ class CbookFormContainer extends React.Component {
     };
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    if (_isEqual(nextProps.cbook, nextState.cbook)) {
+  shouldComponentUpdate(nextProps) {
+    if (_isEqual(nextProps.cbook, this.props.cbook)) {
       return false;
     }
     return true;
@@ -84,10 +81,14 @@ class CbookFormContainer extends React.Component {
     this.props.handleClose(this.props.cbook.id);
   };
 
-  handleSave = (values) => {
-    adbk.handleSaveCbookForm(values).then(() => {
+  handleSave = async (values) => {
+    try {
+      await adbk.handleSaveCbookForm(values);
       this.handleClose();
-    });
+    } catch (err) {
+      adbk.showNoti('error', "Something's wrong. Please try again.");
+      adbk.reportError(err);
+    }
   };
 
   render() {
@@ -95,7 +96,6 @@ class CbookFormContainer extends React.Component {
       <WrappedForm
         isOpenInPopup={this.props.isOpenInPopup}
         isInlineForm={this.props.isInlineForm}
-        title={this.props.title}
         cbook={this.props.cbook}
         onSave={this.handleSave}
         onClose={this.handleClose}

@@ -42,19 +42,19 @@ class TextField extends Component {
   // }
 
   render() {
-    const htmlInputProps = _merge({}, this.props.inputProps, this.props);
-    delete htmlInputProps.inputProps;
-    delete htmlInputProps.children;
-    delete htmlInputProps.msg;
-    delete htmlInputProps.label;
-    delete htmlInputProps.labelFor;
+    const { inputProps, children, msg, label, labelFor, ...htmlAttrs } = _merge({}, this.props.inputProps, this.props);
+    delete htmlAttrs.inputProps;
+    delete htmlAttrs.children;
+    delete htmlAttrs.msg;
+    delete htmlAttrs.label;
+    delete htmlAttrs.labelFor;
     let labelElem;
-    if (isValidElement(this.props.label)) {
-      labelElem = this.props.label;
-    } else if (typeof this.props.label === 'string') {
+    if (isValidElement(label)) {
+      labelElem = label;
+    } else if (typeof label === 'string') {
       labelElem = (
-        <label className="" htmlFor={htmlInputProps.id}>
-          <span className="">{this.props.label}</span>
+        <label className="" htmlFor={htmlAttrs.id}>
+          <span className="">{label}</span>
         </label>
       );
     }
@@ -62,14 +62,14 @@ class TextField extends Component {
       <div className="form-group">
         {labelElem}
         <TextInput
-          {...htmlInputProps}
-          // value={this.props.value}
-          // onChange={this.props.onChange}
-          // onBlur={this.props.onBlur}
-          className={classNames('form-control', this.props.inputProps.className)}
+          {...htmlAttrs}
+          // value={value}
+          // onChange={onChange}
+          // onBlur={onBlur}
+          className={classNames('form-control', inputProps.className)}
         />
-        {this.props.msg && <InputFeedback msg={this.props.msg} />}
-        {this.props.children}
+        {msg && <InputFeedback msg={msg} />}
+        {children}
       </div>
     );
   }
@@ -80,7 +80,7 @@ TextField.propTypes = {
   // value: PropTypes.string.isRequired,
   // onChange: PropTypes.func.isRequired,
   // onBlur: PropTypes.func.isRequired,
-  children: PropTypes.element, // input feeback,...
+  children: PropTypes.element, // custom input feeback,...
   msg: PropTypes.string,
   label: PropTypes.oneOfType([PropTypes.string, PropTypes.element]), // set to a string to add default label, or an React element to override the default label
 };

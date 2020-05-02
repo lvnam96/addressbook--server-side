@@ -59,7 +59,6 @@ router.use('/user', ...middlewares, userRouter);
 
 router.get('/', ...middlewares, (req, res, next) => {
   res.sendStatus(403);
-  res.end();
 });
 
 module.exports = router;

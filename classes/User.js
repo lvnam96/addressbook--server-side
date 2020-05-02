@@ -8,7 +8,8 @@ class User extends Account {
     this.nicename = data.nicename || null;
     this.birth = data.birth || null;
     this.phone = data.phone || null;
-    this.cbooks = data.cbooks || [];
+    this.cbooks = data.cbooks || []; // cbooks created by this user
+    this.sharedCbooks = data.sharedCbooks || []; // cbooks shared with this user by other users
     if (data.meta) {
       this._meta = {
         lastActivatedCbookId: _get(data, 'meta.lastActivatedCbookId', null),
@@ -19,7 +20,7 @@ class User extends Account {
       this._meta = {};
     }
     this._isSerializable = this._isSerializable || new Set();
-    for (const keyname of ['isActive', 'nicename', 'birth', 'phone', 'cbooks', 'meta']) {
+    for (const keyname of ['isActive', 'nicename', 'birth', 'phone', 'cbooks', 'sharedCbooks', 'meta']) {
       this._isSerializable = this._isSerializable.add(keyname);
     }
   }

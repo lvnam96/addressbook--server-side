@@ -1,35 +1,33 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import * as Sentry from '@sentry/browser';
+import { captureException, showReportDialog } from '@sentry/browser';
 
 class AppErrorCatcher extends React.Component {
-  state = { eventId: null };
+  state = { eventId: null, hasError: false };
 
-  static get propTypes () {
+  static get propTypes() {
     return {
       children: PropTypes.element.isRequired,
     };
   }
 
-  componentDidCatch (error, errorInfo) {
+  componentDidCatch(error, errorInfo) {
     adbk.showNoti('error', 'There is a problem! Please refresh the app.');
     // report to error reporting service
     adbk.reportError(error, errorInfo);
-    const eventId = Sentry.captureException(error);
-    this.setState({ eventId });
-    console.error(errorInfo);
+    adbk.status.isDev && adbk.logErrorToConsole(errorInfo);
   }
 
-  // static getDerivedStateFromError () {
-  //   // handle UI
-  //   adbk.showNoti('error', 'There is a problem! Please refresh the app.');
-  //   return { hasError: true };
-  // }
+  static getDerivedStateFromError(error) {
+    // handle UI
+    const eventId = captureException(error);
+    return { hasError: true, eventId };
+  }
 
-  render () {
+  render() {
     if (this.state.hasError) {
       // render fallback UI
-      return <button onClick={() => Sentry.showReportDialog({ eventId: this.state.eventId })}>Report feedback</button>;
+      return <button onClick={() => showReportDialog({ eventId: this.state.eventId })}>Report feedback</button>;
     }
 
     return this.props.children;

@@ -1,30 +1,26 @@
-import React, { useState, memo } from 'react';
+import React, { useState, memo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 const NotiBar = (props) => {
   const [isShowed, toggleIsShowed] = useState(true);
-  let icoClass, backgroundColor, bgColorClass;
+  let icoClass, bgColorClass;
   switch (props.type) {
     case 'success':
       icoClass = 'fas fa-check';
-      // backgroundColor = '#4caf50';
       bgColorClass = 'bg-green';
       break;
     case 'error':
       icoClass = 'fas fa-exclamation-triangle';
-      // backgroundColor = '#e53935';
       bgColorClass = 'bg-red';
       break;
     case 'chat':
       icoClass = 'far fa-grin-tongue';
-      // backgroundColor = '#4caf50';
       bgColorClass = 'bg-cyan';
       break;
+    case 'alert':
     default:
-      // case 'alert':
       icoClass = 'fas fa-exclamation-circle';
-      // backgroundColor = '#59a5e8';
       bgColorClass = 'bg-primary';
       break;
   }
@@ -33,13 +29,14 @@ const NotiBar = (props) => {
     animationDuration = props.displayTimeDuration / 1000 + 's';
   }
 
-  const handleNotibarClose = (e) => {
-    toggleIsShowed(false);
-  };
+  const handleNotibarClose = useCallback(
+    (e) => {
+      toggleIsShowed(false);
+    },
+    [toggleIsShowed]
+  );
 
-  const notiBarStyle = {
-    backgroundColor,
-  };
+  const notiBarStyle = {};
   if (isShowed) {
     notiBarStyle.animationDuration = animationDuration;
   }

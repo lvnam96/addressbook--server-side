@@ -9,6 +9,7 @@ const adbk = require('../../classes/adbk');
 router.post('/meta/set-default-cbook', (req, res, next) => {
   adbk.cbook
     .setDefault(req.user, req.body.cbookId)
+    // eslint-disable-next-line promise/always-return
     .then(() => {
       res.json({ res: true });
     })
@@ -20,7 +21,6 @@ router.post('/meta/set-default-cbook', (req, res, next) => {
 
 router.get('/', (req, res, next) => {
   res.sendStatus(403);
-  res.end();
 });
 
 module.exports = router;

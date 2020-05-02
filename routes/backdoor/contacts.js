@@ -1,8 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../../db/index');
 const adbk = require('../../classes/adbk');
-const CList = require('../../classes/ContactsList');
 
 // '/backdoor/contacts' route
 
@@ -34,6 +32,7 @@ router.post('/edit', (req, res, next) => {
     });
 });
 
+// should merge this route with route '/delete-multiple'
 // TESTED
 router.post('/delete', (req, res, next) => {
   adbk.contact
@@ -104,13 +103,13 @@ router.post('/import', (req, res, next) => {
     });
 });
 
-// this route is not ready to be used, check it later
+// TESTED
 router.get('/', (req, res, next) => {
   if (req.query.cbookId) {
     adbk.contact
       .getContactsOfCbook(req.user.id, req.query.cbookId)
-      .then((contacts) => {
-        contacts = contacts.toJSON();
+      .then((contactsList) => {
+        const contacts = contactsList.toJSON();
         res.json({ res: true, contacts });
         return contacts;
       })
@@ -119,7 +118,6 @@ router.get('/', (req, res, next) => {
       });
   } else {
     res.sendStatus(403);
-    res.end();
   }
 });
 

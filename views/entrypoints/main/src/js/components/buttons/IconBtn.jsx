@@ -1,28 +1,24 @@
-import React from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-class IconBtn extends React.PureComponent {
-  static get propTypes () {
-    return {
-      htmlTag: PropTypes.string,
-      href: PropTypes.string,
-    };
+const IconBtn = (props) => {
+  // const children = React.cloneElement(props.children, {});
+  const { children, href, ...htmlAttrs } = props;
+  htmlAttrs.className = classNames('btn icon-btn', htmlAttrs.className);
+  if (typeof href === 'string' && href) {
+    return (
+      <a {...htmlAttrs} href={href}>
+        {children}
+      </a>
+    );
+  } else {
+    return <button {...htmlAttrs}>{children}</button>;
   }
+};
+IconBtn.propTypes = {
+  children: PropTypes.element.isRequired, // usually a font-awesome icon diplayed by a <i /> tag
+  href: PropTypes.string,
+};
 
-  render () {
-    // const children = React.cloneElement(this.props.children, {});
-    const elemProps = { ...this.props };
-    // delete elemProps.children;
-    delete elemProps.htmlTag;
-    delete elemProps.href;
-    switch (this.props.htmlTag) {
-    case 'a':
-      return <a {...elemProps} href={this.props.href} className={classNames('btn icon-btn', elemProps.className)} />;
-    default:
-      return <button {...elemProps} className={classNames('btn icon-btn', elemProps.className)} />;
-    }
-  }
-}
-
-export default IconBtn;
+export default memo(IconBtn);
